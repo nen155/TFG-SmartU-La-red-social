@@ -1,0 +1,35 @@
+<resources>
+    <!-- El tema básico para la aplicación. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--Color primario de la app que se usa para toda la app-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--Color para ciertos elementos de la app para resalte-->
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+    <!--Estilo para los botones grandes-->
+    <style name="ButtonLarge">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">80dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:background">@color/colorAccent</item>
+    </style>
+
+    <style name="SinActionBar" parent="AppTheme">
+        <!--Le quito la action bar al tema -->
+        <item name="windowActionBar">false</item>
+        <!--Le quito el título a la app -->
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>

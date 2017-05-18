@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--colores primarios-->
+    <color name="colorPrimary">#29b6f6</color>
+    <color name="colorPrimaryDark">#0086c3</color>
+    <color name="colorPrimaryLight">#73e8ff</color>
+    <!--colores secundarios-->
+    <color name="colorAccentDark">#b0003a</color>
+    <color name="colorAccentLight">#ff6090</color>
+
+    <color name="colorAccent">#FF4081</color>
+
+    <!--colores texto-->
+    <color name="colorTextPrimary">#fafafa</color>
+    <color name="colorTextSecondary">#000000</color>
+
+    <!--colores fondo-->
+    <color name="colorBackground">#e1e2e1</color>
+    <color name="colorBackgroundCardView">#f5f5f6</color>
+    <!--Se usa en el splash_screen de fondo-->
+    <color name="white">#fff</color>
+</resources>
