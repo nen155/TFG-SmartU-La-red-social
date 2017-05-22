@@ -28,7 +28,7 @@ public class InstruccionesMainActivity extends AppIntro {
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
-        Intent MainIntent = new Intent(this, LoginActivity.class);
+        Intent MainIntent = new Intent(this, MainActivity.class);
         MainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(MainIntent);
     }
@@ -36,7 +36,7 @@ public class InstruccionesMainActivity extends AppIntro {
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
-        Intent MainIntent = new Intent(this, LoginActivity.class);
+        Intent MainIntent = new Intent(this, MainActivity.class);
         MainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(MainIntent);
     }

@@ -1,0 +1,43 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.smartu.vistas.MainActivity">
+
+    <RecyclerView
+        android:id="@+id/recyclerMuro"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="5dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center"/>
+    <LinearLayout
+        android:id="@+id/noMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        tools:visibility="gone">
+
+        <ImageView
+            android:id="@+id/noMessagesIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_notifications_black_24dp"
+            android:tint="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/noMessagesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="No hay novedades aun"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+    </LinearLayout>
+</FrameLayout>

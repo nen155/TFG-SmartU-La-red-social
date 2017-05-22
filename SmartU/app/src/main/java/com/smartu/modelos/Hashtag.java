@@ -4,18 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Emilio Chica Jiménez on 18/05/2017.
+ * Created by Emilio Chica Jiménez on 19/05/2017.
  */
 
-public class Area implements Parcelable {
+public class Hashtag implements Parcelable{
     private int id;
     private String nombre;
-    private String descripcion;
 
-    public Area(int id, String nombre, String descripcion) {
+    public Hashtag(int id, String nombre) {
         this.id = id;
         this.nombre = nombre;
-        this.descripcion = descripcion;
     }
 
     public int getId() {
@@ -34,29 +32,20 @@ public class Area implements Parcelable {
         this.nombre = nombre;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    protected Area(Parcel in) {
+    protected Hashtag(Parcel in) {
         id = in.readInt();
         nombre = in.readString();
-        descripcion = in.readString();
     }
 
-    public static final Creator<Area> CREATOR = new Creator<Area>() {
+    public static final Creator<Hashtag> CREATOR = new Creator<Hashtag>() {
         @Override
-        public Area createFromParcel(Parcel in) {
-            return new Area(in);
+        public Hashtag createFromParcel(Parcel in) {
+            return new Hashtag(in);
         }
 
         @Override
-        public Area[] newArray(int size) {
-            return new Area[size];
+        public Hashtag[] newArray(int size) {
+            return new Hashtag[size];
         }
     };
 
@@ -69,6 +58,5 @@ public class Area implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(nombre);
-        dest.writeString(descripcion);
     }
 }

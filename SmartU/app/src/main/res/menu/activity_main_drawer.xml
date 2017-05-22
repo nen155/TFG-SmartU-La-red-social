@@ -12,8 +12,8 @@
             android:title="Mis Proyectos" />
         <item
             android:id="@+id/nav_areas"
-            android:icon="@drawable/areas"
-            android:title="Mis Areas" />
+            android:icon="@drawable/intereses"
+            android:title="Mis Intereses" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/logout"

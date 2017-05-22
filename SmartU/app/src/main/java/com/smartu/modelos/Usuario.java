@@ -1,12 +1,14 @@
 package com.smartu.modelos;
 
+import android.os.Parcel;
+
 import java.util.ArrayList;
 
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Usuario {
+public class Usuario extends Publicacion {
     private int id;
     private String nombre;
     private String apellidos;
@@ -29,8 +31,6 @@ public class Usuario {
     private ArrayList<RedSocial> misRedesSociales;
     private ArrayList<Multimedia> misArchivos;
     private Status miStatus;
-
-
 
 
 
@@ -63,6 +63,42 @@ public class Usuario {
         this.admin = admin;
         this.activo = activo;
     }
+
+    protected Usuario(Parcel in) {
+        id = in.readInt();
+        nombre = in.readString();
+        apellidos = in.readString();
+        email = in.readString();
+        password = in.readString();
+        nPuntos = in.readInt();
+        CIF = in.readString();
+        localizacion = in.readString();
+        biografia = in.readString();
+        web = in.readString();
+        verificado = in.readByte() != 0;
+        admin = in.readByte() != 0;
+        activo = in.readByte() != 0;
+        misProyectos = in.createTypedArrayList(Proyecto.CREATOR);
+        misColaboraciones = in.createTypedArrayList(Proyecto.CREATOR);
+        misAreasInteres = in.createTypedArrayList(Area.CREATOR);
+        misEspecialidades = in.createTypedArrayList(Especialidad.CREATOR);
+        misSeguidores = in.createTypedArrayList(Usuario.CREATOR);
+        misRedesSociales = in.createTypedArrayList(RedSocial.CREATOR);
+        misArchivos = in.createTypedArrayList(Multimedia.CREATOR);
+        miStatus = in.readParcelable(Status.class.getClassLoader());
+    }
+
+    public static final Creator<Usuario> CREATOR = new Creator<Usuario>() {
+        @Override
+        public Usuario createFromParcel(Parcel in) {
+            return new Usuario(in);
+        }
+
+        @Override
+        public Usuario[] newArray(int size) {
+            return new Usuario[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -166,5 +202,99 @@ public class Usuario {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public ArrayList<Proyecto> getMisProyectos() {
+        return misProyectos;
+    }
+
+    public void setMisProyectos(ArrayList<Proyecto> misProyectos) {
+        this.misProyectos = misProyectos;
+    }
+
+    public ArrayList<Proyecto> getMisColaboraciones() {
+        return misColaboraciones;
+    }
+
+    public void setMisColaboraciones(ArrayList<Proyecto> misColaboraciones) {
+        this.misColaboraciones = misColaboraciones;
+    }
+
+    public ArrayList<Area> getMisAreasInteres() {
+        return misAreasInteres;
+    }
+
+    public void setMisAreasInteres(ArrayList<Area> misAreasInteres) {
+        this.misAreasInteres = misAreasInteres;
+    }
+
+    public ArrayList<Especialidad> getMisEspecialidades() {
+        return misEspecialidades;
+    }
+
+    public void setMisEspecialidades(ArrayList<Especialidad> misEspecialidades) {
+        this.misEspecialidades = misEspecialidades;
+    }
+
+    public ArrayList<Usuario> getMisSeguidores() {
+        return misSeguidores;
+    }
+
+    public void setMisSeguidores(ArrayList<Usuario> misSeguidores) {
+        this.misSeguidores = misSeguidores;
+    }
+
+    public ArrayList<RedSocial> getMisRedesSociales() {
+        return misRedesSociales;
+    }
+
+    public void setMisRedesSociales(ArrayList<RedSocial> misRedesSociales) {
+        this.misRedesSociales = misRedesSociales;
+    }
+
+    public ArrayList<Multimedia> getMisArchivos() {
+        return misArchivos;
+    }
+
+    public void setMisArchivos(ArrayList<Multimedia> misArchivos) {
+        this.misArchivos = misArchivos;
+    }
+
+    public Status getMiStatus() {
+        return miStatus;
+    }
+
+    public void setMiStatus(Status miStatus) {
+        this.miStatus = miStatus;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(nombre);
+        dest.writeString(apellidos);
+        dest.writeString(email);
+        dest.writeString(password);
+        dest.writeInt(nPuntos);
+        dest.writeString(CIF);
+        dest.writeString(localizacion);
+        dest.writeString(biografia);
+        dest.writeString(web);
+        dest.writeByte((byte) (verificado ? 1 : 0));
+        dest.writeByte((byte) (admin ? 1 : 0));
+        dest.writeByte((byte) (activo ? 1 : 0));
+        dest.writeTypedList(misProyectos);
+        dest.writeTypedList(misColaboraciones);
+        dest.writeTypedList(misAreasInteres);
+        dest.writeTypedList(misEspecialidades);
+        dest.writeTypedList(misSeguidores);
+        dest.writeTypedList(misRedesSociales);
+        dest.writeTypedList(misArchivos);
+        dest.writeParcelable(miStatus, flags);
     }
 }

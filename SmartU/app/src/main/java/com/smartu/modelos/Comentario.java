@@ -1,21 +1,22 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
-import android.os.Parcelable;
+
+import java.util.Date;
 
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Especialidad implements Parcelable {
+public class Comentario extends Publicacion {
     private int id;
-    private String nombre;
     private String descripcion;
+    private Date fecha;
 
-    public Especialidad(int id, String nombre, String descripcion) {
+    public Comentario(int id, String descripcion, Date fecha) {
         this.id = id;
-        this.nombre = nombre;
         this.descripcion = descripcion;
+        this.fecha = fecha;
     }
 
     public int getId() {
@@ -26,14 +27,6 @@ public class Especialidad implements Parcelable {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
@@ -42,24 +35,31 @@ public class Especialidad implements Parcelable {
         this.descripcion = descripcion;
     }
 
-    protected Especialidad(Parcel in) {
-        id = in.readInt();
-        nombre = in.readString();
-        descripcion = in.readString();
+    public Date getFecha() {
+        return fecha;
     }
 
-    public static final Parcelable.Creator<Especialidad> CREATOR = new Parcelable.Creator<Especialidad>() {
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    protected Comentario(Parcel in) {
+        id = in.readInt();
+        descripcion = in.readString();
+        fecha = new Date(in.readLong());
+    }
+
+    public static final Creator<Comentario> CREATOR = new Creator<Comentario>() {
         @Override
-        public Especialidad createFromParcel(Parcel in) {
-            return new Especialidad(in);
+        public Comentario createFromParcel(Parcel in) {
+            return new Comentario(in);
         }
 
         @Override
-        public Especialidad[] newArray(int size) {
-            return new Especialidad[size];
+        public Comentario[] newArray(int size) {
+            return new Comentario[size];
         }
     };
-
     @Override
     public int describeContents() {
         return 0;
@@ -68,8 +68,7 @@ public class Especialidad implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeString(nombre);
         dest.writeString(descripcion);
+        dest.writeLong(fecha.getTime());
     }
-
 }

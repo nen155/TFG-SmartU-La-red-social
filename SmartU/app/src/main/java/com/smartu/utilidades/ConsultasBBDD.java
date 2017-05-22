@@ -17,17 +17,12 @@ import java.net.URL;
 public class ConsultasBBDD {
 
 
-    public static String server ="http://hugomaldonado.ddns.net:2424";
+    public static String server ="http://coloredmoon.com:2424";
 
 
 
     public static final String consultaLogin = "/api/content_type/";
-    public static final String queryContentInformationOfType ="/api/content/type";
-    public static final String queryContent ="/api/content/id";
-    public static final String queryContentOfLocalization ="/api/content/location";
-    public static final String queryGuidesVisits = "/api/guided_visit";
-    public static final String queryGuideVisit = "/api/guided_visit/id";
-    public static final String queryLang = "/api/lang/";
+    public static final String consultaPublicaciones ="/api/content/type";
 
 
     public static String hacerConsulta(String urlREST, String parameters, String metodo) {

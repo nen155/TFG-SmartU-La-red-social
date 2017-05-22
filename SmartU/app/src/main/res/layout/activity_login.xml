@@ -40,7 +40,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:layout_marginTop="25dp"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -57,7 +58,8 @@
                     android:imeActionLabel="@string/action_inicia_sesion_corto"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:layout_marginTop="25dp"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -66,20 +68,8 @@
                 style="@style/ButtonLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="25dp"
                 android:text="@string/btn_login"
-                android:textStyle="bold" />
-
-            <include
-                layout="@layout/divisor"
-                />
-            <Button
-                android:id="@+id/btn_inicio_anonimo"
-                style="@style/ButtonLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/inicio_anonimo"
                 android:textStyle="bold" />
 
         </LinearLayout>

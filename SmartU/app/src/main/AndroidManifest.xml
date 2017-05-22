@@ -16,8 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--El splash lo establezco a portrait para que durante la carga no haya problemas de
+        leak memory ni View attached window, no uso fragment porque no hay necesidad-->
         <activity
             android:name=".vistas.SplashScreenActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SinActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +28,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".servicios.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".servicios.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
         <activity
             android:name=".vistas.InstruccionesMainActivity"
             android:theme="@style/SinActionBar" />

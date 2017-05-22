@@ -1,13 +1,16 @@
 <resources>
     <string name="app_name">SmartU</string>
+    <!--Instrucciones de la app-->
     <string name="descripcion_instrucciones_main">En el menú principal encontrarás las opciones más importantes de la aplicación.</string>
-    <string name="descripcion_instrucciones_menu">"Pulsando en el icono del menú en la esquina superior izquierda o deslizando el dedo desde el lateral izquierdo hacia el centro de la pantalla podrás abrir el menú lateral en cualquier sección de la aplicación. "</string>
+    <string name="descripcion_instrucciones_menu">Pulsando en el icono del menú en la esquina superior izquierda o deslizando el dedo desde el lateral izquierdo hacia el centro de la pantalla podrás abrir el menú lateral en cualquier sección de la aplicación.</string>
     <string name="instructions_description">Instrucciones. Opción para volver a visualizar las instrucciones de la aplicación. Botón.</string>
     <string name="menu_main">Menú principal</string>
-    <string name="menu_lateral">Menú lateral</string>
+    <!-- Titulos de activities-->
     <string name="title_activity_login">Inicia Sesión</string>
+    <string name="title_activity_main">Muro</string>
+    <string name="title_activity_bottom_navigation">Menu de pestañas</string>
 
-    <!-- Strings related to login -->
+    <!-- Strings relacionados con el login -->
     <string name="prompt_email">Email</string>
     <string name="login_password">Contraseña</string>
     <string name="btn_login">INICIA SESIÓN</string>
@@ -15,20 +18,16 @@
     <string name="error_email_incorrecto">El email es incorrecto</string>
     <string name="error_password_incorrecto">La contraseña es incorrecta</string>
     <string name="error_campo_obligatorio">Campo obligatorio</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="title_activity_main">Proyectos Recientes</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="menu_lateral">Menú lateral</string>
+    <string name="openDrawer">Abrir Menu lateral</string>
+    <string name="closeDrawer">Cerrar Menu lateral</string>
 
-    <string name="action_settings">Settings</string>
-    <string name="openDrawer">Abrir Menu</string>
-    <string name="closeDrawer">Cerrar Menu</string>
-    <string name="title_activity_bottom_navigation">BottomNavigation</string>
-    <string name="proyectos_recientes">Proyectos Recientes</string>
-    <string name="proyectos_mapa">Mapa</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="inicio_anonimo">Inicio anónimo</string>
+    <string name="action_settings">Opciones</string>
+
+    <string name="muro">Muro</string>
+    <string name="muro_filtro_geografico">Mapa</string>
+    <string name="muro_filtro_interes">Intereses</string>
+    <string name="nuevo_comentario">Nuevo comentario</string>
+
 </resources>

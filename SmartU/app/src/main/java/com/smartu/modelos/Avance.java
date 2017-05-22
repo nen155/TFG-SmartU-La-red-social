@@ -1,19 +1,22 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
-import android.os.Parcelable;
+
+import java.util.Date;
 
 /**
- * Created by Emilio Chica Jiménez on 18/05/2017.
+ * Created by Emilio Chica Jiménez on 19/05/2017.
  */
 
-public class Especialidad implements Parcelable {
+public class Avance extends Publicacion {
     private int id;
+    private Date fecha;
     private String nombre;
     private String descripcion;
 
-    public Especialidad(int id, String nombre, String descripcion) {
+    public Avance(int id, Date fecha, String nombre, String descripcion) {
         this.id = id;
+        this.fecha = fecha;
         this.nombre = nombre;
         this.descripcion = descripcion;
     }
@@ -24,6 +27,14 @@ public class Especialidad implements Parcelable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
     public String getNombre() {
@@ -42,21 +53,23 @@ public class Especialidad implements Parcelable {
         this.descripcion = descripcion;
     }
 
-    protected Especialidad(Parcel in) {
+    protected Avance(Parcel in) {
         id = in.readInt();
         nombre = in.readString();
         descripcion = in.readString();
+        fecha = new Date(in.readLong());
+
     }
 
-    public static final Parcelable.Creator<Especialidad> CREATOR = new Parcelable.Creator<Especialidad>() {
+    public static final Creator<Avance> CREATOR = new Creator<Avance>() {
         @Override
-        public Especialidad createFromParcel(Parcel in) {
-            return new Especialidad(in);
+        public Avance createFromParcel(Parcel in) {
+            return new Avance(in);
         }
 
         @Override
-        public Especialidad[] newArray(int size) {
-            return new Especialidad[size];
+        public Avance[] newArray(int size) {
+            return new Avance[size];
         }
     };
 
@@ -70,6 +83,6 @@ public class Especialidad implements Parcelable {
         dest.writeInt(id);
         dest.writeString(nombre);
         dest.writeString(descripcion);
+        dest.writeLong(fecha.getTime());
     }
-
 }

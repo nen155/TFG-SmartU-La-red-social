@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     //Hebra que va a comprobar el usuario y contraseña
     private HLogin hLogin = null;
 
-    // UI references.
+    // Referencias a la UI.
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -73,14 +73,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button inicioAnonimo = (Button) findViewById(R.id.btn_inicio_anonimo);
-        inicioAnonimo.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     /**
