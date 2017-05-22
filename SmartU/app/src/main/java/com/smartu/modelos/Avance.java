@@ -1,7 +1,9 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -13,13 +15,34 @@ public class Avance extends Publicacion {
     private Date fecha;
     private String nombre;
     private String descripcion;
+    private ArrayList<Multimedia> misArchivos;
 
-    public Avance(int id, Date fecha, String nombre, String descripcion) {
+    public Avance(int id, Date fecha, String nombre, String descripcion, ArrayList<Multimedia> misArchivos) {
         this.id = id;
         this.fecha = fecha;
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.misArchivos = misArchivos;
     }
+
+    protected Avance(Parcel in) {
+        id = in.readInt();
+        nombre = in.readString();
+        descripcion = in.readString();
+        misArchivos = in.createTypedArrayList(Multimedia.CREATOR);
+    }
+
+    public static final Creator<Avance> CREATOR = new Creator<Avance>() {
+        @Override
+        public Avance createFromParcel(Parcel in) {
+            return new Avance(in);
+        }
+
+        @Override
+        public Avance[] newArray(int size) {
+            return new Avance[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -53,25 +76,13 @@ public class Avance extends Publicacion {
         this.descripcion = descripcion;
     }
 
-    protected Avance(Parcel in) {
-        id = in.readInt();
-        nombre = in.readString();
-        descripcion = in.readString();
-        fecha = new Date(in.readLong());
-
+    public ArrayList<Multimedia> getMisArchivos() {
+        return misArchivos;
     }
 
-    public static final Creator<Avance> CREATOR = new Creator<Avance>() {
-        @Override
-        public Avance createFromParcel(Parcel in) {
-            return new Avance(in);
-        }
-
-        @Override
-        public Avance[] newArray(int size) {
-            return new Avance[size];
-        }
-    };
+    public void setMisArchivos(ArrayList<Multimedia> misArchivos) {
+        this.misArchivos = misArchivos;
+    }
 
     @Override
     public int describeContents() {
@@ -83,6 +94,6 @@ public class Avance extends Publicacion {
         dest.writeInt(id);
         dest.writeString(nombre);
         dest.writeString(descripcion);
-        dest.writeLong(fecha.getTime());
+        dest.writeTypedList(misArchivos);
     }
 }

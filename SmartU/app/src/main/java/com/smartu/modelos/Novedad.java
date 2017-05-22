@@ -1,6 +1,7 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Date;
 
@@ -13,30 +14,27 @@ public class Novedad extends Publicacion {
     private Date fecha;
     private String nombre;
     private String descripcion;
-    private String detalle;
-    private int idElemento;
-    private String tipo;
-    private String nombreElemento;
+    private Usuario usuario;
+    private Proyecto proyecto;
 
     public Novedad() {
     }
 
-    public Novedad(int id, Date fecha, String nombre, String descripcion) {
+    public Novedad(int id, Date fecha, String nombre, String descripcion, Usuario usuario, Proyecto proyecto) {
         this.id = id;
         this.fecha = fecha;
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.usuario = usuario;
+        this.proyecto = proyecto;
     }
-
 
     protected Novedad(Parcel in) {
         id = in.readInt();
         nombre = in.readString();
         descripcion = in.readString();
-        detalle = in.readString();
-        idElemento = in.readInt();
-        tipo = in.readString();
-        nombreElemento = in.readString();
+        usuario = in.readParcelable(Usuario.class.getClassLoader());
+        proyecto = in.readParcelable(Proyecto.class.getClassLoader());
     }
 
     public static final Creator<Novedad> CREATOR = new Creator<Novedad>() {
@@ -83,38 +81,21 @@ public class Novedad extends Publicacion {
         this.descripcion = descripcion;
     }
 
-    public String getDetalle() {
-        return detalle;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setDetalle(String detalle) {
-        this.detalle = detalle;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public int getIdElemento() {
-        return idElemento;
+    public Proyecto getProyecto() {
+        return proyecto;
     }
 
-    public void setIdElemento(int idElemento) {
-        this.idElemento = idElemento;
+    public void setProyecto(Proyecto proyecto) {
+        this.proyecto = proyecto;
     }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getNombreElemento() {
-        return nombreElemento;
-    }
-
-    public void setNombreElemento(String nombreElemento) {
-        this.nombreElemento = nombreElemento;
-    }
-
 
     @Override
     public int describeContents() {
@@ -126,9 +107,7 @@ public class Novedad extends Publicacion {
         dest.writeInt(id);
         dest.writeString(nombre);
         dest.writeString(descripcion);
-        dest.writeString(detalle);
-        dest.writeInt(idElemento);
-        dest.writeString(tipo);
-        dest.writeString(nombreElemento);
+        dest.writeParcelable(usuario, flags);
+        dest.writeParcelable(proyecto, flags);
     }
 }

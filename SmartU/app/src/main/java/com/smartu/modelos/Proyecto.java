@@ -28,6 +28,9 @@ public class Proyecto extends Publicacion {
     private ArrayList<Hashtag> misHashtag;
     private ArrayList<Avance> misAvances;
 
+    public Proyecto(){
+
+    }
     public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion, Date fechaFinalizacion, String localizacion, int buenaIdea, String web,Usuario usuario) {
         this.id = id;
         this.nombre = nombre;

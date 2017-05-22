@@ -62,7 +62,8 @@ public class SplashScreenActivity extends AppCompatActivity {
             //Miro el momento en el que comienzo a cargar
             start = System.currentTimeMillis();
             //Cojo el resultado en un String
-            String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"","GET");
+            String resultado=null;
+//            String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"","GET");
             JSONObject res =null;
             try {
                 if(resultado !=null) {

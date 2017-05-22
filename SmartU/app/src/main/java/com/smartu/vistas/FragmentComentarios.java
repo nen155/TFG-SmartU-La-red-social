@@ -20,9 +20,6 @@ import java.util.ArrayList;
 
 /**
  * Una subclase simple {@link Fragment}.
- * Las Activities que lo contentgan deben de implementar
- * {@link OnComentarioSelectedListener} interfaz
- * para manejar la interacción de eventos.
  * Usa el método factoría {@link FragmentComentarios#newInstance} para
  * crear una instancia de este fragmento.
  */
@@ -33,7 +30,6 @@ public class FragmentComentarios extends Fragment {
     private static final String ARG_COMENTARIOS = "comentarios";
     private RecyclerView recyclerViewComentarios;
 
-    private OnComentarioSelectedListener mListener;
 
     public FragmentComentarios() {
         // Constructor vacío es necesario
@@ -80,45 +76,19 @@ public class FragmentComentarios extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //Si tengo datos los asigno mediante el adapter
         if(comentarios.size()>0) {
-                recyclerViewComentarios.setAdapter(new AdapterComentario(getContext(), comentarios,mListener));
-        }
-    }
-
-
-    public void onButtonPressed(Comentario comentario) {
-        if (mListener != null) {
-            mListener.onComentarioSeleccionado(comentario);
+                recyclerViewComentarios.setAdapter(new AdapterComentario(getContext(), comentarios));
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnComentarioSelectedListener) {
-            mListener = (OnComentarioSelectedListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " debe implementar OnNovedadSelectedListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
     }
 
-    /**
-     * Esta interfaz debe ser implementada por las activities que contienen este
-     * fragment para permitir una interacción con este fragment y comunicar a
-     * a la activity y potencialmente otros fragments contenidos en esta
-     * activity.
-     * <p>
-     * Referencias a la lección Android Training <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnComentarioSelectedListener {
-        void onComentarioSeleccionado(Comentario comentario);
-    }
 }

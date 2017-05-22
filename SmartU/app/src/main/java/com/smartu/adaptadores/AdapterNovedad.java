@@ -6,28 +6,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.smartu.R;
 import com.smartu.modelos.Novedad;
-import com.smartu.vistas.FragmentNovedades;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 public class AdapterNovedad extends RecyclerView.Adapter<AdapterNovedad.ViewHolder> {
 	private Context context;
 	private ArrayList<Novedad> novedades;
-	private FragmentNovedades.OnNovedadSelectedListener onNovedadSelectedListener;
 	private Novedad novedad;
 
 
-	public AdapterNovedad(Context context, ArrayList<Novedad> items, FragmentNovedades.OnNovedadSelectedListener onNovedadSelectedListener) {
+	public AdapterNovedad(Context context, ArrayList<Novedad> items) {
 		super();
 		this.context = context;
 		this.novedades = items;
-		this.onNovedadSelectedListener = onNovedadSelectedListener;
 	}
 
 	//Creating a ViewHolder which extends the RecyclerView View Holder
@@ -35,17 +34,17 @@ public class AdapterNovedad extends RecyclerView.Adapter<AdapterNovedad.ViewHold
 
 	public static class ViewHolder extends RecyclerView.ViewHolder {
 
-		TextView nombreProyecto;
-		TextView descripcionProyecto;
-		ImageView imgProyecto;
-		Button nombreUsuario;
+		TextView nombreNovedad;
+		TextView descripcionNovedad;
+		TextView fechaNovedad;
+		Button nombreUsuarioOProyecto;
 
 		public ViewHolder(View itemView, int viewType) {
 			super(itemView);
-			nombreProyecto = (TextView) itemView.findViewById(R.id.nombre_usuario);
-			descripcionProyecto = (TextView) itemView.findViewById(R.id.descripcion_proyecto);
-			imgProyecto = (ImageView) itemView.findViewById(R.id.img_proyecto);
-			nombreUsuario = (Button) itemView.findViewById(R.id.nombre_usuario_proyecto);
+			nombreNovedad = (TextView) itemView.findViewById(R.id.nombre_usuario);
+			descripcionNovedad = (TextView) itemView.findViewById(R.id.descripcion_novedad);
+			fechaNovedad = (TextView) itemView.findViewById(R.id.fecha_novedad);
+			nombreUsuarioOProyecto = (Button) itemView.findViewById(R.id.nombre_usuario_o_proyecto);
 
 		}
 
@@ -64,18 +63,41 @@ public class AdapterNovedad extends RecyclerView.Adapter<AdapterNovedad.ViewHold
 	public void onBindViewHolder(AdapterNovedad.ViewHolder holder, int position) {
 		novedad = (Novedad)this.novedades.get(position);
 
-		holder.nombreProyecto.setText(novedad.getNombre());
-		holder.descripcionProyecto.setText(novedad.getDescripcion());
+		holder.nombreNovedad.setText(novedad.getNombre());
+		holder.descripcionNovedad.setText(novedad.getDescripcion());
+		Date fecha = novedad.getFecha();
+		if (fecha != null) {
+			Date tiempo = new Date(fecha.getTime() - new Date().getTime());
+			Calendar calendar = GregorianCalendar.getInstance();
+			calendar.setTime(tiempo);
+			int horas = calendar.get(Calendar.HOUR);
+			String hace = "Hace " + horas + " horas";
+			holder.fechaNovedad.setText(hace);
+		}
+		String textoBoton="";
+		if(novedad.getUsuario()!=null)
+			textoBoton=novedad.getUsuario().getNombre();
+		else if(novedad.getProyecto()!=null)
+			textoBoton=novedad.getProyecto().getNombre();
+		holder.nombreUsuarioOProyecto.setText(textoBoton);
 
-		holder.descripcionProyecto.setOnClickListener(cargaProyecto());
-		holder.nombreProyecto.setOnClickListener(cargaProyecto());
 
-		holder.nombreUsuario.setOnClickListener(new View.OnClickListener() {
+		holder.nombreNovedad.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				/*Intent intent = new Intent(context,UsuarioActivity.class);
-				intent.putExtra("usuario",proyecto.getUsuario());
-				startActivity(intent);*/
+				cargaElemento();
+			}
+		});
+		holder.descripcionNovedad.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				cargaElemento();
+			}
+		});
+		holder.nombreUsuarioOProyecto.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				cargaElemento();
 			}
 		});
 	}
@@ -91,14 +113,18 @@ public class AdapterNovedad extends RecyclerView.Adapter<AdapterNovedad.ViewHold
 	}
 
 
-	private View.OnClickListener cargaProyecto(){
-		return new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				onNovedadSelectedListener.onNovedadSeleccionado(novedad);
+	private void cargaElemento(){
+			if(novedad.getUsuario()!=null){
+				/*Intent intent = new Intent(context,UsuarioActivity.class);
+				intent.putExtra("usuario",novedad.getUsuario());
+				startActivity(intent);*/
+			}else if(novedad.getProyecto()!=null) {
+				/*Intent intent = new Intent(context,ProyectoActivity.class);
+				intent.putExtra("proyecto",novedad.getProyecto());
+				startActivity(intent);*/
 			}
-		};
 	}
+
 	public void replaceData(ArrayList<Novedad> items) {
 		setList(items);
 		notifyDataSetChanged();

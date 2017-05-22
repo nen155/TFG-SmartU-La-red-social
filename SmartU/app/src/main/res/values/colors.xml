@@ -19,4 +19,7 @@
     <color name="colorBackgroundCardView">#f5f5f6</color>
     <!--Se usa en el splash_screen de fondo-->
     <color name="white">#fff</color>
+    <!--Lo usan los botones flotantes de filtro-->
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="white_pressed">#f1f1f1</color>
 </resources>

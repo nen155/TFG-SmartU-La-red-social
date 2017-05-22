@@ -29,5 +29,6 @@
     <string name="muro_filtro_geografico">Mapa</string>
     <string name="muro_filtro_interes">Intereses</string>
     <string name="nuevo_comentario">Nuevo comentario</string>
+    <string name="no_seguir">Dejar de seguir</string>
 
 </resources>

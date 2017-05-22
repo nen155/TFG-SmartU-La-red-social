@@ -18,6 +18,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterNovedad;
 import com.smartu.modelos.Novedad;
+import com.smartu.modelos.Proyecto;
+import com.smartu.modelos.Usuario;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,9 +29,6 @@ import java.util.ArrayList;
 
 /**
  * Una subclase simple {@link Fragment}.
- * Las Activities que lo contentgan deben de implementar
- * {@link OnNovedadSelectedListener} interfaz
- * para manejar la interacción de eventos.
  * Usa el método factoría {@link FragmentNovedades#newInstance} para
  * crear una instancia de este fragmento.
  */
@@ -43,8 +42,6 @@ public class FragmentNovedades extends Fragment {
     private RecyclerView recyclerViewNovedades;
     //Necesario para recibir el Intent del servicio de FCM
     private BroadcastReceiver mNotificationsReceiver;
-    //Cuando selecciono una novedad tengo un escuchador para pasarle la información a la Activity
-    private OnNovedadSelectedListener mListener;
     //El adaptador de novedades para el RecyclerView
     private AdapterNovedad adapterNovedad;
     //Muestra el mensaje de que no hay novedades
@@ -85,19 +82,23 @@ public class FragmentNovedades extends Fragment {
                 String nombre = intent.getStringExtra("nombre");
                 String description = intent.getStringExtra("descripcion");
                 String fecha = intent.getStringExtra("fecha");
-                String idelemento = intent.getStringExtra("idelemento");
-                String tipo = intent.getStringExtra("tipo");
-                String detalle = intent.getStringExtra("detalle");
-                String nombreelemento = intent.getStringExtra("nombreelemento");
+                String idusuario = intent.getStringExtra("idusuario");
+                String idproyecto = intent.getStringExtra("idproyecto");
+
 
                 Novedad novedad = new Novedad();
                 novedad.setNombre(nombre);
                 novedad.setDescripcion(description);
-                novedad.setDetalle(detalle);
-                novedad.setNombreElemento(nombreelemento);
-                novedad.setTipo(tipo);
-
-                novedad.setIdElemento(Integer.parseInt(idelemento));
+                if(idusuario.compareTo("0")!=0) {
+                    Usuario u = new Usuario();
+                    u.setId(Integer.parseInt(idusuario));
+                    novedad.setUsuario(u);
+                }
+                if(idproyecto.compareTo("0")!=0) {
+                    Proyecto p = new Proyecto();
+                    p.setId(Integer.parseInt(idproyecto));
+                    novedad.setProyecto(p);
+                }
 
                 try {
                     novedad.setFecha(SimpleDateFormat.getInstance().parse(fecha));
@@ -118,7 +119,7 @@ public class FragmentNovedades extends Fragment {
         recyclerViewNovedades = (RecyclerView) fragmen.findViewById(R.id.recyclerMuro);
         mNoNovedadesView = (LinearLayout) fragmen.findViewById(R.id.noMessages);
 
-        adapterNovedad = new AdapterNovedad(getContext(), novedades,mListener);
+        adapterNovedad = new AdapterNovedad(getContext(), novedades);
 
         recyclerViewNovedades.setAdapter(adapterNovedad);
 
@@ -214,40 +215,15 @@ public class FragmentNovedades extends Fragment {
         adapterNovedad.addItem(novedad);
     }
 
-    public void onButtonPressed(Novedad novedad) {
-        if (mListener != null) {
-            mListener.onNovedadSeleccionado(novedad);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnNovedadSelectedListener) {
-            mListener = (OnNovedadSelectedListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " debe implementar OnNovedadSelectedListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * Esta interfaz debe ser implementada por las activities que contienen este
-     * fragment para permitir una interacción con este fragment y comunicar a
-     * a la activity y potencialmente otros fragments contenidos en esta
-     * activity.
-     * <p>
-     * Referencias a la lección Android Training <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnNovedadSelectedListener {
-        void onNovedadSeleccionado(Novedad novedad);
-    }
 }

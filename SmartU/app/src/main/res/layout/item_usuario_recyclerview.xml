@@ -55,18 +55,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.7"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/especialidad_usuario"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="left|center_vertical"
-                    android:padding="10dp"
-                    android:text="Especialidad"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
                 <TextView
                     android:id="@+id/status_usuario"
                     android:layout_width="match_parent"
@@ -77,6 +65,20 @@
                     android:text="Status"
                     android:textSize="15sp"
                     android:textStyle="bold" />
+
+                <com.ns.developer.tagview.widget.TagCloudLinkView
+                    android:id="@+id/especialidad_usuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left|center_vertical"
+                    android:padding="10dp"
+                    app:isDeletable="false"
+                    app:tagLayoutColor="@color/colorPrimaryLight"
+                    app:tagTextSize="8sp"
+                    app:tagTextColor="@color/white" />
+
+
             </LinearLayout>
 
 

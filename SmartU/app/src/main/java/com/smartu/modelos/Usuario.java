@@ -12,6 +12,7 @@ public class Usuario extends Publicacion {
     private int id;
     private String nombre;
     private String apellidos;
+    private String user;
     private String email;
     private String password;
     private int nPuntos;
@@ -48,10 +49,11 @@ public class Usuario extends Publicacion {
         this.password = password;
     }
 
-    public Usuario(int id, String nombre, String apellidos, String email, String password, int nPuntos, String CIF, String localizacion, String biografia, String web, boolean verificado, boolean admin, boolean activo) {
+    public Usuario(int id, String nombre,String user, String apellidos, String email, String password, int nPuntos, String CIF, String localizacion, String biografia, String web, boolean verificado, boolean admin, boolean activo) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
+        this.user=user;
         this.email = email;
         this.password = password;
         this.nPuntos = nPuntos;
@@ -68,6 +70,7 @@ public class Usuario extends Publicacion {
         id = in.readInt();
         nombre = in.readString();
         apellidos = in.readString();
+        user = in.readString();
         email = in.readString();
         password = in.readString();
         nPuntos = in.readInt();
@@ -266,6 +269,14 @@ public class Usuario extends Publicacion {
 
     public void setMiStatus(Status miStatus) {
         this.miStatus = miStatus;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     @Override

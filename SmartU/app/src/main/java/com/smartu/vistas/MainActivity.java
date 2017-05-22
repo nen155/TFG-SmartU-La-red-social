@@ -4,28 +4,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.smartu.R;
-import com.smartu.modelos.Avance;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Novedad;
 import com.smartu.modelos.Proyecto;
-import com.smartu.modelos.Publicacion;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.SliderMenu;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements FragmentNovedades.OnNovedadSelectedListener {
+public class MainActivity extends AppCompatActivity implements FragmentProyectos.OnProyectoSelectedListener, FragmentUsuarios.OnUsuarioSelectedListener {
 
     private static ArrayList<Proyecto> proyectos;
     private static ArrayList<Novedad> novedades;
     private static ArrayList<Usuario> usuarios;
     private static ArrayList<Comentario> comentarios;
+    private FloatingActionsMenu filtros;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,65 @@ public class MainActivity extends AppCompatActivity implements FragmentNovedades
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(proyectos));
         transaction.commit();
+
+
+        filtros = (FloatingActionsMenu) findViewById(R.id.filtros);
+        FloatingActionButton filtro_novedades = (FloatingActionButton) findViewById(R.id.filtro_novedades);
+        filtro_novedades.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filtrar(v);
+            }
+        });
+        FloatingActionButton filtro_comentarios = (FloatingActionButton) findViewById(R.id.filtro_comentarios);
+        filtro_comentarios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filtrar(v);
+            }
+        });
+        FloatingActionButton filtro_proyectos = (FloatingActionButton) findViewById(R.id.filtro_proyectos);
+        filtro_proyectos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filtrar(v);
+            }
+        });
+        FloatingActionButton filtro_usuarios = (FloatingActionButton) findViewById(R.id.filtro_usuarios);
+        filtro_usuarios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filtrar(v);
+            }
+        });
+
+    }
+
+    private void filtrar(View v){
+        Fragment swicthTo=null;
+        switch (v.getId()){
+            case R.id.filtro_novedades:
+                swicthTo=FragmentNovedades.newInstance(novedades);
+                Toast.makeText(getApplicationContext(),"Novedades",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.filtro_comentarios:
+                swicthTo=FragmentComentarios.newInstance(comentarios);
+                Toast.makeText(getApplicationContext(),"Comentarios",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.filtro_proyectos:
+                swicthTo=FragmentProyectos.newInstance(proyectos);
+                Toast.makeText(getApplicationContext(),"Proyectos",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.filtro_usuarios:
+                swicthTo=FragmentUsuarios.newInstance(usuarios);
+                Toast.makeText(getApplicationContext(),"Usuarios",Toast.LENGTH_SHORT).show();
+                break;
+        }
+        if(swicthTo!=null){
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_frame,swicthTo);
+            transaction.commit();
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -79,24 +141,16 @@ public class MainActivity extends AppCompatActivity implements FragmentNovedades
     };
 
     @Override
-    public void onNovedadSeleccionado(Novedad novedad) {
-        Intent intent=null;
-       /* if ( publicacion instanceof Proyecto) {
-            intent = new Intent(getApplicationContext(),ProyectoActivity.class);
-            intent.putExtra("proyecto",(Proyecto)publicacion);
-        } else if (publicacion instanceof Comentario){
+    public void onProyectoSeleccionado(Proyecto proyecto) {
+        /*Intent intent = new Intent(getApplicationContext(),ProyectoActivity.class);
+        intent.putExtra("proyecto",proyecto);
+        startActivity(intent);*/
+    }
 
-            intent = new Intent(getApplicationContext(),ComentarioActivity.class);
-            intent.putExtra("proyecto",(Comentario)publicacion);
-        } else if(publicacion instanceof Avance){
-
-            /*intent = new Intent(getApplicationContext(),AvanceActivity.class);
-            intent.putExtra("proyecto",(Avance)publicacion);
-        } else if(publicacion instanceof Usuario){
-
-            /*intent = new Intent(getApplicationContext(),UsuarioActivity.class);
-            intent.putExtra("proyecto",(Usuario)publicacion);
-        }*/
-        startActivity(intent);
+    @Override
+    public void onUsuarioSeleccionado(Usuario usuario) {
+        /*Intent intent = new Intent(getApplicationContext(),UsuarioActivity.class);
+        intent.putExtra("proyecto",usuario);
+        startActivity(intent);*/
     }
 }

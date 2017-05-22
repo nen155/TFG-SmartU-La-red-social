@@ -65,7 +65,7 @@
                     android:textColor="@color/colorPrimaryLight" />
 
                 <ImageView
-                    android:id="@+id/idea_proyecto"
+                    android:id="@+id/img_idea_proyecto"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_weight="0.1"
