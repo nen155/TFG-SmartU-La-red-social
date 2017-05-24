@@ -5,7 +5,7 @@
     tools:context="com.smartu.vistas.MainActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerMuro"
+        android:id="@+id/recyclerUsuarios"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="auto_fit"

@@ -1,6 +1,7 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,49 +10,65 @@ import java.util.Date;
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Proyecto extends Publicacion {
+public class Proyecto implements Parcelable {
     private int id;
     private String nombre;
     private String descripcion;
     private Date fechaCreacion;
     private Date fechaFinalizacion;
+    private String imagenDestacada;
     private String localizacion;
+    private String coordenadas;
     private int buenaIdea;
     private String web;
-    private Usuario usuario;
+    private Usuario usuario=null;
     //Contenedores de los que es propietario
-    private ArrayList<Comentario> misComentarios;
-    private ArrayList<Area> misAreas;
-    private ArrayList<Especialidad> especialidadesNecesarias;
-    private ArrayList<Multimedia> misArchivos;
-    private ArrayList<RedSocial> misRedesSociales;
-    private ArrayList<Hashtag> misHashtag;
-    private ArrayList<Avance> misAvances;
+    private ArrayList<Comentario> misComentarios=null;
+    private ArrayList<Area> misAreas=null;
+    private ArrayList<Especialidad> especialidadesNecesarias=null;
+    private ArrayList<Multimedia> misArchivos=null;
+    private ArrayList<RedSocial> misRedesSociales=null;
+    private ArrayList<Hashtag> misHashtag=null;
+    private ArrayList<Avance> misAvances=null;
 
     public Proyecto(){
-
+        misComentarios =new ArrayList<>();
+        misAreas =new ArrayList<>();
+        especialidadesNecesarias =new ArrayList<>();
+        misRedesSociales = new ArrayList<>();
+        misArchivos =new ArrayList<>();
+        misHashtag =new ArrayList<>();
+        misAvances =new ArrayList<>();
     }
-    public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion, Date fechaFinalizacion, String localizacion, int buenaIdea, String web,Usuario usuario) {
+    public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion,String imagenDestacada, Date fechaFinalizacion, String localizacion, int buenaIdea, String web,Usuario usuario) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.imagenDestacada =imagenDestacada;
         this.fechaCreacion = fechaCreacion;
         this.fechaFinalizacion = fechaFinalizacion;
         this.localizacion = localizacion;
         this.buenaIdea = buenaIdea;
         this.web = web;
         this.usuario = usuario;
+        misComentarios =new ArrayList<>();
+        misAreas =new ArrayList<>();
+        especialidadesNecesarias =new ArrayList<>();
+        misArchivos =new ArrayList<>();
+        misHashtag =new ArrayList<>();
+        misAvances =new ArrayList<>();
     }
+
 
     protected Proyecto(Parcel in) {
         id = in.readInt();
         nombre = in.readString();
         descripcion = in.readString();
+        imagenDestacada = in.readString();
         localizacion = in.readString();
+        coordenadas = in.readString();
         buenaIdea = in.readInt();
         web = in.readString();
-        fechaCreacion = new Date(in.readLong());
-        fechaFinalizacion = new Date(in.readLong());
         usuario = in.readParcelable(Usuario.class.getClassLoader());
         misComentarios = in.createTypedArrayList(Comentario.CREATOR);
         misAreas = in.createTypedArrayList(Area.CREATOR);
@@ -60,6 +77,8 @@ public class Proyecto extends Publicacion {
         misRedesSociales = in.createTypedArrayList(RedSocial.CREATOR);
         misHashtag = in.createTypedArrayList(Hashtag.CREATOR);
         misAvances = in.createTypedArrayList(Avance.CREATOR);
+        fechaCreacion = new Date(in.readLong());
+        fechaFinalizacion = new Date(in.readLong());
     }
 
     public static final Creator<Proyecto> CREATOR = new Creator<Proyecto>() {
@@ -146,6 +165,22 @@ public class Proyecto extends Publicacion {
         this.usuario = usuario;
     }
 
+    public String getImagenDestacada() {
+        return imagenDestacada;
+    }
+
+    public void setImagenDestacada(String imagenDestacada) {
+        this.imagenDestacada = imagenDestacada;
+    }
+
+    public String getCoordenadas() {
+        return coordenadas;
+    }
+
+    public void setCoordenadas(String coordenadas) {
+        this.coordenadas = coordenadas;
+    }
+
     public ArrayList<Comentario> getMisComentarios() {
         return misComentarios;
     }
@@ -213,11 +248,11 @@ public class Proyecto extends Publicacion {
         dest.writeInt(id);
         dest.writeString(nombre);
         dest.writeString(descripcion);
+        dest.writeString(imagenDestacada);
         dest.writeString(localizacion);
+        dest.writeString(coordenadas);
         dest.writeInt(buenaIdea);
         dest.writeString(web);
-        dest.writeLong(fechaCreacion.getTime());
-        dest.writeLong(fechaFinalizacion.getTime());
         dest.writeParcelable(usuario, flags);
         dest.writeTypedList(misComentarios);
         dest.writeTypedList(misAreas);
@@ -226,5 +261,7 @@ public class Proyecto extends Publicacion {
         dest.writeTypedList(misRedesSociales);
         dest.writeTypedList(misHashtag);
         dest.writeTypedList(misAvances);
+        dest.writeLong(fechaCreacion.getTime());
+        dest.writeLong(fechaFinalizacion.getTime());
     }
 }

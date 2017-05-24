@@ -30,6 +30,7 @@ public class Comentario extends Publicacion {
         descripcion = in.readString();
         usuario = in.readParcelable(Usuario.class.getClassLoader());
         proyecto = in.readParcelable(Proyecto.class.getClassLoader());
+        fecha = new Date(in.readLong());
     }
 
     public static final Creator<Comentario> CREATOR = new Creator<Comentario>() {
@@ -95,5 +96,6 @@ public class Comentario extends Publicacion {
         dest.writeString(descripcion);
         dest.writeParcelable(usuario, flags);
         dest.writeParcelable(proyecto, flags);
+        dest.writeLong(fecha.getTime());
     }
 }

@@ -12,7 +12,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.smartu.vistas.FragmentNovedades;
+import com.smartu.vistas.FragmentNotificaciones;
 import com.smartu.vistas.MainActivity;
 
 import java.util.Map;
@@ -32,7 +32,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNewPromoBroadcast(RemoteMessage remoteMessage) {
-        Intent intent = new Intent(FragmentNovedades.ACTION_NOTIFY_NEW_NOVEDAD);
+        Intent intent = new Intent(FragmentNotificaciones.ACTION_NOTIFY_NEW_NOTIFICACION);
         intent.putExtra("nombre", remoteMessage.getNotification().getTitle());
         intent.putExtra("descripcion", remoteMessage.getNotification().getBody());
         intent.putExtra("fecha", remoteMessage.getData().get("fecha"));

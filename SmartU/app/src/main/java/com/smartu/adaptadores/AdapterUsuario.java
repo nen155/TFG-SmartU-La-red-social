@@ -3,7 +3,6 @@ package com.smartu.adaptadores;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,19 +15,12 @@ import android.widget.Toast;
 import com.ns.developer.tagview.entity.Tag;
 import com.ns.developer.tagview.widget.TagCloudLinkView;
 import com.smartu.R;
-import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Especialidad;
-import com.smartu.modelos.Novedad;
-import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
-import com.smartu.utilidades.ControladorPreferencias;
 import com.smartu.utilidades.Sesion;
 import com.smartu.vistas.FragmentUsuarios;
-import com.smartu.vistas.InstruccionesMainActivity;
 import com.smartu.vistas.LoginActivity;
-import com.smartu.vistas.MainActivity;
-import com.smartu.vistas.SplashScreenActivity;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -90,12 +82,12 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     @Override
     public void onBindViewHolder(final AdapterUsuario.ViewHolder holder, int position) {
         usuario = (Usuario) this.usuarios.get(position);
-        Picasso.with(context).load(usuario.getMisArchivos().get(0).getUrl()).into(holder.imgUsuario);
+        Picasso.with(context).load(usuario.getImagenDestacada()).into(holder.imgUsuario);
         holder.nombreUsuario.setText(usuario.getNombre());
         for (Especialidad e : usuario.getMisEspecialidades()) {
             holder.especialidadUsuario.add(new Tag(e.getId(), e.getNombre()));
         }
-        holder.seguidoresUsuario.setText(String.valueOf(usuario.getMisSeguidores().size()));
+        holder.seguidoresUsuario.setText(String.valueOf(usuario.getMisSeguidos().size()));
         holder.statusUsuario.setText(usuario.getMiStatus().getNombre());
 
         holder.imgUsuario.setOnClickListener(cargaUsuario());

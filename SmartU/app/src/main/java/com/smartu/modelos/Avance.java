@@ -17,12 +17,12 @@ public class Avance extends Publicacion {
     private String descripcion;
     private ArrayList<Multimedia> misArchivos;
 
-    public Avance(int id, Date fecha, String nombre, String descripcion, ArrayList<Multimedia> misArchivos) {
+    public Avance(int id, Date fecha, String nombre, String descripcion) {
         this.id = id;
         this.fecha = fecha;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.misArchivos = misArchivos;
+        this.misArchivos = new ArrayList<>();
     }
 
     protected Avance(Parcel in) {
@@ -30,6 +30,7 @@ public class Avance extends Publicacion {
         nombre = in.readString();
         descripcion = in.readString();
         misArchivos = in.createTypedArrayList(Multimedia.CREATOR);
+        fecha = new Date(in.readLong());
     }
 
     public static final Creator<Avance> CREATOR = new Creator<Avance>() {
@@ -95,5 +96,6 @@ public class Avance extends Publicacion {
         dest.writeString(nombre);
         dest.writeString(descripcion);
         dest.writeTypedList(misArchivos);
+        dest.writeLong(fecha.getTime());
     }
 }

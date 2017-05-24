@@ -16,8 +16,8 @@ import android.widget.LinearLayout;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.smartu.R;
-import com.smartu.adaptadores.AdapterNovedad;
-import com.smartu.modelos.Novedad;
+import com.smartu.adaptadores.AdapterNotificacion;
+import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 
@@ -29,27 +29,27 @@ import java.util.ArrayList;
 
 /**
  * Una subclase simple {@link Fragment}.
- * Usa el método factoría {@link FragmentNovedades#newInstance} para
+ * Usa el método factoría {@link FragmentNotificaciones#newInstance} para
  * crear una instancia de este fragmento.
  */
-public class FragmentNovedades extends Fragment {
-    //Cuando se produzca una novedad utilizo el filtro ACTION_NOTIFY_NEW_NOVEDAD
-    public static final String ACTION_NOTIFY_NEW_NOVEDAD = "NOTIFY_NEW_NOVEDAD";
+public class FragmentNotificaciones extends Fragment {
+    //Cuando se produzca una novedad utilizo el filtro ACTION_NOTIFY_NEW_NOTIFICACION
+    public static final String ACTION_NOTIFY_NEW_NOTIFICACION = "NOTIFY_NEW_NOVEDAD";
     //ArrayList de obras para cargar y pasar cuando se cambie de Fragment
-    private static ArrayList<Novedad> novedades = new ArrayList<>();
+    private ArrayList<Notificacion> notificaciones = new ArrayList<>();
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
-    private static final String ARG_NOVEDADES = "novedades";
-    private RecyclerView recyclerViewNovedades;
+    private static final String ARG_NOTIFICACIONES = "notificaciones";
+    private RecyclerView recyclerViewNotificacion;
     //Necesario para recibir el Intent del servicio de FCM
     private BroadcastReceiver mNotificationsReceiver;
-    //El adaptador de novedades para el RecyclerView
-    private AdapterNovedad adapterNovedad;
-    //Muestra el mensaje de que no hay novedades
-    private LinearLayout mNoNovedadesView;
+    //El adaptador de notificaciones para el RecyclerView
+    private AdapterNotificacion adapterNotificacion;
+    //Muestra el mensaje de que no hay notificaciones
+    private LinearLayout mNoNotificacionView;
     //Cargo la referencia al FCM
     private final FirebaseMessaging mFCMInteractor = FirebaseMessaging.getInstance();
 
-    public FragmentNovedades() {
+    public FragmentNotificaciones() {
         // Constructor vacío es necesario
     }
 
@@ -57,13 +57,13 @@ public class FragmentNovedades extends Fragment {
      * Usar este constructor para crear una instancia de
      * este fragment con parámetros
      *
-     * @param novedades Parametro 1.
+     * @param notificaciones Parametro 1.
      * @return A devuelve una nueva instancia del fragment.
      */
-    public static FragmentNovedades newInstance(ArrayList<Novedad> novedades) {
-        FragmentNovedades fragment = new FragmentNovedades();
+    public static FragmentNotificaciones newInstance(ArrayList<Notificacion> notificaciones) {
+        FragmentNotificaciones fragment = new FragmentNotificaciones();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(ARG_NOVEDADES, novedades);
+        args.putParcelableArrayList(ARG_NOTIFICACIONES, notificaciones);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +72,7 @@ public class FragmentNovedades extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            novedades = getArguments().getParcelableArrayList(ARG_NOVEDADES);
+            notificaciones = getArguments().getParcelableArrayList(ARG_NOTIFICACIONES);
         }
         //Creo el BroadcastReceiver en su método añado al ArrayList del Adapter
         //una nueva novedad
@@ -86,26 +86,26 @@ public class FragmentNovedades extends Fragment {
                 String idproyecto = intent.getStringExtra("idproyecto");
 
 
-                Novedad novedad = new Novedad();
-                novedad.setNombre(nombre);
-                novedad.setDescripcion(description);
+                Notificacion notificacion = new Notificacion();
+                notificacion.setNombre(nombre);
+                notificacion.setDescripcion(description);
                 if(idusuario.compareTo("0")!=0) {
                     Usuario u = new Usuario();
                     u.setId(Integer.parseInt(idusuario));
-                    novedad.setUsuario(u);
+                    notificacion.setUsuario(u);
                 }
                 if(idproyecto.compareTo("0")!=0) {
                     Proyecto p = new Proyecto();
                     p.setId(Integer.parseInt(idproyecto));
-                    novedad.setProyecto(p);
+                    notificacion.setProyecto(p);
                 }
 
                 try {
-                    novedad.setFecha(SimpleDateFormat.getInstance().parse(fecha));
+                    notificacion.setFecha(SimpleDateFormat.getInstance().parse(fecha));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                guardaNovedad(novedad);
+                guardaNovedad(notificacion);
             }
         };
     }
@@ -114,14 +114,12 @@ public class FragmentNovedades extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmen =inflater.inflate(R.layout.fragment_novedades, container, false);
+        View fragmen =inflater.inflate(R.layout.fragment_notificaciones, container, false);
 
-        recyclerViewNovedades = (RecyclerView) fragmen.findViewById(R.id.recyclerMuro);
-        mNoNovedadesView = (LinearLayout) fragmen.findViewById(R.id.noMessages);
+        recyclerViewNotificacion = (RecyclerView) fragmen.findViewById(R.id.recyclerNotificaciones);
+        mNoNotificacionView = (LinearLayout) fragmen.findViewById(R.id.noMessages);
 
-        adapterNovedad = new AdapterNovedad(getContext(), novedades);
 
-        recyclerViewNovedades.setAdapter(adapterNovedad);
 
         return fragmen;
     }
@@ -129,18 +127,18 @@ public class FragmentNovedades extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
+        adapterNotificacion = new AdapterNotificacion(getContext(), notificaciones);
+        recyclerViewNotificacion.setAdapter(adapterNotificacion);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //Me subscribo y cargo las novedades si las hubiese
+        //Me subscribo y cargo las notificaciones si las hubiese
         start();
         //Escucho los Intents que me llegan con el filtro novedad
         LocalBroadcastManager.getInstance(getActivity())
-                .registerReceiver(mNotificationsReceiver, new IntentFilter(ACTION_NOTIFY_NEW_NOVEDAD));
+                .registerReceiver(mNotificationsReceiver, new IntentFilter(ACTION_NOTIFY_NEW_NOTIFICACION));
     }
 
     @Override
@@ -152,67 +150,68 @@ public class FragmentNovedades extends Fragment {
     }
 
     /**
-     * Subscribe al tema novedades y las cargo en el RecyclerView
+     * Subscribe al tema notificaciones y las cargo en el RecyclerView
      */
     public void start() {
-        subscribirseANovedades();
-        cargaNovedades();
+        subscribirseANotificaciones();
+        cargaNotificaiones();
     }
 
     /**
-     * Subscribe la aplicación al tema novedades
+     * Subscribe la aplicación al tema notificaciones
      */
-    public void subscribirseANovedades() {
-        mFCMInteractor.subscribeToTopic("novedades");
+    public void subscribirseANotificaciones() {
+        mFCMInteractor.subscribeToTopic("notificaciones");
     }
 
     /**
-     * Muestra las novedades si hubiese sino muestr mensaje sin novedades
+     * Muestra las notificaciones si hubiese sino muestr mensaje sin notificaciones
      * en el fragment
      */
-    public void cargaNovedades() {
-        if (novedades.size() > 0) {
-            muestraSinNovedades(false);
-            muestraNovedades(novedades);
+    public void cargaNotificaiones() {
+        if(notificaciones !=null)
+        if (notificaciones.size() > 0) {
+            muestraSinNotificaciones(false);
+            muestraNotificaciones(notificaciones);
         } else {
-            muestraSinNovedades(true);
+            muestraSinNotificaciones(true);
         }
 
     }
 
     /**
-     * Añade una novedad al ArrayList y la pone al principio del RecyclerView
-     * @param novedad
+     * Añade una notificacion al ArrayList y la pone al principio del RecyclerView
+     * @param notificacion
      */
-    public void guardaNovedad(Novedad novedad) {
-        novedades.add(novedad);
-        muestraSinNovedades(false);
-        addNovedadTop(novedad);
+    public void guardaNovedad(Notificacion notificacion) {
+        notificaciones.add(notificacion);
+        muestraSinNotificaciones(false);
+        addNotificacionTop(notificacion);
     }
 
     /**
-     * Reemplaza las novedades actuales en el RecyclerView por otras
-     * @param novedades
+     * Reemplaza las notificaciones actuales en el RecyclerView por otras
+     * @param notificaciones
      */
-    public void muestraNovedades(ArrayList<Novedad> novedades) {
-        adapterNovedad.replaceData(novedades);
+    public void muestraNotificaciones(ArrayList<Notificacion> notificaciones) {
+        adapterNotificacion.replaceData(notificaciones);
     }
 
     /**
-     * Cambia la visibilidad del mensaje de novedades y del RecyclerView
+     * Cambia la visibilidad del mensaje de notificaciones y del RecyclerView
      * @param empty
      */
-    public void muestraSinNovedades(boolean empty) {
-        recyclerViewNovedades.setVisibility(empty ? View.GONE : View.VISIBLE);
-        mNoNovedadesView.setVisibility(empty ? View.VISIBLE : View.GONE);
+    public void muestraSinNotificaciones(boolean empty) {
+        recyclerViewNotificacion.setVisibility(empty ? View.GONE : View.VISIBLE);
+        mNoNotificacionView.setVisibility(empty ? View.VISIBLE : View.GONE);
     }
 
     /**
-     * Añade una novedad al principio del RecyclerView
-     * @param novedad
+     * Añade una notificacion al principio del RecyclerView
+     * @param notificacion
      */
-    public void addNovedadTop(Novedad novedad) {
-        adapterNovedad.addItem(novedad);
+    public void addNotificacionTop(Notificacion notificacion) {
+        adapterNotificacion.addItem(notificacion);
     }
 
 

@@ -80,7 +80,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 	@Override
 	public void onBindViewHolder(AdapterProyecto.ViewHolder holder, int position) {
 		proyecto = (Proyecto)this.proyectos.get(position);
-		Picasso.with(context).load(proyecto.getMisArchivos().get(0).getUrl()).into(holder.imgProyecto);
+		Picasso.with(context).load(proyecto.getImagenDestacada()).into(holder.imgProyecto);
 		holder.nombreProyecto.setText(proyecto.getNombre());
 		holder.descripcionProyecto.setText(proyecto.getDescripcion());
 		holder.nombreUsuario.setText(proyecto.getUsuario().getNombre());

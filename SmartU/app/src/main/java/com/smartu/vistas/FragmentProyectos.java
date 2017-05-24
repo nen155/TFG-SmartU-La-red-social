@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterProyecto;
 import com.smartu.modelos.Proyecto;
-import com.smartu.modelos.Usuario;
 
 import java.util.ArrayList;
 
@@ -68,7 +67,7 @@ public class FragmentProyectos extends Fragment {
         // Inflate the layout for this fragment
         View fragmen =inflater.inflate(R.layout.fragment_proyectos_recientes, container, false);
 
-        recyclerViewProyectos = (RecyclerView) fragmen.findViewById(R.id.recyclerMuro);
+        recyclerViewProyectos = (RecyclerView) fragmen.findViewById(R.id.recyclerProyectos);
 
 
         return fragmen;
@@ -77,11 +76,8 @@ public class FragmentProyectos extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //Si tengo datos los asigno mediante el adapter
-        if(proyectos.size()>0) {
-                recyclerViewProyectos.setAdapter(new AdapterProyecto(getContext(), proyectos,mListener));
 
-        }
+        recyclerViewProyectos.setAdapter(new AdapterProyecto(getContext(), proyectos,mListener));
     }
 
 
@@ -98,7 +94,7 @@ public class FragmentProyectos extends Fragment {
             mListener = (OnProyectoSelectedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " debe implementar OnNovedadSelectedListener");
+                    + " debe implementar OnProyectoSelectedListener");
         }
     }
 

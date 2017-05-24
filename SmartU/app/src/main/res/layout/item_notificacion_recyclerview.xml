@@ -23,7 +23,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/nombre_novedad"
+            android:id="@+id/nombre_notificacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
@@ -35,7 +35,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/fecha_novedad"
+            android:id="@+id/fecha_notificacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -47,7 +47,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/descripcion_novedad"
+            android:id="@+id/descripcion_notificacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.smartu.modelos.Usuario;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -74,22 +75,25 @@ public class Sesion {
      */
     public static Usuario deserializaUsuario(Context context) {
         Usuario aux = null;
-        try {
-            fis = context.openFileInput("usu.bin");
-            if (fis.available() > 0) {
-                in = new ObjectInputStream(fis);
+        File file = new File("usu.bin");
+        if(file.exists()) {
+            try {
+                fis = context.openFileInput("usu.bin");
+                if (fis.available() > 0) {
+                    in = new ObjectInputStream(fis);
+                }
+                if (in != null) {
+                    aux = (Usuario) in.readObject();
+                    in.close();
+                    fis.close();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            if (in != null) {
-                aux = (Usuario) in.readObject();
-                in.close();
-                fis.close();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return aux;
     }

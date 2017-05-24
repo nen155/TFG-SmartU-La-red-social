@@ -2,5 +2,4 @@
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:src="@drawable/comentario"
-    app:srcCompat="@drawable/comentario"
     android:tint="@color/white" />

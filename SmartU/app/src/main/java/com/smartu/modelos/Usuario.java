@@ -1,6 +1,7 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Usuario extends Publicacion {
+public class Usuario extends Publicacion{
     private int id;
     private String nombre;
     private String apellidos;
@@ -20,6 +21,7 @@ public class Usuario extends Publicacion {
     private String localizacion;
     private String biografia;
     private String web;
+    private String imagenDestacada;
     private boolean verificado;
     private boolean admin;
     private boolean activo;
@@ -28,7 +30,7 @@ public class Usuario extends Publicacion {
     private ArrayList<Proyecto> misColaboraciones;
     private ArrayList<Area> misAreasInteres;
     private ArrayList<Especialidad> misEspecialidades;
-    private ArrayList<Usuario> misSeguidores;
+    private ArrayList<Usuario> misSeguidos;
     private ArrayList<RedSocial> misRedesSociales;
     private ArrayList<Multimedia> misArchivos;
     private Status miStatus;
@@ -49,21 +51,30 @@ public class Usuario extends Publicacion {
         this.password = password;
     }
 
-    public Usuario(int id, String nombre,String user, String apellidos, String email, String password, int nPuntos, String CIF, String localizacion, String biografia, String web, boolean verificado, boolean admin, boolean activo) {
+    /**
+     * Mantengo sólo 6 parámetros, los más usados para mantener la eficiencia y que a la hora de construir el objeto
+     * se haga de una manera eficiente
+     * @param id
+     * @param nombre
+     * @param user
+     * @param apellidos
+     * @param email
+     * @param imagenDestacada
+     */
+    public Usuario(int id, String nombre,String user, String apellidos, String email, String imagenDestacada) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.user=user;
         this.email = email;
-        this.password = password;
-        this.nPuntos = nPuntos;
-        this.CIF = CIF;
-        this.localizacion = localizacion;
-        this.biografia = biografia;
-        this.web = web;
-        this.verificado = verificado;
-        this.admin = admin;
-        this.activo = activo;
+        this.imagenDestacada = imagenDestacada;
+        misArchivos = new ArrayList<>();
+        misAreasInteres = new ArrayList<>();
+        misColaboraciones = new ArrayList<>();
+        misEspecialidades = new ArrayList<>();
+        misProyectos = new ArrayList<>();
+        misRedesSociales =new ArrayList<>();
+        misSeguidos = new ArrayList<>();
     }
 
     protected Usuario(Parcel in) {
@@ -78,6 +89,7 @@ public class Usuario extends Publicacion {
         localizacion = in.readString();
         biografia = in.readString();
         web = in.readString();
+        imagenDestacada = in.readString();
         verificado = in.readByte() != 0;
         admin = in.readByte() != 0;
         activo = in.readByte() != 0;
@@ -85,7 +97,7 @@ public class Usuario extends Publicacion {
         misColaboraciones = in.createTypedArrayList(Proyecto.CREATOR);
         misAreasInteres = in.createTypedArrayList(Area.CREATOR);
         misEspecialidades = in.createTypedArrayList(Especialidad.CREATOR);
-        misSeguidores = in.createTypedArrayList(Usuario.CREATOR);
+        misSeguidos = in.createTypedArrayList(Usuario.CREATOR);
         misRedesSociales = in.createTypedArrayList(RedSocial.CREATOR);
         misArchivos = in.createTypedArrayList(Multimedia.CREATOR);
         miStatus = in.readParcelable(Status.class.getClassLoader());
@@ -207,6 +219,14 @@ public class Usuario extends Publicacion {
         this.activo = activo;
     }
 
+    public String getImagenDestacada() {
+        return imagenDestacada;
+    }
+
+    public void setImagenDestacada(String imagenDestacada) {
+        this.imagenDestacada = imagenDestacada;
+    }
+
     public ArrayList<Proyecto> getMisProyectos() {
         return misProyectos;
     }
@@ -239,12 +259,12 @@ public class Usuario extends Publicacion {
         this.misEspecialidades = misEspecialidades;
     }
 
-    public ArrayList<Usuario> getMisSeguidores() {
-        return misSeguidores;
+    public ArrayList<Usuario> getMisSeguidos() {
+        return misSeguidos;
     }
 
-    public void setMisSeguidores(ArrayList<Usuario> misSeguidores) {
-        this.misSeguidores = misSeguidores;
+    public void setMisSeguidos(ArrayList<Usuario> misSeguidos) {
+        this.misSeguidos = misSeguidos;
     }
 
     public ArrayList<RedSocial> getMisRedesSociales() {
@@ -279,6 +299,7 @@ public class Usuario extends Publicacion {
         this.user = user;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -289,6 +310,7 @@ public class Usuario extends Publicacion {
         dest.writeInt(id);
         dest.writeString(nombre);
         dest.writeString(apellidos);
+        dest.writeString(user);
         dest.writeString(email);
         dest.writeString(password);
         dest.writeInt(nPuntos);
@@ -296,6 +318,7 @@ public class Usuario extends Publicacion {
         dest.writeString(localizacion);
         dest.writeString(biografia);
         dest.writeString(web);
+        dest.writeString(imagenDestacada);
         dest.writeByte((byte) (verificado ? 1 : 0));
         dest.writeByte((byte) (admin ? 1 : 0));
         dest.writeByte((byte) (activo ? 1 : 0));
@@ -303,7 +326,7 @@ public class Usuario extends Publicacion {
         dest.writeTypedList(misColaboraciones);
         dest.writeTypedList(misAreasInteres);
         dest.writeTypedList(misEspecialidades);
-        dest.writeTypedList(misSeguidores);
+        dest.writeTypedList(misSeguidos);
         dest.writeTypedList(misRedesSociales);
         dest.writeTypedList(misArchivos);
         dest.writeParcelable(miStatus, flags);

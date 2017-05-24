@@ -11,9 +11,7 @@ import android.view.ViewGroup;
 
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterComentario;
-import com.smartu.adaptadores.AdapterUsuario;
 import com.smartu.modelos.Comentario;
-import com.smartu.modelos.Usuario;
 
 import java.util.ArrayList;
 
@@ -65,7 +63,7 @@ public class FragmentComentarios extends Fragment {
         // Inflate the layout for this fragment
         View fragmen =inflater.inflate(R.layout.fragment_comentarios_recientes, container, false);
 
-        recyclerViewComentarios = (RecyclerView) fragmen.findViewById(R.id.recyclerMuro);
+        recyclerViewComentarios = (RecyclerView) fragmen.findViewById(R.id.recyclerComentarios);
 
 
         return fragmen;
@@ -74,10 +72,7 @@ public class FragmentComentarios extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //Si tengo datos los asigno mediante el adapter
-        if(comentarios.size()>0) {
-                recyclerViewComentarios.setAdapter(new AdapterComentario(getContext(), comentarios));
-        }
+        recyclerViewComentarios.setAdapter(new AdapterComentario(getContext(), comentarios));
     }
 
     @Override

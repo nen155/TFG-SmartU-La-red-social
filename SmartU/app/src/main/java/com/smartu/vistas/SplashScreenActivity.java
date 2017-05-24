@@ -7,17 +7,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.R;
 import com.smartu.modelos.Comentario;
-import com.smartu.modelos.Novedad;
+import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
-import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.ControladorPreferencias;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -45,14 +51,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         //para que a la hora de actualizar con FCM actualice el array
         //que necesite
         private ArrayList<Proyecto> proyectos;
-        private ArrayList<Novedad> novedades;
+        private ArrayList<Notificacion> notificaciones;
         private ArrayList<Usuario> usuarios;
         private ArrayList<Comentario> comentarios;
 
         private long start;
         HPublicaciones() {
             proyectos = new ArrayList<>();
-            novedades = new ArrayList<>();
+            notificaciones = new ArrayList<>();
             usuarios = new ArrayList<>();
             comentarios = new ArrayList<>();
         }
@@ -62,22 +68,63 @@ public class SplashScreenActivity extends AppCompatActivity {
             //Miro el momento en el que comienzo a cargar
             start = System.currentTimeMillis();
             //Cojo el resultado en un String
-            String resultado=null;
+            String resultado="{\"muro\":{" +
+                    "\"proyectos\":[" +
+                    "{" +
+                    "\"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"Es el primer proyecto\",\"fechaCreacion\":\"2017-01-22\",\"fechaFinalizacion\":\"2018-12-10\",\"imagenDestacada\":\"https://www.google.es/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"buenaIdea\":\"0\",\"web\":\"http://coloredmoon.com\"" +
+                    "}" +
+                    "]," +
+                    "\"comentarios\":[]," +
+                    "\"notificaciones\":[]," +
+                    "\"usuarios\":[]" +
+                    "}" +
+                    "}";
 //            String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"","GET");
             JSONObject res =null;
+            ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
             try {
                 if(resultado !=null) {
                     res = new JSONObject(resultado);
                     if (!res.isNull("muro")) {
-                        JSONObject proyectosJSON = res.getJSONObject("proyectos");
-                        JSONObject comentariosJSON = res.getJSONObject("comentarios");
-                        JSONObject novedadesJSON = res.getJSONObject("novedades");
-                        JSONObject usuariosJSON = res.getJSONObject("usuarios");
-
+                        JSONObject muroJSON = res.getJSONObject("muro");
+                        JSONArray proyectosJSON = muroJSON.getJSONArray("proyectos");
+                        for(int i=0;i<proyectosJSON.length();++i)
+                        {
+                            JSONObject proyecto = proyectosJSON.getJSONObject(i);
+                            Proyecto p = mapper.readValue(proyecto.toString(), Proyecto.class);
+                            proyectos.add(p);
+                        }
+                        JSONArray comentariosJSON = muroJSON.getJSONArray("comentarios");
+                        for(int i=0;i<comentariosJSON.length();++i)
+                        {
+                            JSONObject comentario = comentariosJSON.getJSONObject(i);
+                            Comentario c = mapper.readValue(comentario.toString(), Comentario.class);
+                            comentarios.add(c);
+                        }
+                        JSONArray notificacionesJSON = muroJSON.getJSONArray("notificaciones");
+                        for(int i=0;i<notificacionesJSON.length();++i)
+                        {
+                            JSONObject notificacion = notificacionesJSON.getJSONObject(i);
+                            Notificacion n = mapper.readValue(notificacion.toString(), Notificacion.class);
+                            notificaciones.add(n);
+                        }
+                        JSONArray usuariosJSON = muroJSON.getJSONArray("usuarios");
+                        for(int i=0;i<usuariosJSON.length();++i)
+                        {
+                            JSONObject usuario = usuariosJSON.getJSONObject(i);
+                            Usuario u = mapper.readValue(usuario.toString(), Usuario.class);
+                            usuarios.add(u);
+                        }
 
                     }
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (JsonParseException e) {
+                e.printStackTrace();
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -103,6 +150,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 comienzo -=tiempo;
             else
                 comienzo=0;
+
             //Creo la ejecución con exactamente 3 segundos o lo que tarde en cargar las cosas del server.
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -117,10 +165,10 @@ public class SplashScreenActivity extends AppCompatActivity {
                         intent = new Intent(SplashScreenActivity.this, MainActivity.class);
 
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.putExtra("proyectos",proyectos);
-                    intent.putExtra("novedades",novedades);
-                    intent.putExtra("usuarios",usuarios);
-                    intent.putExtra("comentarios",comentarios);
+                    intent.putParcelableArrayListExtra("proyectos",proyectos);
+                    intent.putParcelableArrayListExtra("notificaciones",notificaciones);
+                    intent.putParcelableArrayListExtra("usuarios",usuarios);
+                    intent.putParcelableArrayListExtra("comentarios",comentarios);
                     startActivity(intent);
                 }
             }, comienzo);

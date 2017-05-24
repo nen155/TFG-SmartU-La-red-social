@@ -4,14 +4,10 @@
     android:layout_height="match_parent"
     tools:context="com.smartu.vistas.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerComentarios"
+<com.google.android.gms.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mapa"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="5dp"
-        android:horizontalSpacing="5dp"
-        android:stretchMode="columnWidth"
-        android:gravity="center"/>
+    />
 
 </LinearLayout>
