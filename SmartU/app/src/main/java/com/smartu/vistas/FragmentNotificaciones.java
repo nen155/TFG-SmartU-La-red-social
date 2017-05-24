@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,7 +119,9 @@ public class FragmentNotificaciones extends Fragment {
 
         recyclerViewNotificacion = (RecyclerView) fragmen.findViewById(R.id.recyclerNotificaciones);
         mNoNotificacionView = (LinearLayout) fragmen.findViewById(R.id.noMessages);
-
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerViewNotificacion.setLayoutManager(llm);
 
 
         return fragmen;

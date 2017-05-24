@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,7 @@ public class FragmentProyectos extends Fragment {
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_PROYECTOS = "proyectos";
     private RecyclerView recyclerViewProyectos;
-
+    private AdapterProyecto adapterProyecto;
     private OnProyectoSelectedListener mListener;
 
     public FragmentProyectos() {
@@ -66,9 +67,10 @@ public class FragmentProyectos extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmen =inflater.inflate(R.layout.fragment_proyectos_recientes, container, false);
-
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewProyectos = (RecyclerView) fragmen.findViewById(R.id.recyclerProyectos);
-
+        recyclerViewProyectos.setLayoutManager(llm);
 
         return fragmen;
     }
@@ -76,8 +78,8 @@ public class FragmentProyectos extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        recyclerViewProyectos.setAdapter(new AdapterProyecto(getContext(), proyectos,mListener));
+        adapterProyecto = new AdapterProyecto(getContext(), proyectos,mListener);
+        recyclerViewProyectos.setAdapter(adapterProyecto);
     }
 
 

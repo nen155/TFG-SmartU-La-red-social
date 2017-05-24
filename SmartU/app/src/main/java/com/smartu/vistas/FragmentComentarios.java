@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,9 +63,10 @@ public class FragmentComentarios extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmen =inflater.inflate(R.layout.fragment_comentarios_recientes, container, false);
-
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewComentarios = (RecyclerView) fragmen.findViewById(R.id.recyclerComentarios);
-
+        recyclerViewComentarios.setLayoutManager(llm);
 
         return fragmen;
     }
