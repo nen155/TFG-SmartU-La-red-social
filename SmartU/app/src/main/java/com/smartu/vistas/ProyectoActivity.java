@@ -47,8 +47,9 @@ public class ProyectoActivity extends AppCompatActivity {
             proyecto = bundle.getParcelable("proyecto");
         }
         //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
-        SliderMenu sliderMenu = new SliderMenu(getApplicationContext(),this);
+        SliderMenu sliderMenu = new SliderMenu(getBaseContext(),this);
         sliderMenu.inicializateToolbar(proyecto.getNombre());
+        setTitle(proyecto.getNombre());
         //Inicia
         buenaidea_contador = (TextView) findViewById(R.id.buenaidea_text_proyecto);
         buenaidea = (FloatingActionButton) findViewById(R.id.buenaidea_proyecto);
@@ -57,7 +58,7 @@ public class ProyectoActivity extends AppCompatActivity {
         //Cargo las preferencias del usuario si tuviese sesión
         cargarPreferenciasUsuario();
 
-        buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea()));
+        buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
         buenaidea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,7 +100,7 @@ public class ProyectoActivity extends AppCompatActivity {
 
         //Cargo el fragment por defecto
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, FragmentProyecto.newInstance(proyecto));
+        transaction.replace(R.id.content_proyecto, FragmentProyecto.newInstance(proyecto));
         transaction.commit();
     }
 
@@ -142,7 +143,7 @@ public class ProyectoActivity extends AppCompatActivity {
             }
             if(swicthTo!=null){
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.content_frame,swicthTo);
+                transaction.replace(R.id.content_proyecto,swicthTo);
                 transaction.commit();
             }
             return true;

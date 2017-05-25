@@ -86,7 +86,11 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 		proyecto = (Proyecto)this.proyectos.get(position);
 		Picasso.with(context).load(proyecto.getImagenDestacada()).into(holder.imgProyecto);
 		holder.nombreProyecto.setText(proyecto.getNombre());
-		holder.descripcionProyecto.setText(proyecto.getDescripcion());
+		if(proyecto.getDescripcion().length()>150){
+			holder.descripcionProyecto.setText(proyecto.getDescripcion().substring(0,150)+"...");
+		}else
+			holder.descripcionProyecto.setText(proyecto.getDescripcion());
+
 		//TODO Para cuando cargue usuarios
 		//holder.nombreUsuario.setText(proyecto.getPropietario().getNombre());
 

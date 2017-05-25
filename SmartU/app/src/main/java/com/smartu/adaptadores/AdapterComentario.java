@@ -71,7 +71,10 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
             String hace = "Hace " + horas + " horas";
             holder.fechaComentario.setText(hace);
         }
-        holder.descripcionComentario.setText(comentario.getDescripcion());
+        if(comentario.getDescripcion().length()>150){
+            holder.descripcionComentario.setText(comentario.getDescripcion().substring(0,150)+"...");
+        }else
+            holder.descripcionComentario.setText(comentario.getDescripcion());
         holder.btnNombreProyecto.setText(comentario.getProyecto().getNombre());
         holder.nombreUsuario.setText(comentario.getUsuario().getNombre());
 

@@ -75,7 +75,8 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".vistas.ProyectoActivity"
-            android:label="@string/title_activity_proyecto"></activity>
+            android:label="@string/title_activity_proyecto"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

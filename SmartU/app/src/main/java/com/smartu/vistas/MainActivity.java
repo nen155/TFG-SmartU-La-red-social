@@ -211,9 +211,9 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
 
     @Override
     public void onProyectoSeleccionado(Proyecto proyecto) {
-        /*Intent intent = new Intent(getApplicationContext(),ProyectoActivity.class);
+        Intent intent = new Intent(getApplicationContext(),ProyectoActivity.class);
         intent.putExtra("proyecto",proyecto);
-        startActivity(intent);*/
+        startActivity(intent);
     }
 
     @Override

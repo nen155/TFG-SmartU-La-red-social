@@ -120,8 +120,8 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        boolean fragmentTransaction = false;
-        Fragment fragment = null;
+        /*boolean fragmentTransaction = false;
+        Fragment fragment = null;*/
 
         switch (item.getItemId()) {
             case R.id.nav_cuenta:
@@ -143,14 +143,14 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
                 break;
         }
 
-        if (fragmentTransaction) {
+       /* if (fragmentTransaction) {
             ((AppCompatActivity) actualActivity).getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, fragment)
                     .commit();
 
             item.setChecked(true);
             toolbar.setTitle(item.getTitle());
-        }
+        }*/
 
         drawerLayout.closeDrawers();
 

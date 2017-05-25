@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.smartu.vistas.ProyectoActivity"
-    tools:ignore="MergeRootFrame">
+    tools:context="com.smartu.vistas.ProyectoActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -23,37 +22,56 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/my_toolbar">
 
+            <ImageView
+                android:id="@+id/img_activity_proyecto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/google_test"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.7"/>
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/my_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
                 android:minHeight="?attr/actionBarSize"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-
-            <ImageView
-                android:id="@+id/img_activity_proyecto"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/google_test"
-                app:layout_collapseMode="parallax" />
-
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/proyecto_nested"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.smartu.vistas.ProyectoActivity">
 
-    <include layout="@layout/content_proyecto" />
+        <include layout="@layout/content_proyecto" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/buenaidea_text_proyecto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="100dp"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/background_buenaidea"
+        android:text="100"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_anchor="@+id/proyecto_nested"
+        app:layout_anchorGravity="right|end" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/buenaidea_proyecto"
@@ -61,20 +79,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/idea"
         app:fabSize="normal"
         app:layout_anchor="@+id/proyecto_nested"
-        app:srcCompat="@drawable/idea" />
-    <TextView
-        android:id="@+id/buenaidea_text_proyecto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="100"
-        app:layout_anchor="@+id/proyecto_nested"
-        android:background="@drawable/background_buenaidea"
-        android:layout_marginStart="75dp"
-        android:layout_marginLeft="75dp"
-        android:textColor="@color/white"
-        android:textSize="18sp"/>
+        app:layout_anchorGravity="right|end" />
+
+
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_proyecto"
         android:layout_width="match_parent"
