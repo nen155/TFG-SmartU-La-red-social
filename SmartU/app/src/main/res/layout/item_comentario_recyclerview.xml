@@ -28,8 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
-            android:drawableLeft="@drawable/comentario_tintado"
-            android:drawableStart="@drawable/comentario_tintado"
+            android:drawableLeft="@drawable/comentario_white"
+            android:drawableStart="@drawable/comentario_white"
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/nuevo_comentario"
@@ -73,7 +73,7 @@
                 android:layout_gravity="left|center_vertical"
                 android:layout_margin="15dp"
                 android:layout_weight="0.3"
-                android:text="usuario"
+                android:text="propietario"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="12sp" />
 

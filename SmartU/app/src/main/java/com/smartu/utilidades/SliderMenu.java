@@ -31,16 +31,18 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
     Context context;
     Activity actualActivity;
     NavigationView navigationView;
-    public SliderMenu(Context context,Activity v){
+
+    public SliderMenu(Context context, Activity v) {
         this.context = context;
-       // this.TITLES = new String[]{context.getString(R.string.home),context.getString(R.string.contact_info)};
-        actualActivity =v;
+        // this.TITLES = new String[]{context.getString(R.string.home),context.getString(R.string.contact_info)};
+        actualActivity = v;
         toolbar = (Toolbar) v.findViewById(R.id.my_toolbar);
         drawerLayout = (DrawerLayout) v.findViewById(R.id.drawer_layout);        // drawerLayout object Assigned to the view
         navigationView = (NavigationView) v.findViewById(R.id.nav_view);
 
     }
-    public void inicializateToolbar(String titleActivity){
+
+    public void inicializateToolbar(String titleActivity) {
 
         if (navigationView != null) {
             setupDrawerContent(navigationView);
@@ -50,8 +52,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
         toolbar.setTitle(titleActivity);
 
 
-
-        mDrawerToggle = new ActionBarDrawerToggle(actualActivity, drawerLayout,toolbar, R.string.openDrawer,R.string.closeDrawer){
+        mDrawerToggle = new ActionBarDrawerToggle(actualActivity, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer) {
 
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -76,7 +77,6 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
             }
 
 
-
         }; // drawerLayout Toggle Object Made
 
         drawerLayout.addDrawerListener(mDrawerToggle); // drawerLayout Listener set to the drawerLayout toggle
@@ -84,11 +84,11 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
     }
 
     private void setToolbar() {
-        ((AppCompatActivity)actualActivity).setSupportActionBar(toolbar);
-        final ActionBar ab = ((AppCompatActivity)actualActivity).getSupportActionBar();
+        ((AppCompatActivity) actualActivity).setSupportActionBar(toolbar);
+        final ActionBar ab = ((AppCompatActivity) actualActivity).getSupportActionBar();
         if (ab != null) {
             // Poner ícono del drawer toggle
-           // ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+            // ab.setHomeAsUpIndicator(R.drawable.ic_menu);
             ab.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -101,7 +101,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            ((AppCompatActivity)actualActivity).getMenuInflater().inflate(R.menu.main, menu);
+            ((AppCompatActivity) actualActivity).getMenuInflater().inflate(R.menu.main, menu);
             return true;
         }
         return super.onCreateOptionsMenu(menu);
@@ -143,8 +143,8 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
                 break;
         }
 
-        if(fragmentTransaction) {
-            ((AppCompatActivity)actualActivity).getSupportFragmentManager().beginTransaction()
+        if (fragmentTransaction) {
+            ((AppCompatActivity) actualActivity).getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, fragment)
                     .commit();
 
@@ -156,6 +156,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
 
         return true;
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

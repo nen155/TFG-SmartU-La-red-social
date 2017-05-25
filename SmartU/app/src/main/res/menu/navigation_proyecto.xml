@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_proyecto"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/proyecto" />
+    <item
+        android:id="@+id/navigation_integrantes"
+        android:icon="@drawable/integrantes"
+        android:title="@string/integrantes" />
+    <item
+        android:id="@+id/navigation_map_proyecto"
+        android:icon="@drawable/map"
+        android:title="@string/muro_filtro_geografico" />
+
+    <item
+        android:id="@+id/navigation_multimedia"
+        android:icon="@drawable/image_multiple"
+        android:title="@string/multimedia" />
+
+</menu>

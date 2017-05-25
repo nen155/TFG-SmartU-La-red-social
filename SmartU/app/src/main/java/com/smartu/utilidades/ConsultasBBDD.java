@@ -25,6 +25,7 @@ public class ConsultasBBDD {
     public static final String consultaPublicaciones ="/api/content/type";
     public static final String insertaSeguidor ="seguidor";
     public static final String insertaBuenaIdea ="buenaIdea";
+    public static final String eliminaBuenaIdea ="buenaIdea";
 
     public static String hacerConsulta(String urlREST, String parameters, String metodo) {
 

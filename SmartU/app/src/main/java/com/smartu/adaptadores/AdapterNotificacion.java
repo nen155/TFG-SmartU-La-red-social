@@ -116,7 +116,7 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 	private void cargaElemento(){
 			if(notificacion.getUsuario()!=null){
 				/*Intent intent = new Intent(context,UsuarioActivity.class);
-				intent.putExtra("usuario",notificacion.getUsuario());
+				intent.putExtra("usuario",notificacion.getPropietario());
 				startActivity(intent);*/
 			}else if(notificacion.getProyecto()!=null) {
 				/*Intent intent = new Intent(context,ProyectoActivity.class);

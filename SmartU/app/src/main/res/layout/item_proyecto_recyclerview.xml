@@ -21,8 +21,8 @@
             android:orientation="vertical" android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
-                android:drawableLeft="@drawable/proyecto_tintado"
-                android:drawableStart="@drawable/proyecto_tintado"
+                android:drawableLeft="@drawable/proyecto_white"
+                android:drawableStart="@drawable/proyecto_white"
                 android:id="@+id/nombre_usuario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
                     android:layout_weight="0.9"
-                    android:text="usuario"
+                    android:text="propietario"
                     android:textColor="@color/colorPrimaryLight" />
 
                 <ImageView

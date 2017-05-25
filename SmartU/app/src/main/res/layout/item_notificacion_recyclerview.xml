@@ -26,6 +26,8 @@
             android:id="@+id/nombre_notificacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/notificacion_white"
+            android:drawableLeft="@drawable/notificacion_white"
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
             android:padding="10dp"
@@ -66,7 +68,7 @@
             android:layout_gravity="end"
             android:layout_margin="15dp"
             android:layout_weight="0.9"
-            android:text="usuario o proyecto"
+            android:text="propietario o proyecto"
             android:textColor="@color/colorPrimaryLight" />
 
 

@@ -19,10 +19,10 @@ public class Proyecto implements Parcelable {
     private String imagenDestacada;
     private String localizacion;
     private String coordenadas;
-    private int buenaIdea;
     private String web;
-    private Usuario usuario=null;
+    private Usuario propietario =null;
     //Contenedores de los que es propietario
+    private ArrayList<BuenaIdea> buenaIdea;
     private ArrayList<Comentario> misComentarios=null;
     private ArrayList<Area> misAreas=null;
     private ArrayList<Especialidad> especialidadesNecesarias=null;
@@ -39,8 +39,9 @@ public class Proyecto implements Parcelable {
         misArchivos =new ArrayList<>();
         misHashtag =new ArrayList<>();
         misAvances =new ArrayList<>();
+        buenaIdea = new ArrayList<>();
     }
-    public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion,String imagenDestacada, Date fechaFinalizacion, String localizacion, int buenaIdea, String web,Usuario usuario) {
+    public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion, String imagenDestacada, Date fechaFinalizacion, String localizacion, ArrayList<BuenaIdea> buenaIdea, String web, Usuario propietario) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -50,13 +51,14 @@ public class Proyecto implements Parcelable {
         this.localizacion = localizacion;
         this.buenaIdea = buenaIdea;
         this.web = web;
-        this.usuario = usuario;
+        this.propietario = propietario;
         misComentarios =new ArrayList<>();
         misAreas =new ArrayList<>();
         especialidadesNecesarias =new ArrayList<>();
         misArchivos =new ArrayList<>();
         misHashtag =new ArrayList<>();
         misAvances =new ArrayList<>();
+        buenaIdea = new ArrayList<>();
     }
 
 
@@ -67,9 +69,9 @@ public class Proyecto implements Parcelable {
         imagenDestacada = in.readString();
         localizacion = in.readString();
         coordenadas = in.readString();
-        buenaIdea = in.readInt();
+        buenaIdea = in.createTypedArrayList(BuenaIdea.CREATOR);
         web = in.readString();
-        usuario = in.readParcelable(Usuario.class.getClassLoader());
+        propietario = in.readParcelable(Usuario.class.getClassLoader());
         misComentarios = in.createTypedArrayList(Comentario.CREATOR);
         misAreas = in.createTypedArrayList(Area.CREATOR);
         especialidadesNecesarias = in.createTypedArrayList(Especialidad.CREATOR);
@@ -141,11 +143,11 @@ public class Proyecto implements Parcelable {
         this.localizacion = localizacion;
     }
 
-    public int getBuenaIdea() {
+    public ArrayList<BuenaIdea> getBuenaIdea() {
         return buenaIdea;
     }
 
-    public void setBuenaIdea(int buenaIdea) {
+    public void setBuenaIdea(ArrayList<BuenaIdea> buenaIdea) {
         this.buenaIdea = buenaIdea;
     }
 
@@ -157,12 +159,12 @@ public class Proyecto implements Parcelable {
         this.web = web;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Usuario getPropietario() {
+        return propietario;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setPropietario(Usuario propietario) {
+        this.propietario = propietario;
     }
 
     public String getImagenDestacada() {
@@ -251,9 +253,9 @@ public class Proyecto implements Parcelable {
         dest.writeString(imagenDestacada);
         dest.writeString(localizacion);
         dest.writeString(coordenadas);
-        dest.writeInt(buenaIdea);
+        dest.writeTypedList(buenaIdea);
         dest.writeString(web);
-        dest.writeParcelable(usuario, flags);
+        dest.writeParcelable(propietario, flags);
         dest.writeTypedList(misComentarios);
         dest.writeTypedList(misAreas);
         dest.writeTypedList(especialidadesNecesarias);

@@ -1,0 +1,69 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.smartu.vistas.FragmentProyecto">
+    <TextView
+        android:id="@+id/text_fecha_creacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="Fecha Creación" />
+    <TextView
+        android:id="@+id/fecha_creacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:text="27/08/2017" />
+    <TextView
+        android:id="@+id/text_fecha_finalizacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="Fecha Finalización" />
+    <TextView
+        android:id="@+id/fecha_finalizacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:text="27/08/2017" />
+    <TextView
+        android:id="@+id/text_areas_proyecto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="@string/areas" />
+    <com.ns.developer.tagview.widget.TagCloudLinkView
+        android:id="@+id/areas_proyecto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        app:isDeletable="false"
+        app:tagLayoutColor="@color/colorPrimaryLight"
+        app:tagTextSize="8sp"
+        app:tagTextColor="@color/white" />
+    <TextView
+        android:id="@+id/text_descripcion_proyecto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="@string/descripcion" />
+    <TextView
+        android:id="@+id/descripcion_proyecto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/descripcion" />
+
+</LinearLayout>

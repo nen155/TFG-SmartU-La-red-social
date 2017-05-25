@@ -14,12 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smartu.R;
+import com.smartu.modelos.BuenaIdea;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
 import com.smartu.vistas.FragmentProyectos;
 import com.smartu.vistas.LoginActivity;
+import com.smartu.vistas.ProyectoActivity;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -27,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
 
 public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHolder> {
@@ -37,6 +40,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 	private ImageView imgBuenaIdeaEditable;
 	private Usuario usuarioSesion;
 	private HBuenaIdea hBuenaIdea;
+	private Optional<BuenaIdea> buenaIdea1;
 
 
 	public AdapterProyecto(Context context, ArrayList<Proyecto> items, FragmentProyectos.OnProyectoSelectedListener onProyectoSelectedListener) {
@@ -83,13 +87,16 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 		Picasso.with(context).load(proyecto.getImagenDestacada()).into(holder.imgProyecto);
 		holder.nombreProyecto.setText(proyecto.getNombre());
 		holder.descripcionProyecto.setText(proyecto.getDescripcion());
-		holder.nombreUsuario.setText(proyecto.getUsuario().getNombre());
+		//TODO Para cuando cargue usuarios
+		//holder.nombreUsuario.setText(proyecto.getPropietario().getNombre());
 
 		holder.imgProyecto.setOnClickListener(cargaProyecto());
 		holder.descripcionProyecto.setOnClickListener(cargaProyecto());
 		holder.nombreProyecto.setOnClickListener(cargaProyecto());
 		//Asigno la refrencia al elemento pues lo voy a necesitar en la hebra
 		imgBuenaIdeaEditable=holder.imgBuenaIdea;
+		//Cargo las preferencias del usuario si tuviese sesión
+		cargarPreferenciasUsuario();
 
 		holder.imgBuenaIdea.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -97,8 +104,21 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 				usuarioSesion = Sesion.getUsuario(context);
 				//Si el usuario ha iniciado sesión
 				if (usuarioSesion != null) {
-                /*Hacer la consulta para el insert en la tabla de seguidores*/
-					hBuenaIdea = new HBuenaIdea();
+					//Actualizo el botón
+					imgBuenaIdeaEditable.setPressed(!imgBuenaIdeaEditable.isPressed());
+					//Compruebo como ha quedado su estado después de hacer click
+					if (imgBuenaIdeaEditable.isPressed()) {
+						imgBuenaIdeaEditable.setImageResource(R.drawable.buenaidea);
+						Toast.makeText(context,"Genial!, este proyecto te parece buena idea!",Toast.LENGTH_SHORT).show();
+						//Inicializo la hebra con 0 pues voy a añadir una nueva idea
+						hBuenaIdea = new HBuenaIdea(0);
+					}
+					else {
+						imgBuenaIdeaEditable.setImageResource(R.drawable.idea);
+						Toast.makeText(context,"¿Ya no te parece buena idea?",Toast.LENGTH_SHORT).show();
+						//Inicializo la hebra con el id de la buena idea que encontré
+						hBuenaIdea = new HBuenaIdea(buenaIdea1.get().getId());
+					}
 					hBuenaIdea.execute();
 				}
 				else
@@ -113,7 +133,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 			@Override
 			public void onClick(View v) {
 				/*Intent intent = new Intent(context,UsuarioActivity.class);
-				intent.putExtra("usuario",proyecto.getUsuario());
+				intent.putExtra("usuario",proyecto.getPropietario());
 				startActivity(intent);*/
 			}
 		});
@@ -138,14 +158,32 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 			}
 		};
 	}
+	/**
+	 * Comprueba si el usuario ha dado buena idea al proyecto
+	 */
+	private void cargarPreferenciasUsuario(){
+		//Cargo las preferencias del usuario
+		if(usuarioSesion!=null) {
+			//Compruebo si el usuario le ha dado antes a buena idea a este proyecto
+			buenaIdea1 = proyecto.getBuenaIdea().stream().filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId() && buenaIdea.getIdProyecto() == proyecto.getId()).findFirst();
+			boolean usuarioBuenaidea = buenaIdea1.isPresent();
+			//Si es así lo dejo presionado y le cambio la imagen
+			imgBuenaIdeaEditable.setPressed(usuarioBuenaidea);
+			if (usuarioBuenaidea)
+				imgBuenaIdeaEditable.setImageResource(R.drawable.buenaidea);
+		}
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Hebra para insertar el seguidor
 	 */
 	private class HBuenaIdea extends AsyncTask<Void, Void, String> {
 
-		HBuenaIdea() {
+		private int idIdea = 0;
 
+		HBuenaIdea(int idIdea) {
+			this.idIdea = idIdea;
 		}
 
 		@Override
@@ -153,11 +191,18 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 
 			String resultado = null;
 			//Construyo el JSON
-			String seguir = "\"buenaidea\":{\"idUsuario\":\"" + usuarioSesion.getId() + "\",\"idProyecto\":\"" + proyecto.getId() + "\"" +
-					",\"fecha\":\"" + new Date() + "\"}";
-			//Cojo el resultado en un String
-			resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaBuenaIdea, seguir, "POST");
-
+			String buenaidea="";
+			if(idIdea!=0) {
+				buenaidea = "\"buenaidea\":{\"idUsuario\":\"" + usuarioSesion.getId() + "\",\"idProyecto\":\"" + proyecto.getId() + "\"" +
+						",\"fecha\":\"" + new Date() + "\"}";
+				//Recojo el resultado en un String
+				resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaBuenaIdea, buenaidea, "POST");
+			}
+			else
+			{
+				buenaidea ="\"buenaidea\":{\"idUsuario\":\""+idIdea+ "\"}";
+				resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminaBuenaIdea, buenaidea, "POST");
+			}
 			return resultado;
 		}
 
@@ -177,15 +222,14 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 			//Sino muestro mensaje por pantalla
 			if (res!=null) {
 				try {
-					if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")==0){
-						imgBuenaIdeaEditable.setImageResource(R.drawable.buenaidea);
-					}else
-						Toast.makeText(context,"No se puede seguir a este usuario",Toast.LENGTH_SHORT).show();
+					if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")!=0){
+						reestablecerEstado();
+					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 			}else {
-				Toast.makeText(context,"Fallo en la conexión",Toast.LENGTH_SHORT).show();
+				reestablecerEstado();
 			}
 		}
 
@@ -202,5 +246,15 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 			//Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
 			hBuenaIdea = null;
 		}
+		private void reestablecerEstado(){
+			Toast.makeText(context,"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
+			imgBuenaIdeaEditable.setPressed(!imgBuenaIdeaEditable.isPressed());
+			if(imgBuenaIdeaEditable.isPressed())
+				imgBuenaIdeaEditable.setImageResource(R.drawable.buenaidea);
+			else
+				imgBuenaIdeaEditable.setImageResource(R.drawable.idea);
+
+		}
 	}
+
 }

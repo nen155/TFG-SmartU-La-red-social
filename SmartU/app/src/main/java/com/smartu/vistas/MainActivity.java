@@ -9,6 +9,7 @@ import toan.android.floatingactionmenu.FloatingActionsMenu;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Bundle bundle = getIntent().getExtras();
-        //Cojo las publicaciones cargadas durante el splashscreen
+        //Obtengo las publicaciones cargadas durante el splashscreen
         if(bundle!=null) {
             proyectos = bundle.getParcelableArrayList("proyectos");
             notificaciones = bundle.getParcelableArrayList("notificaciones");
@@ -61,6 +62,11 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
                 notificacionesFiltradas = notificacionsFiltradas();
                 comentariosFiltrados = comentariosFiltrados();
                 usuariosFiltrados = usuariosFiltrados();
+            }else {
+                proyectosFiltrados=new ArrayList<>();
+                notificacionesFiltradas=new ArrayList<>();
+                comentariosFiltrados = new ArrayList<>();
+                usuariosFiltrados = new ArrayList<>();
             }
         }
         //Cargo el menú lateral

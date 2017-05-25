@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.smartu">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -71,7 +72,10 @@
 
         <activity
             android:name=".vistas.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".vistas.ProyectoActivity"
+            android:label="@string/title_activity_proyecto"></activity>
     </application>
 
 </manifest>

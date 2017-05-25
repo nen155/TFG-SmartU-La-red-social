@@ -46,6 +46,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         hPublicaciones.execute();
     }
 
+    /**
+     * Cargaría las 10 primeras más actuales ordenadas por fecha
+     * Para cargar otras 10 se haría en el evento onScroll del RecyclerView
+     * de cada tipo de publicación, para no llenar la memoria del smartphone
+     */
     private class HPublicaciones extends AsyncTask<Void,Void,Void>{
         //Voy a mantener arrays distintos para los elementos del muro
         //para que a la hora de actualizar con FCM actualice el array
@@ -67,7 +72,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             //Miro el momento en el que comienzo a cargar
             start = System.currentTimeMillis();
-            //Cojo el resultado en un String
+            //Recojo el resultado en un String
             String resultado="{\"muro\":{" +
                     "\"proyectos\":[" +
                     "{" +
@@ -163,7 +168,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     else
                         //Sino me voy al Main
                         intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-
+                    //Establezo que se elimine esta pantalla de la pila y añado los arrays al extra
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putParcelableArrayListExtra("proyectos",proyectos);
                     intent.putParcelableArrayListExtra("notificaciones",notificaciones);

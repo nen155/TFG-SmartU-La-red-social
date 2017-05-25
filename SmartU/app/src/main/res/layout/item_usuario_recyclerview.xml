@@ -25,8 +25,8 @@
         android:orientation="vertical">
 
         <TextView
-            android:drawableStart="@drawable/usuario_tintado"
-            android:drawableLeft="@drawable/usuario_tintado"
+            android:drawableStart="@drawable/usuario_white"
+            android:drawableLeft="@drawable/usuario_white"
             android:id="@+id/nombre_usuario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -109,10 +109,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_margin="10dp"
-                android:drawableLeft="@drawable/seguir_tintado"
+                android:drawableLeft="@drawable/seguir_accent"
                 android:drawablePadding="8dp"
-                android:drawableStart="@drawable/seguir_tintado"
-                android:drawableTint="@color/colorAccent"
+                android:drawableStart="@drawable/seguir_accent"
                 android:padding="16dp"
                 android:text="Seguir"
                 android:textSize="20sp" />
