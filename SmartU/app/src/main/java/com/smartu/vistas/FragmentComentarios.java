@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * crear una instancia de este fragmento.
  */
 public class FragmentComentarios extends Fragment {
-    //ArrayList de obras para cargar y pasar cuando se cambie de Fragment
+    //ArrayList de comentarios para cargar y pasar cuando se cambie de Fragment
     private ArrayList<Comentario> comentarios = new ArrayList<>();
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_COMENTARIOS = "comentarios";

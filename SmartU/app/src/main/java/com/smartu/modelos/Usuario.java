@@ -27,12 +27,12 @@ public class Usuario extends Publicacion{
     private boolean activo;
     //Contenedores para los elementos de los que es propietario el usuario
     private ArrayList<Proyecto> misProyectos;
-    private ArrayList<Proyecto> misColaboraciones;
     private ArrayList<Area> misAreasInteres;
     private ArrayList<Especialidad> misEspecialidades;
     private ArrayList<Usuario> misSeguidos;
     private ArrayList<RedSocial> misRedesSociales;
     private ArrayList<Multimedia> misArchivos;
+    private ArrayList<SolicitudUnion> misSolicitudes;
     private Status miStatus;
 
 
@@ -70,11 +70,11 @@ public class Usuario extends Publicacion{
         this.imagenDestacada = imagenDestacada;
         misArchivos = new ArrayList<>();
         misAreasInteres = new ArrayList<>();
-        misColaboraciones = new ArrayList<>();
         misEspecialidades = new ArrayList<>();
         misProyectos = new ArrayList<>();
         misRedesSociales =new ArrayList<>();
         misSeguidos = new ArrayList<>();
+        misSolicitudes = new ArrayList<>();
     }
 
     protected Usuario(Parcel in) {
@@ -94,12 +94,12 @@ public class Usuario extends Publicacion{
         admin = in.readByte() != 0;
         activo = in.readByte() != 0;
         misProyectos = in.createTypedArrayList(Proyecto.CREATOR);
-        misColaboraciones = in.createTypedArrayList(Proyecto.CREATOR);
         misAreasInteres = in.createTypedArrayList(Area.CREATOR);
         misEspecialidades = in.createTypedArrayList(Especialidad.CREATOR);
         misSeguidos = in.createTypedArrayList(Usuario.CREATOR);
         misRedesSociales = in.createTypedArrayList(RedSocial.CREATOR);
         misArchivos = in.createTypedArrayList(Multimedia.CREATOR);
+        misSolicitudes = in.createTypedArrayList(SolicitudUnion.CREATOR);
         miStatus = in.readParcelable(Status.class.getClassLoader());
     }
 
@@ -235,13 +235,6 @@ public class Usuario extends Publicacion{
         this.misProyectos = misProyectos;
     }
 
-    public ArrayList<Proyecto> getMisColaboraciones() {
-        return misColaboraciones;
-    }
-
-    public void setMisColaboraciones(ArrayList<Proyecto> misColaboraciones) {
-        this.misColaboraciones = misColaboraciones;
-    }
 
     public ArrayList<Area> getMisAreasInteres() {
         return misAreasInteres;
@@ -281,6 +274,14 @@ public class Usuario extends Publicacion{
 
     public void setMisArchivos(ArrayList<Multimedia> misArchivos) {
         this.misArchivos = misArchivos;
+    }
+
+    public ArrayList<SolicitudUnion> getMisSolicitudes() {
+        return misSolicitudes;
+    }
+
+    public void setMisSolicitudes(ArrayList<SolicitudUnion> misSolicitudes) {
+        this.misSolicitudes = misSolicitudes;
     }
 
     public Status getMiStatus() {
@@ -323,12 +324,12 @@ public class Usuario extends Publicacion{
         dest.writeByte((byte) (admin ? 1 : 0));
         dest.writeByte((byte) (activo ? 1 : 0));
         dest.writeTypedList(misProyectos);
-        dest.writeTypedList(misColaboraciones);
         dest.writeTypedList(misAreasInteres);
         dest.writeTypedList(misEspecialidades);
         dest.writeTypedList(misSeguidos);
         dest.writeTypedList(misRedesSociales);
         dest.writeTypedList(misArchivos);
+        dest.writeTypedList(misSolicitudes);
         dest.writeParcelable(miStatus, flags);
     }
 }

@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class FragmentNotificaciones extends Fragment {
     //Cuando se produzca una novedad utilizo el filtro ACTION_NOTIFY_NEW_NOTIFICACION
     public static final String ACTION_NOTIFY_NEW_NOTIFICACION = "NOTIFY_NEW_NOVEDAD";
-    //ArrayList de obras para cargar y pasar cuando se cambie de Fragment
+    //ArrayList de notificaciones para cargar y pasar cuando se cambie de Fragment
     private ArrayList<Notificacion> notificaciones = new ArrayList<>();
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_NOTIFICACIONES = "notificaciones";

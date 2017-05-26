@@ -39,7 +39,7 @@ import java.util.ArrayList;
  * crear una instancia de este fragmento.
  */
 public class FragmentMapa extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    //ArrayList de obras para cargar y pasar cuando se cambie de Fragment
+    //ArrayList de proyectos para cargar y pasar cuando se cambie de Fragment
     private ArrayList<Proyecto> proyectos = new ArrayList<>();
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_PROYECTOS = "proyectos";

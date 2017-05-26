@@ -69,7 +69,7 @@ public class FragmentProyecto extends Fragment {
         TagCloudLinkView areasProyecto = (TagCloudLinkView) inflatedView.findViewById(R.id.areas_proyecto);
 
         descripcionProyecto.setText(proyecto.getDescripcion());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         fechaCreacion.setText(simpleDateFormat.format(proyecto.getFechaCreacion()));
         fechaFinalizacion.setText(simpleDateFormat.format(proyecto.getFechaFinalizacion()));
 

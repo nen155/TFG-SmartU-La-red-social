@@ -48,13 +48,23 @@
                 android:layout_width="150dp"
                 android:layout_height="100dp"
                 android:layout_margin="10dp"
-                android:layout_weight="0.3" />
+                android:layout_weight="0.3"
+                android:src="@drawable/unirse"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.7"
                 android:orientation="vertical">
+                <TextView
+                    android:id="@+id/status_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/status"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
                 <TextView
                     android:id="@+id/status_usuario"
                     android:layout_width="match_parent"
@@ -63,9 +73,16 @@
                     android:gravity="left|center_vertical"
                     android:padding="10dp"
                     android:text="Status"
-                    android:textSize="15sp"
+                    android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/especialidad_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/especialidades"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
-
                 <com.ns.developer.tagview.widget.TagCloudLinkView
                     android:id="@+id/especialidad_usuario"
                     android:layout_width="match_parent"
@@ -113,7 +130,7 @@
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/seguir_accent"
                 android:padding="16dp"
-                android:text="Seguir"
+                android:text="@string/seguir"
                 android:textSize="20sp" />
 
         </RelativeLayout>

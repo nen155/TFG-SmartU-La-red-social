@@ -20,12 +20,16 @@ public class ConsultasBBDD {
     public static String server ="http://coloredmoon.com:2424";
 
 
-
+    //Consultas
     public static final String consultaLogin = "/api/content_type/";
     public static final String consultaPublicaciones ="/api/content/type";
+    //Inserciones y eliminaciones
     public static final String insertaSeguidor ="seguidor";
+    public static final String eliminarSeguidor ="seguidor";
     public static final String insertaBuenaIdea ="buenaIdea";
-    public static final String eliminaBuenaIdea ="buenaIdea";
+    public static final String eliminarBuenaIdea ="buenaIdea";
+    public static final String insertaUnion ="union";
+    public static final String eliminarUnion ="union";
 
     public static String hacerConsulta(String urlREST, String parameters, String metodo) {
 

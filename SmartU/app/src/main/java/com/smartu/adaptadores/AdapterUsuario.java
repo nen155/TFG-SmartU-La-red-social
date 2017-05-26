@@ -38,6 +38,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     private HSeguir hSeguir;
     private Usuario usuarioSesion;
     private Button seguirUsuarioEditable;
+    private TextView seguidoresUsuarioEditable;
 
     public AdapterUsuario(Context context, ArrayList<Usuario> items, FragmentUsuarios.OnUsuarioSelectedListener onUsuarioSelectedListener) {
         super();
@@ -95,15 +96,37 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
         holder.nombreUsuario.setOnClickListener(cargaUsuario());
 
         seguirUsuarioEditable = holder.seguirUsuario;
+        seguidoresUsuarioEditable = holder.seguidoresUsuario;
 
+        //Cargo las preferencias del usuario si tuviese sesión
+        cargarPreferenciasUsuario();
         holder.seguirUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 usuarioSesion = Sesion.getUsuario(context);
                 //Si el usuario ha iniciado sesión
                 if (usuarioSesion != null) {
-                /*Hacer la consulta para el insert en la tabla de seguidores*/
-                    hSeguir = new HSeguir();
+                    //Actualizo el botón
+                    seguirUsuarioEditable.setPressed(!seguirUsuarioEditable.isPressed());
+                    //Compruebo como ha quedado su estado después de hacer click
+                    if (seguirUsuarioEditable.isPressed()) {
+                        seguirUsuarioEditable.setText(R.string.no_seguir);
+                        //Añado al contador 1 para decir que eres seguidor
+                        int cont = Integer.parseInt(holder.seguidoresUsuario.getText().toString())+1;
+                        holder.seguidoresUsuario.setText(String.valueOf(cont));
+                        Toast.makeText(context, "Genial!,sigues a este usuario!", Toast.LENGTH_SHORT).show();
+                        //Inicializo la hebra con 0 pues voy a añadir una nueva idea
+                        hSeguir = new HSeguir();
+                    }
+                    else {
+                        seguirUsuarioEditable.setText(R.string.seguir);
+                        //Añado al contador 1 para decir que eres seguidor
+                        int cont = Integer.parseInt(holder.seguidoresUsuario.getText().toString())-1;
+                        holder.seguidoresUsuario.setText(String.valueOf(cont));
+                        Toast.makeText(context,"¿Ya no te interesa el usuario?",Toast.LENGTH_SHORT).show();
+                        //Inicializo la hebra con el id de la buena idea que encontré
+                        hSeguir = new HSeguir(usuarioSesion.getId(),usuario.getId());
+                    }
                     hSeguir.execute();
                 }
                 else
@@ -134,14 +157,38 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
             }
         };
     }
-    ////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Comprueba si el usuario ha dado buena idea al proyecto
+     */
+    private void cargarPreferenciasUsuario(){
+        //Cargo las preferencias del usuario
+        if(usuarioSesion!=null) {
+            //Compruebo si el usuario le ha dado antes a seguir a este usuario
+            boolean usuarioSigue =  usuarioSesion.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1.getId() == usuario.getId());
+            //Si es así lo dejo presionado
+            seguirUsuarioEditable.setPressed(usuarioSigue);
+            if(usuarioSigue)
+                seguirUsuarioEditable.setText(R.string.no_seguir);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    /*
+     * HEBRAS
+     */
+    ///////////////////////////////////////////////////////////////////////////////////////
     /**
      * Hebra para insertar el seguidor
      */
     private class HSeguir extends AsyncTask<Void, Void, String> {
 
+        private int seguidor=0,seguido=0;
         HSeguir() {
 
+        }
+        HSeguir(int seguidor,int seguido) {
+            this.seguidor = seguidor;
+            this.seguido = seguido;
         }
 
         @Override
@@ -149,10 +196,12 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
 
             String resultado = null;
             //Construyo el JSON
-            String seguir = "\"seguir\":{\"idUsuario\":\"" + usuarioSesion.getId() + "\",\"idUsuarioSeguido\":\"" + usuario.getId() + "\"" +
-                    ",\"fecha\":\"" + new Date() + "\"}";
+            String seguir = "\"seguir\":{\"idUsuario\":\"" + seguidor + "\",\"idUsuarioSeguido\":\"" + seguido + "\"}";
             //Cojo el resultado en un String
-            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaSeguidor, seguir, "POST");
+            if(seguidor==0 || seguido==0 )
+                resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarSeguidor, seguir, "POST");
+            else
+                resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaSeguidor, seguir, "POST");
 
             return resultado;
         }
@@ -173,15 +222,14 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
             //Sino muestro mensaje por pantalla
             if (res!=null) {
                 try {
-                    if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")==0){
-                        seguirUsuarioEditable.setText(R.string.no_seguir);
-                    }else
-                        Toast.makeText(context,"No se puede seguir a este usuario",Toast.LENGTH_SHORT).show();
+                    if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")!=0)
+                        reestablecerEstado();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }else {
-                Toast.makeText(context,"Fallo en la conexión",Toast.LENGTH_SHORT).show();
+                reestablecerEstado();
             }
         }
 
@@ -197,6 +245,24 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
             super.onCancelled();
             //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
             hSeguir = null;
+        }
+        private void reestablecerEstado(){
+            Toast.makeText(context,"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
+            seguirUsuarioEditable.setPressed(!seguirUsuarioEditable.isPressed());
+            if(seguirUsuarioEditable.isPressed())
+                seguirUsuarioEditable.setText(R.string.no_seguir);
+            else
+                seguirUsuarioEditable.setText(R.string.seguir);
+            if(seguido!=0) {
+                //Si quería eliminar la buena idea significa que le he restado uno al contador previamente
+                int cont = Integer.parseInt(seguirUsuarioEditable.getText().toString())+1;
+                seguirUsuarioEditable.setText(String.valueOf(cont));
+            }else
+            {
+                //Si quería añadirlo como buena idea significa que le he sumando 1 al contador previamente
+                int cont = Integer.parseInt(seguirUsuarioEditable.getText().toString())-1;
+                seguirUsuarioEditable.setText(String.valueOf(cont));
+            }
         }
     }
 }

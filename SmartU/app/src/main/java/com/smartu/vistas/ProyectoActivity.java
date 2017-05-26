@@ -34,7 +34,7 @@ public class ProyectoActivity extends AppCompatActivity {
     private Usuario usuarioSesion;
     private FloatingActionButton buenaidea;
     private TextView buenaidea_contador;
-    private  HBuenaIdea hBuenaIdea;
+    private HBuenaIdea hBuenaIdea;
     private Optional<BuenaIdea> buenaIdea1;
 
     @Override
@@ -132,7 +132,7 @@ public class ProyectoActivity extends AppCompatActivity {
                     swicthTo = FragmentProyecto.newInstance(proyecto);
                     break;
                 case R.id.navigation_integrantes:
-                    swicthTo = null;
+                    swicthTo = FragmentIntegrantes.newInstance(proyecto.getIntegrantes(),proyecto.getVacantesProyecto(),proyecto.getId());
                     break;
                 case R.id.navigation_map_proyecto:
                     swicthTo = FragmentMapaProyecto.newInstance(proyecto);
@@ -150,7 +150,12 @@ public class ProyectoActivity extends AppCompatActivity {
         }
 
     };
-////////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    /*
+     * HEBRAS
+     */
+    ///////////////////////////////////////////////////////////////////////////////////////
     /**
      * Hebra para insertar el seguidor
      */
@@ -177,7 +182,7 @@ public class ProyectoActivity extends AppCompatActivity {
             else
             {
                 buenaidea ="\"buenaidea\":{\"idUsuario\":\""+idIdea+ "\"}";
-                resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminaBuenaIdea, buenaidea, "POST");
+                resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarBuenaIdea, buenaidea, "POST");
             }
             return resultado;
         }

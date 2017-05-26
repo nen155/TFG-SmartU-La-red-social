@@ -21,7 +21,6 @@ import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
 import com.smartu.vistas.FragmentProyectos;
 import com.smartu.vistas.LoginActivity;
-import com.smartu.vistas.ProyectoActivity;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -178,7 +177,11 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 		}
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////
+    /*
+     * HEBRAS
+     */
+	///////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Hebra para insertar el seguidor
 	 */
@@ -205,7 +208,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 			else
 			{
 				buenaidea ="\"buenaidea\":{\"idUsuario\":\""+idIdea+ "\"}";
-				resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminaBuenaIdea, buenaidea, "POST");
+				resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarBuenaIdea, buenaidea, "POST");
 			}
 			return resultado;
 		}

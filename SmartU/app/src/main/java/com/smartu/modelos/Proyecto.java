@@ -25,23 +25,25 @@ public class Proyecto implements Parcelable {
     private ArrayList<BuenaIdea> buenaIdea;
     private ArrayList<Comentario> misComentarios=null;
     private ArrayList<Area> misAreas=null;
-    private ArrayList<Especialidad> especialidadesNecesarias=null;
+    private ArrayList<Vacante> vacantesProyecto =null;
     private ArrayList<Multimedia> misArchivos=null;
     private ArrayList<RedSocial> misRedesSociales=null;
     private ArrayList<Hashtag> misHashtag=null;
     private ArrayList<Avance> misAvances=null;
+    private ArrayList<Usuario> integrantes=null;
 
     public Proyecto(){
         misComentarios =new ArrayList<>();
         misAreas =new ArrayList<>();
-        especialidadesNecesarias =new ArrayList<>();
+        vacantesProyecto =new ArrayList<>();
         misRedesSociales = new ArrayList<>();
         misArchivos =new ArrayList<>();
         misHashtag =new ArrayList<>();
         misAvances =new ArrayList<>();
         buenaIdea = new ArrayList<>();
+        integrantes = new ArrayList<>();
     }
-    public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion, String imagenDestacada, Date fechaFinalizacion, String localizacion, ArrayList<BuenaIdea> buenaIdea, String web, Usuario propietario) {
+    public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion, String imagenDestacada, Date fechaFinalizacion, String localizacion, String web, Usuario propietario) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -49,16 +51,16 @@ public class Proyecto implements Parcelable {
         this.fechaCreacion = fechaCreacion;
         this.fechaFinalizacion = fechaFinalizacion;
         this.localizacion = localizacion;
-        this.buenaIdea = buenaIdea;
         this.web = web;
         this.propietario = propietario;
         misComentarios =new ArrayList<>();
         misAreas =new ArrayList<>();
-        especialidadesNecesarias =new ArrayList<>();
+        vacantesProyecto =new ArrayList<>();
         misArchivos =new ArrayList<>();
         misHashtag =new ArrayList<>();
         misAvances =new ArrayList<>();
         buenaIdea = new ArrayList<>();
+        integrantes = new ArrayList<>();
     }
 
 
@@ -69,16 +71,17 @@ public class Proyecto implements Parcelable {
         imagenDestacada = in.readString();
         localizacion = in.readString();
         coordenadas = in.readString();
-        buenaIdea = in.createTypedArrayList(BuenaIdea.CREATOR);
         web = in.readString();
         propietario = in.readParcelable(Usuario.class.getClassLoader());
+        buenaIdea = in.createTypedArrayList(BuenaIdea.CREATOR);
         misComentarios = in.createTypedArrayList(Comentario.CREATOR);
         misAreas = in.createTypedArrayList(Area.CREATOR);
-        especialidadesNecesarias = in.createTypedArrayList(Especialidad.CREATOR);
         misArchivos = in.createTypedArrayList(Multimedia.CREATOR);
         misRedesSociales = in.createTypedArrayList(RedSocial.CREATOR);
         misHashtag = in.createTypedArrayList(Hashtag.CREATOR);
         misAvances = in.createTypedArrayList(Avance.CREATOR);
+        integrantes = in.createTypedArrayList(Usuario.CREATOR);
+        vacantesProyecto = in.createTypedArrayList(Vacante.CREATOR);
         fechaCreacion = new Date(in.readLong());
         fechaFinalizacion = new Date(in.readLong());
     }
@@ -199,12 +202,12 @@ public class Proyecto implements Parcelable {
         this.misAreas = misAreas;
     }
 
-    public ArrayList<Especialidad> getEspecialidadesNecesarias() {
-        return especialidadesNecesarias;
+    public ArrayList<Vacante> getVacantesProyecto() {
+        return vacantesProyecto;
     }
 
-    public void setEspecialidadesNecesarias(ArrayList<Especialidad> especialidadesNecesarias) {
-        this.especialidadesNecesarias = especialidadesNecesarias;
+    public void setVacantesProyecto(ArrayList<Vacante> vacantesProyecto) {
+        this.vacantesProyecto = vacantesProyecto;
     }
 
     public ArrayList<Multimedia> getMisArchivos() {
@@ -239,6 +242,14 @@ public class Proyecto implements Parcelable {
         this.misAvances = misAvances;
     }
 
+    public ArrayList<Usuario> getIntegrantes() {
+        return integrantes;
+    }
+
+    public void setIntegrantes(ArrayList<Usuario> integrantes) {
+        this.integrantes = integrantes;
+    }
+
 
     @Override
     public int describeContents() {
@@ -253,16 +264,17 @@ public class Proyecto implements Parcelable {
         dest.writeString(imagenDestacada);
         dest.writeString(localizacion);
         dest.writeString(coordenadas);
-        dest.writeTypedList(buenaIdea);
         dest.writeString(web);
         dest.writeParcelable(propietario, flags);
+        dest.writeTypedList(buenaIdea);
         dest.writeTypedList(misComentarios);
         dest.writeTypedList(misAreas);
-        dest.writeTypedList(especialidadesNecesarias);
         dest.writeTypedList(misArchivos);
         dest.writeTypedList(misRedesSociales);
         dest.writeTypedList(misHashtag);
         dest.writeTypedList(misAvances);
+        dest.writeTypedList(integrantes);
+        dest.writeTypedList(vacantesProyecto);
         dest.writeLong(fechaCreacion.getTime());
         dest.writeLong(fechaFinalizacion.getTime());
     }

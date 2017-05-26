@@ -1,6 +1,7 @@
 package com.smartu.adaptadores;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.smartu.R;
 import com.smartu.modelos.Comentario;
+import com.smartu.vistas.ProyectoActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,9 +73,9 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
             String hace = "Hace " + horas + " horas";
             holder.fechaComentario.setText(hace);
         }
-        if(comentario.getDescripcion().length()>150){
-            holder.descripcionComentario.setText(comentario.getDescripcion().substring(0,150)+"...");
-        }else
+        if (comentario.getDescripcion().length() > 150) {
+            holder.descripcionComentario.setText(comentario.getDescripcion().substring(0, 150) + "...");
+        } else
             holder.descripcionComentario.setText(comentario.getDescripcion());
         holder.btnNombreProyecto.setText(comentario.getProyecto().getNombre());
         holder.nombreUsuario.setText(comentario.getUsuario().getNombre());
@@ -105,9 +107,9 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
 
 
     private void cargaProyecto() {
-                /*Intent intent = new Intent(context,ProyectoActivity.class);
-				intent.putExtra("proyecto",comentario.getProyecto());
-				startActivity(intent);*/
+        Intent intent = new Intent(context, ProyectoActivity.class);
+        intent.putExtra("proyecto", comentario.getProyecto());
+        context.startActivity(intent);
     }
 
 }
