@@ -10,25 +10,21 @@ import java.util.Date;
  */
 
 public class SolicitudUnion implements Parcelable {
-    private int id;
     private Date fecha;
     private Proyecto proyecto;
 
-    public SolicitudUnion(int id, Date fecha, Proyecto proyecto) {
-        this.id = id;
+    public SolicitudUnion(Date fecha, Proyecto proyecto) {
         this.fecha = fecha;
         this.proyecto = proyecto;
     }
 
     protected SolicitudUnion(Parcel in) {
-        id = in.readInt();
         proyecto = in.readParcelable(Proyecto.class.getClassLoader());
         fecha = new Date(in.readLong());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeParcelable(proyecto, flags);
         dest.writeLong(fecha.getTime());
     }
@@ -49,14 +45,6 @@ public class SolicitudUnion implements Parcelable {
             return new SolicitudUnion[size];
         }
     };
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Date getFecha() {
         return fecha;

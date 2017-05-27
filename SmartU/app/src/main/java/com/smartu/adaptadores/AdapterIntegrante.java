@@ -17,6 +17,7 @@ import com.smartu.R;
 import com.smartu.hebras.HSeguir;
 import com.smartu.hebras.HSolicitud;
 import com.smartu.modelos.Especialidad;
+import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
@@ -35,15 +36,15 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     private Usuario usuarioSesion;
     private Button seguirUsuarioEditable;
     private TextView seguidoresUsuarioEditable;
-    private int idProyecto;
+    private Proyecto proyecto;
 
 
-    public AdapterIntegrante(Context context, ArrayList<Usuario> items, FragmentIntegrantes.OnIntegranteSelectedListener onIntegranteSelectedListener,int idProyecto) {
+    public AdapterIntegrante(Context context, ArrayList<Usuario> items, FragmentIntegrantes.OnIntegranteSelectedListener onIntegranteSelectedListener,Proyecto proyecto) {
         super();
         this.context = context;
         this.usuarios = items;
         this.onIntegranteSelectedListener = onIntegranteSelectedListener;
-        this.idProyecto = idProyecto;
+        this.proyecto = proyecto;
     }
 
     //Creating a ViewHolder which extends the RecyclerView View Holder
@@ -144,7 +145,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
      */
     private void cargarSolicitudesUnion(){
         if (usuarioSesion != null) {
-            boolean solicitado = usuarioSesion.getMisSolicitudes().stream().anyMatch(solicitudUnion -> solicitudUnion.getProyecto().getId() == idProyecto);
+            boolean solicitado = usuarioSesion.getMisSolicitudes().stream().anyMatch(solicitudUnion -> solicitudUnion.getProyecto().getId() == proyecto.getId());
             if(solicitado){
                 seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
                 seguidoresUsuarioEditable.setPressed(true);
@@ -181,7 +182,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                     HSeguir hSeguir;
                     //Actualizo el botón
                     seguirUsuarioEditable.setPressed(!seguirUsuarioEditable.isPressed());
-                    //Compruebo como ha quedado su estado después de hacer click
+                    //Sigo al usuario
                     if (seguirUsuarioEditable.isPressed()) {
                         seguirUsuarioEditable.setText(R.string.no_seguir);
                         //Añado al contador 1 para decir que eres idProyecto
@@ -189,17 +190,17 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                         seguidoresUsuarioEditable.setText(String.valueOf(cont));
                         Toast.makeText(context, "Genial!,sigues a este usuario!", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra con 0 pues voy a añadir una nueva idea
-                        hSeguir = new HSeguir(context,seguirUsuarioEditable,seguidoresUsuarioEditable);
+                        hSeguir = new HSeguir(false,usuario,context,seguirUsuarioEditable,seguidoresUsuarioEditable);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
-                    } else {
+                    } else {//Dejo de seguir al usuario
                         seguirUsuarioEditable.setText(R.string.seguir);
                         //Añado al contador 1 para decir que eres idProyecto
                         int cont = Integer.parseInt(seguidoresUsuarioEditable.getText().toString()) - 1;
                         seguidoresUsuarioEditable.setText(String.valueOf(cont));
                         Toast.makeText(context, "¿Ya no te interesa el usuario?", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra con el id de la buena idea que encontré
-                        hSeguir = new HSeguir(usuarioSesion.getId(), usuario.getId(),context,seguirUsuarioEditable,seguidoresUsuarioEditable);
+                        hSeguir = new HSeguir(true,usuario,context,seguirUsuarioEditable,seguidoresUsuarioEditable);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
                     }
@@ -239,7 +240,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                     seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
                     seguirUsuarioEditable.setPressed(true);
                     seguirUsuarioEditable.setEnabled(false);
-                    hSolicitud = new HSolicitud(idProyecto,usuarioSesion.getId(),usuario.getMisEspecialidades(),context,seguirUsuarioEditable);
+                    hSolicitud = new HSolicitud(proyecto,usuarioSesion.getId(),usuario.getMisEspecialidades(),context,seguirUsuarioEditable);
                     hSolicitud.sethSolicitud(hSolicitud);
                     hSolicitud.execute();
                 }

@@ -8,7 +8,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smartu.R;
+import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
+import com.smartu.utilidades.Sesion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +21,8 @@ import org.json.JSONObject;
 
 public class HSeguir extends AsyncTask<Void, Void, String> {
 
-    private int seguidor=0,seguido=0;
+    private boolean eleminar;
+    private Usuario seguido,seguidor;
     private Context context;
     private Button seguirUSuario;
     private FloatingActionButton seguirFlotante;
@@ -27,17 +30,13 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
     private HSeguir hSeguir;
 
 
-    public HSeguir( Context context, Button seguirUsuario, TextView seguidoresUsuario) {
-        this.context=context;
-        this.seguirUSuario=seguirUsuario;
-        this.seguidoresUsuario=seguidoresUsuario;
-    }
-    public HSeguir(int seguidor, int seguido, Context context, Button seguirUsuario, TextView seguidoresUsuario) {
-        this.seguidor = seguidor;
+    public HSeguir(boolean eleminar, Usuario seguido, Context context, Button seguirUsuario, TextView seguidoresUsuario) {
         this.seguido = seguido;
         this.context=context;
         this.seguirUSuario=seguirUsuario;
         this.seguidoresUsuario=seguidoresUsuario;
+        this.seguidor = Sesion.getUsuario(context);
+        this.eleminar = eleminar;
     }
 
     /**
@@ -58,9 +57,9 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
 
         String resultado = null;
         //Construyo el JSON
-        String seguir = "\"seguir\":{\"idUsuario\":\"" + seguidor + "\",\"idUsuarioSeguido\":\"" + seguido + "\"}";
+        String seguir = "\"seguir\":{\"idUsuario\":\"" + seguidor.getId() + "\",\"idUsuarioSeguido\":\"" + seguido.getId() + "\"}";
         //Cojo el resultado en un String
-        if(seguidor==0 || seguido==0 )
+        if(eleminar)
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarSeguidor, seguir, "POST");
         else
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaSeguidor, seguir, "POST");
@@ -86,6 +85,12 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
             try {
                 if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")!=0)
                     reestablecerEstado();
+                else{
+                   if(eleminar)
+                       seguidor.getMisSeguidos().remove(seguido);
+                    else
+                        seguidor.getMisSeguidos().add(seguido);
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -120,7 +125,8 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
         }
         else
             seguirFlotante.setPressed(!seguirFlotante.isPressed());
-        if(seguido!=0) {
+
+        if(eleminar) {
             //Si quería eliminar la buena idea significa que le he restado uno al contador previamente
             int cont = Integer.parseInt(seguidoresUsuario.getText().toString())+1;
             seguidoresUsuario.setText(String.valueOf(cont));

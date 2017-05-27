@@ -95,25 +95,26 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
             buenaidea.setPressed(!buenaidea.isPressed());
             //Compruebo como ha quedado su estado después de hacer click
             HBuenaIdea hBuenaIdea;
+            //Añado buena idea
             if (buenaidea.isPressed()) {
                 buenaidea.setImageResource(R.drawable.buenaidea);
                 //Añado al contador 1 para decir que es buena idea
                 int cont = Integer.parseInt(buenaidea_contador.getText().toString())+1;
                 buenaidea_contador.setText(String.valueOf(cont));
                 Toast.makeText(getApplicationContext(),"Genial!, este proyecto te parece buena idea!",Toast.LENGTH_SHORT).show();
-                //Inicializo la hebra con 0 pues voy a añadir una nueva idea
-                hBuenaIdea = new HBuenaIdea(0,getApplicationContext(),proyecto,buenaidea,buenaidea_contador);
+                //Inicializo la hebra con false pues voy a añadir una nueva idea
+                hBuenaIdea = new HBuenaIdea(false,getApplicationContext(),proyecto,buenaidea,buenaidea_contador);
                 //Para poder poner la referencia a null cuando termine la hebra
                 hBuenaIdea.sethBuenaIdea(hBuenaIdea);
             }
-            else {
+            else {//Elimino buena idea
                 buenaidea.setImageResource(R.drawable.idea);
                 //Elimino de buena idea 1 usuario.
                 int cont = Integer.parseInt(buenaidea_contador.getText().toString())-1;
                 buenaidea_contador.setText(String.valueOf(cont));
                 Toast.makeText(getApplicationContext(),"¿Ya no te parece buena idea?",Toast.LENGTH_SHORT).show();
-                //Inicializo la hebra con el id de la buena idea que encontré
-                hBuenaIdea = new HBuenaIdea(1,getApplicationContext(),proyecto,buenaidea,buenaidea_contador);
+                //Inicializo la hebra con true para eliminarla
+                hBuenaIdea = new HBuenaIdea(true,getApplicationContext(),proyecto,buenaidea,buenaidea_contador);
                 //Para poder poner la referencia a null cuando termine la hebra
                 hBuenaIdea.sethBuenaIdea(hBuenaIdea);
             }
@@ -158,7 +159,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
-                    swicthTo = FragmentIntegrantes.newInstance(proyecto.getIntegrantes(),proyecto.getVacantesProyecto(),proyecto.getId());
+                    swicthTo = FragmentIntegrantes.newInstance(proyecto.getIntegrantes(),proyecto.getVacantesProyecto(),proyecto);
                     break;
                 case R.id.navigation_map_proyecto:
                     buenaidea.setVisibility(View.VISIBLE);

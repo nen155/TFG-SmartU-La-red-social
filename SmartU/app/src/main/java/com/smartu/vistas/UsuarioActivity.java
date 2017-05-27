@@ -143,7 +143,7 @@ public class UsuarioActivity extends AppCompatActivity {
                         seguirContador.setText(String.valueOf(cont));
                         Toast.makeText(getApplicationContext(), "Genial!,sigues a este usuario!", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra
-                        hSeguir = new HSeguir(getApplicationContext(),null,seguirContador);
+                        hSeguir = new HSeguir(false,usuario,getApplicationContext(),null,seguirContador);
                         hSeguir.setFabButton(seguir);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
@@ -153,7 +153,7 @@ public class UsuarioActivity extends AppCompatActivity {
                         seguirContador.setText(String.valueOf(cont));
                         Toast.makeText(getApplicationContext(), "¿Ya no te interesa el usuario?", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra
-                        hSeguir = new HSeguir(usuarioSesion.getId(), usuario.getId(),getApplicationContext(),null,seguirContador);
+                        hSeguir = new HSeguir(false,usuario,getApplicationContext(),null,seguirContador);
                         hSeguir.setFabButton(seguir);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);

@@ -111,16 +111,16 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 					if (holder.imgBuenaIdea.isPressed()) {
 						holder.imgBuenaIdea.setImageResource(R.drawable.buenaidea);
 						Toast.makeText(context,"Genial!, este proyecto te parece buena idea!",Toast.LENGTH_SHORT).show();
-						//Inicializo la hebra con 0 pues voy a añadir una nueva idea
-						hBuenaIdea = new HBuenaIdea(0,context,proyecto,holder.imgBuenaIdea,holder.contadorBuenaIdea);
+						//Inicializo la hebra con false pues voy a añadir una nueva idea
+						hBuenaIdea = new HBuenaIdea(false,context,proyecto,holder.imgBuenaIdea,holder.contadorBuenaIdea);
 						//Para poder poner la referencia a null cuando termine la hebra
 						hBuenaIdea.sethBuenaIdea(hBuenaIdea);
 					}
 					else {
 						holder.imgBuenaIdea.setImageResource(R.drawable.idea);
 						Toast.makeText(context,"¿Ya no te parece buena idea?",Toast.LENGTH_SHORT).show();
-						//Inicializo la hebra con 1 para eliminar la buena idea de la BD.
-						hBuenaIdea = new HBuenaIdea(1,context,proyecto,holder.imgBuenaIdea,holder.contadorBuenaIdea);
+						//Inicializo la hebra con true para eliminar la buena idea de la BD.
+						hBuenaIdea = new HBuenaIdea(true,context,proyecto,holder.imgBuenaIdea,holder.contadorBuenaIdea);
 						//Para poder poner la referencia a null cuando termine la hebra
 						hBuenaIdea.sethBuenaIdea(hBuenaIdea);
 					}

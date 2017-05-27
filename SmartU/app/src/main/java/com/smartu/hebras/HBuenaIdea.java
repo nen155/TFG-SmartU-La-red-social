@@ -24,7 +24,7 @@ import java.util.Date;
 
 public class HBuenaIdea extends AsyncTask<Void, Void, String> {
 
-    private int idIdea = 0;
+    private boolean eliminar ;
     private Context context;
     private Proyecto proyecto;
     private ImageView buenaidea;
@@ -33,8 +33,8 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
     private Usuario usuarioSesion;
 
 
-    public HBuenaIdea(int idIdea, Context context, Proyecto proyecto, ImageView buenaidea, TextView buenaidea_contador) {
-        this.idIdea = idIdea;
+    public HBuenaIdea(boolean eliminar, Context context, Proyecto proyecto, ImageView buenaidea, TextView buenaidea_contador) {
+        this.eliminar = eliminar;
         this.context=context;
         this.proyecto=proyecto;
         this.buenaidea=buenaidea;
@@ -55,11 +55,11 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
         String resultado = null;
         //Construyo el JSON
         String  buenaidea = "\"buenaidea\":{\"idUsuario\":\"" + usuarioSesion.getId() + "\",\"idProyecto\":\"" + proyecto.getId() + "\"}";
-        if(idIdea==0) {
+        if(eliminar) {
+            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarBuenaIdea, buenaidea, "POST");
+        }else {
             //Recojo el resultado en un String
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaBuenaIdea, buenaidea, "POST");
-        }else {
-            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarBuenaIdea, buenaidea, "POST");
         }
 
         return resultado;
@@ -85,10 +85,10 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
                     reestablecerEstado();
                 }else{
                     //Inserto una buena idea en el proyecto
-                    if(idIdea==0){
+                    if(eliminar){
                         proyecto.getBuenaIdea().add(new BuenaIdea(usuarioSesion.getId()));
                     }else{//Elimino las buenas ideas del proyecto
-
+                        proyecto.getBuenaIdea().remove(new BuenaIdea(usuarioSesion.getId()));
                     }
                 }
             } catch (JSONException e) {
@@ -119,7 +119,7 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
             buenaidea.setImageResource(R.drawable.buenaidea);
         else
             buenaidea.setImageResource(R.drawable.idea);
-        if(idIdea!=0) {
+        if(eliminar) {
             //Si quería eliminar la buena idea significa que le he restado uno al contador previamente
             int cont = Integer.parseInt(buenaidea_contador.getText().toString())+1;
             buenaidea_contador.setText(String.valueOf(cont));

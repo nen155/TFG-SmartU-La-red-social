@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterIntegrante;
 import com.smartu.modelos.Especialidad;
+import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Status;
 import com.smartu.modelos.Usuario;
 import com.smartu.modelos.Vacante;
@@ -36,11 +37,11 @@ public class FragmentIntegrantes extends Fragment {
     //Me creo un arraylist para no modificar el que me pasan como integrantes
     private ArrayList<Usuario> integrantesConVacantes = new ArrayList<>();
     //Lo necesito para comparar solitudes de unión a este proyecto
-    private int idProyecto;
+    private Proyecto proyecto;
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_INTEGRANTES = "integrantes";
     private static final String ARG_VACANTES = "vacantes";
-    private static final String ARG_IDPROYECTO = "idproyecto";
+    private static final String ARG_PROYECTO = "proyecto";
     private RecyclerView recyclerViewUsuarios;
 
     private OnIntegranteSelectedListener mListener;
@@ -56,12 +57,12 @@ public class FragmentIntegrantes extends Fragment {
      * @param usuarios Parametro 1.
      * @return A devuelve una nueva instancia del fragment.
      */
-    public static FragmentIntegrantes newInstance(ArrayList<Usuario> usuarios,ArrayList<Vacante> vacantesUsuarios,int idProyecto) {
+    public static FragmentIntegrantes newInstance(ArrayList<Usuario> usuarios,ArrayList<Vacante> vacantesUsuarios,Proyecto proyecto) {
         FragmentIntegrantes fragment = new FragmentIntegrantes();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_INTEGRANTES, usuarios);
         args.putParcelableArrayList(ARG_VACANTES, vacantesUsuarios);
-        args.putInt(ARG_IDPROYECTO,idProyecto);
+        args.putParcelable(ARG_PROYECTO,proyecto);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +73,7 @@ public class FragmentIntegrantes extends Fragment {
         if (getArguments() != null) {
             integrantes = getArguments().getParcelableArrayList(ARG_INTEGRANTES);
             vacantesUsuarios = getArguments().getParcelableArrayList(ARG_VACANTES);
-            idProyecto = getArguments().getInt(ARG_IDPROYECTO);
+            proyecto = getArguments().getParcelable(ARG_PROYECTO);
         }
 
     }
@@ -93,7 +94,7 @@ public class FragmentIntegrantes extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerViewUsuarios.setAdapter(new AdapterIntegrante(getContext(), mezclaIntegrantesConVacantes(),mListener,idProyecto));
+        recyclerViewUsuarios.setAdapter(new AdapterIntegrante(getContext(), mezclaIntegrantesConVacantes(),mListener,proyecto));
 
     }
 

@@ -116,7 +116,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
                         holder.seguidoresUsuario.setText(String.valueOf(cont));
                         Toast.makeText(context, "Genial!,sigues a este usuario!", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra con 0 pues voy a añadir una nueva idea
-                        hSeguir = new HSeguir(context,holder.seguirUsuario,holder.seguidoresUsuario);
+                        hSeguir = new HSeguir(false,usuario,context,holder.seguirUsuario,holder.seguidoresUsuario);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
                     }
@@ -127,7 +127,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
                         holder.seguidoresUsuario.setText(String.valueOf(cont));
                         Toast.makeText(context,"¿Ya no te interesa el usuario?",Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra con el id de la buena idea que encontré
-                        hSeguir = new HSeguir(usuarioSesion.getId(),usuario.getId(),context,holder.seguirUsuario,holder.seguidoresUsuario);
+                        hSeguir = new HSeguir(false,usuario,context,holder.seguirUsuario,holder.seguidoresUsuario);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
                     }

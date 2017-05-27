@@ -7,7 +7,11 @@ import android.widget.Toast;
 
 import com.smartu.R;
 import com.smartu.modelos.Especialidad;
+import com.smartu.modelos.Proyecto;
+import com.smartu.modelos.SolicitudUnion;
+import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
+import com.smartu.utilidades.Sesion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,26 +25,30 @@ import java.util.Date;
 
 public class HSolicitud extends AsyncTask<Void, Void, String> {
 
-    private int idProyecto = 0, idUsuario = 0;
+    private Proyecto proyecto;
+    private int idUsuario = 0;
     private ArrayList<Especialidad> especialidades;
     private Context context;
     private Button solicitarUnion;
     private HSolicitud hSolicitud;
-    public HSolicitud(Context context, Button solicitarUnion) {
-        this.context =context;
-        this.solicitarUnion=solicitarUnion;
-    }
+    private boolean eliminar;
+    private Date fechaActual;
 
-    public HSolicitud(int idProyecto, int idUsuario, ArrayList<Especialidad> especialidades, Context context, Button solicitarUnion) {
-        this.idProyecto = idProyecto;
+
+    public HSolicitud(boolean eliminar, Proyecto proyecto, int idUsuario, ArrayList<Especialidad> especialidades, Context context, Button solicitarUnion) {
+        this.proyecto = proyecto;
         this.idUsuario = idUsuario;
         this.especialidades = especialidades;
-        this.context =context;
-        this.solicitarUnion=solicitarUnion;
+        this.context = context;
+        this.solicitarUnion = solicitarUnion;
+        this.eliminar = eliminar;
+        this.fechaActual = new Date();
     }
+
     /**
      * Este método está para poder asignar a null la referencia de la hebra
      * para que el recolector de basura la elimine
+     *
      * @param hSolicitud
      */
     public void sethSolicitud(HSolicitud hSolicitud) {
@@ -49,16 +57,24 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
-        String descripcion=context.getString(R.string.descripcion_union);
-        for(Especialidad e: especialidades){
-            descripcion+=e.getNombre()+", ";
+        String descripcion = context.getString(R.string.descripcion_union);
+        for (Especialidad e : especialidades) {
+            descripcion += e.getNombre() + ", ";
         }
         String resultado = null;
         //Construyo el JSON
-        String unirse = "\"solicitudunion\":{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + idProyecto + "\",\"fecha\":\"" + new Date() + "\"" +
-                ",\"descripcion\":\"" + descripcion + "\"}";
-        //Recojo el resultado en un String
-        resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaUnion, unirse, "POST");
+        String unirse = "";
+        if (eliminar)
+            unirse = "\"solicitudunion\":{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + proyecto.getId() + "\"}";
+        else
+            unirse = "\"solicitudunion\":{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + proyecto.getId() + "\",\"fecha\":\"" + fechaActual + "\"" +
+                    ",\"descripcion\":\"" + descripcion + "\"}";
+
+        if (eliminar)
+            //Recojo el resultado en un String
+            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaUnion, unirse, "POST");
+        else
+            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarUnion, unirse, "POST");
 
         return resultado;
     }
@@ -81,6 +97,13 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
             try {
                 if (res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok") != 0)
                     reestablecerEstado();
+                else {
+                    Usuario usuario = Sesion.getUsuario(context);
+                    if (eliminar)
+                        usuario.getMisSolicitudes().remove(usuario.getMisSolicitudes().stream().filter(solicitudUnion -> solicitudUnion.getProyecto().getId() == proyecto.getId()).findFirst().get());
+                    else
+                        usuario.getMisSolicitudes().add(new SolicitudUnion(fechaActual, proyecto));
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
