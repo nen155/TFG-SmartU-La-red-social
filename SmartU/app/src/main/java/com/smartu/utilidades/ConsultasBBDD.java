@@ -30,6 +30,7 @@ public class ConsultasBBDD {
     public static final String eliminarBuenaIdea ="buenaIdea";
     public static final String insertaUnion ="union";
     public static final String eliminarUnion ="union";
+    public static final String insertaComentario ="comentario";
 
     public static String hacerConsulta(String urlREST, String parameters, String metodo) {
 

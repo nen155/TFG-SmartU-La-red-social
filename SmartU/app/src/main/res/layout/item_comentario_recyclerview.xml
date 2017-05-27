@@ -73,7 +73,7 @@
                 android:layout_gravity="left|center_vertical"
                 android:layout_margin="15dp"
                 android:layout_weight="0.3"
-                android:text="propietario"
+                android:text="Propietario"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="12sp" />
 

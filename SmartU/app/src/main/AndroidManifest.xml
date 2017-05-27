@@ -76,7 +76,13 @@
         <activity
             android:name=".vistas.ProyectoActivity"
             android:label="@string/title_activity_proyecto"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".vistas.VideoActivity" />
+        <activity android:name=".vistas.ImagenActivity" />
+        <activity android:name=".vistas.Imagen360Activity" />
+        <activity
+            android:name=".vistas.UsuarioActivity"
+            android:label="@string/title_activity_usuario"></activity>
     </application>
 
 </manifest>

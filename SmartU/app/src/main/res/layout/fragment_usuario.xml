@@ -1,0 +1,135 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/verificado"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/verificado"
+        android:layout_margin="16dp"
+        android:tint="#9ab44f"
+        android:visibility="gone"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.smartu.vistas.FragmentProyecto"
+    android:padding="16dp">
+    <TextView
+        android:id="@+id/text_nombre_completo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="Nombre Completo" />
+    <TextView
+        android:id="@+id/nombre_completo_usuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:text="Fernando Pérez López" />
+    <TextView
+        android:id="@+id/text_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="Status" />
+    <TextView
+        android:id="@+id/status_usuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:text="Creador" />
+    <TextView
+        android:id="@+id/text_especialidades"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="@string/especialidades" />
+    <com.ns.developer.tagview.widget.TagCloudLinkView
+        android:id="@+id/especialidades_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        app:isDeletable="false"
+        app:tagLayoutColor="@color/colorPrimaryLight"
+        app:tagTextSize="8sp"
+        app:tagTextColor="@color/white" />
+    <TextView
+        android:id="@+id/text_areas_interes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="@string/areas_interes" />
+    <com.ns.developer.tagview.widget.TagCloudLinkView
+        android:id="@+id/areas_interes_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        app:isDeletable="false"
+        app:tagLayoutColor="@color/colorPrimaryLight"
+        app:tagTextSize="8sp"
+        app:tagTextColor="@color/white" />
+    <TextView
+        android:id="@+id/text_web"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="Web"
+        />
+
+    <TextView
+        android:id="@+id/web_usuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:autoLink="web"
+        android:text="http://coloredmoon.com"
+        android:textSize="16sp" />
+    <TextView
+        android:id="@+id/text_redes_sociales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="Redes sociales" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/redesSociales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"/>
+    <TextView
+        android:id="@+id/text_biografia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/titulos_proyecto"
+        android:text="Biografía" />
+    <TextView
+        android:id="@+id/biografia_usuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:text="Lorem ipsum at dolor....." />
+
+</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

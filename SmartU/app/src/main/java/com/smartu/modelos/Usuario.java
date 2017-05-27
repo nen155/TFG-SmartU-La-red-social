@@ -1,7 +1,6 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import java.util.ArrayList;
 
@@ -21,7 +20,7 @@ public class Usuario extends Publicacion{
     private String localizacion;
     private String biografia;
     private String web;
-    private String imagenDestacada;
+    private String imagenPerfil;
     private boolean verificado;
     private boolean admin;
     private boolean activo;
@@ -31,7 +30,6 @@ public class Usuario extends Publicacion{
     private ArrayList<Especialidad> misEspecialidades;
     private ArrayList<Usuario> misSeguidos;
     private ArrayList<RedSocial> misRedesSociales;
-    private ArrayList<Multimedia> misArchivos;
     private ArrayList<SolicitudUnion> misSolicitudes;
     private Status miStatus;
 
@@ -59,16 +57,15 @@ public class Usuario extends Publicacion{
      * @param user
      * @param apellidos
      * @param email
-     * @param imagenDestacada
+     * @param imagenPerfil
      */
-    public Usuario(int id, String nombre,String user, String apellidos, String email, String imagenDestacada) {
+    public Usuario(int id, String nombre,String user, String apellidos, String email, String imagenPerfil) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.user=user;
         this.email = email;
-        this.imagenDestacada = imagenDestacada;
-        misArchivos = new ArrayList<>();
+        this.imagenPerfil = imagenPerfil;
         misAreasInteres = new ArrayList<>();
         misEspecialidades = new ArrayList<>();
         misProyectos = new ArrayList<>();
@@ -89,7 +86,7 @@ public class Usuario extends Publicacion{
         localizacion = in.readString();
         biografia = in.readString();
         web = in.readString();
-        imagenDestacada = in.readString();
+        imagenPerfil = in.readString();
         verificado = in.readByte() != 0;
         admin = in.readByte() != 0;
         activo = in.readByte() != 0;
@@ -98,7 +95,6 @@ public class Usuario extends Publicacion{
         misEspecialidades = in.createTypedArrayList(Especialidad.CREATOR);
         misSeguidos = in.createTypedArrayList(Usuario.CREATOR);
         misRedesSociales = in.createTypedArrayList(RedSocial.CREATOR);
-        misArchivos = in.createTypedArrayList(Multimedia.CREATOR);
         misSolicitudes = in.createTypedArrayList(SolicitudUnion.CREATOR);
         miStatus = in.readParcelable(Status.class.getClassLoader());
     }
@@ -219,12 +215,12 @@ public class Usuario extends Publicacion{
         this.activo = activo;
     }
 
-    public String getImagenDestacada() {
-        return imagenDestacada;
+    public String getImagenPerfil() {
+        return imagenPerfil;
     }
 
-    public void setImagenDestacada(String imagenDestacada) {
-        this.imagenDestacada = imagenDestacada;
+    public void setImagenPerfil(String imagenPerfil) {
+        this.imagenPerfil = imagenPerfil;
     }
 
     public ArrayList<Proyecto> getMisProyectos() {
@@ -266,14 +262,6 @@ public class Usuario extends Publicacion{
 
     public void setMisRedesSociales(ArrayList<RedSocial> misRedesSociales) {
         this.misRedesSociales = misRedesSociales;
-    }
-
-    public ArrayList<Multimedia> getMisArchivos() {
-        return misArchivos;
-    }
-
-    public void setMisArchivos(ArrayList<Multimedia> misArchivos) {
-        this.misArchivos = misArchivos;
     }
 
     public ArrayList<SolicitudUnion> getMisSolicitudes() {
@@ -319,7 +307,7 @@ public class Usuario extends Publicacion{
         dest.writeString(localizacion);
         dest.writeString(biografia);
         dest.writeString(web);
-        dest.writeString(imagenDestacada);
+        dest.writeString(imagenPerfil);
         dest.writeByte((byte) (verificado ? 1 : 0));
         dest.writeByte((byte) (admin ? 1 : 0));
         dest.writeByte((byte) (activo ? 1 : 0));
@@ -328,7 +316,6 @@ public class Usuario extends Publicacion{
         dest.writeTypedList(misEspecialidades);
         dest.writeTypedList(misSeguidos);
         dest.writeTypedList(misRedesSociales);
-        dest.writeTypedList(misArchivos);
         dest.writeTypedList(misSolicitudes);
         dest.writeParcelable(miStatus, flags);
     }

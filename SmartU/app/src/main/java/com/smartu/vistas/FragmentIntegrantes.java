@@ -81,9 +81,9 @@ public class FragmentIntegrantes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmen =inflater.inflate(R.layout.fragment_usuarios_recientes, container, false);
+        View fragmen =inflater.inflate(R.layout.fragment_integrantes_proyecto, container, false);
 
-        recyclerViewUsuarios = (RecyclerView) fragmen.findViewById(R.id.recyclerUsuarios);
+        recyclerViewUsuarios = (RecyclerView) fragmen.findViewById(R.id.recyclerIntegrantes);
 
 
         return fragmen;
@@ -111,7 +111,7 @@ public class FragmentIntegrantes extends Fragment {
             Usuario usuario = new Usuario();
             usuario.setId(-1);
             usuario.setNombre("Únete al proyecto");
-            usuario.setMiStatus(new Status(-1,"Vacante",0));
+            usuario.setMiStatus(new Status(-1,"Vacante",0,0));
             usuario.setMisEspecialidades(v.getEspecialidades());
             integrantesConVacantes.add(usuario);
         }

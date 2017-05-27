@@ -12,13 +12,38 @@ public class Multimedia implements Parcelable{
     private String nombre;
     private String url;
     private String tipo;
+    private String urlPreview;
+    private String urlSubtitulos;
 
-    public Multimedia(int id, String nombre, String url, String tipo) {
+    public Multimedia(int id, String nombre, String url, String tipo, String urlPreview, String urlSubtitulos) {
         this.id = id;
         this.nombre = nombre;
         this.url = url;
         this.tipo = tipo;
+        this.urlPreview = urlPreview;
+        this.urlSubtitulos = urlSubtitulos;
     }
+
+    protected Multimedia(Parcel in) {
+        id = in.readInt();
+        nombre = in.readString();
+        url = in.readString();
+        tipo = in.readString();
+        urlPreview = in.readString();
+        urlSubtitulos = in.readString();
+    }
+
+    public static final Creator<Multimedia> CREATOR = new Creator<Multimedia>() {
+        @Override
+        public Multimedia createFromParcel(Parcel in) {
+            return new Multimedia(in);
+        }
+
+        @Override
+        public Multimedia[] newArray(int size) {
+            return new Multimedia[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -52,24 +77,21 @@ public class Multimedia implements Parcelable{
         this.tipo = tipo;
     }
 
-    protected Multimedia(Parcel in) {
-        id = in.readInt();
-        nombre = in.readString();
-        url = in.readString();
-        tipo = in.readString();
+    public String getUrlPreview() {
+        return urlPreview;
     }
 
-    public static final Creator<Multimedia> CREATOR = new Creator<Multimedia>() {
-        @Override
-        public Multimedia createFromParcel(Parcel in) {
-            return new Multimedia(in);
-        }
+    public void setUrlPreview(String urlPreview) {
+        this.urlPreview = urlPreview;
+    }
 
-        @Override
-        public Multimedia[] newArray(int size) {
-            return new Multimedia[size];
-        }
-    };
+    public String getUrlSubtitulos() {
+        return urlSubtitulos;
+    }
+
+    public void setUrlSubtitulos(String urlSubtitulos) {
+        this.urlSubtitulos = urlSubtitulos;
+    }
 
     @Override
     public int describeContents() {
@@ -82,5 +104,7 @@ public class Multimedia implements Parcelable{
         dest.writeString(nombre);
         dest.writeString(url);
         dest.writeString(tipo);
+        dest.writeString(urlPreview);
+        dest.writeString(urlSubtitulos);
     }
 }

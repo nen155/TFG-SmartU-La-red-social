@@ -11,12 +11,35 @@ public class Status implements Parcelable {
     private int id;
     private String nombre;
     private int puntos;
+    //Este campo se consigue a través de contar el número de ocurrencias
+    //en la tabla seguidor
+    private int numSeguidores;
 
-    public Status(int id, String nombre, int puntos) {
+    public Status(int id, String nombre, int puntos, int numSeguidores) {
         this.id = id;
         this.nombre = nombre;
         this.puntos = puntos;
+        this.numSeguidores = numSeguidores;
     }
+
+    protected Status(Parcel in) {
+        id = in.readInt();
+        nombre = in.readString();
+        puntos = in.readInt();
+        numSeguidores = in.readInt();
+    }
+
+    public static final Creator<Status> CREATOR = new Creator<Status>() {
+        @Override
+        public Status createFromParcel(Parcel in) {
+            return new Status(in);
+        }
+
+        @Override
+        public Status[] newArray(int size) {
+            return new Status[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -42,23 +65,13 @@ public class Status implements Parcelable {
         this.puntos = puntos;
     }
 
-    protected Status(Parcel in) {
-        id = in.readInt();
-        nombre = in.readString();
-        puntos = in.readInt();
+    public int getNumSeguidores() {
+        return numSeguidores;
     }
 
-    public static final Creator<Status> CREATOR = new Creator<Status>() {
-        @Override
-        public Status createFromParcel(Parcel in) {
-            return new Status(in);
-        }
-
-        @Override
-        public Status[] newArray(int size) {
-            return new Status[size];
-        }
-    };
+    public void setNumSeguidores(int numSeguidores) {
+        this.numSeguidores = numSeguidores;
+    }
 
     @Override
     public int describeContents() {
@@ -70,5 +83,6 @@ public class Status implements Parcelable {
         dest.writeInt(id);
         dest.writeString(nombre);
         dest.writeInt(puntos);
+        dest.writeInt(numSeguidores);
     }
 }

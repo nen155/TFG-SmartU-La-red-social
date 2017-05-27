@@ -30,6 +30,7 @@ public class FragmentProyecto extends Fragment {
     private Proyecto proyecto;
 
 
+
     public FragmentProyecto() {
         // Required empty public constructor
     }
@@ -76,6 +77,7 @@ public class FragmentProyecto extends Fragment {
         for (Area a : proyecto.getMisAreas()) {
             areasProyecto.add(new Tag(a.getId(), a.getNombre()));
         }
+
 
         return inflatedView;
     }

@@ -14,14 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.smartu.R;
-import com.smartu.modelos.Area;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
@@ -43,11 +36,13 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
     //Por defecto esta seleccionado el muro porque es lo primero que ve el usuario
     private static int itemMenuSeleccionado=R.id.navigation_muro;
     private FloatingActionsMenu filtros;
+    private Usuario usuarioSesion=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        usuarioSesion =Sesion.getUsuario(getApplicationContext());
         Bundle bundle = getIntent().getExtras();
         //Obtengo las publicaciones cargadas durante el splashscreen
         if(bundle!=null) {
@@ -57,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
             comentarios = bundle.getParcelableArrayList("comentarios");
             //Si ha iniciado sesión el usuario filtro los arrays para
             //poder mostrarlos en el fragment Intereses
-            if(Sesion.getUsuario(getBaseContext())!=null) {
+            if(usuarioSesion!=null) {
                 proyectosFiltrados = proyectosFiltrados();
                 notificacionesFiltradas = notificacionsFiltradas();
                 comentariosFiltrados = comentariosFiltrados();
@@ -218,34 +213,33 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
 
     @Override
     public void onUsuarioSeleccionado( Usuario usuario) {
-        /*Intent intent = new Intent(getApplicationContext(),UsuarioActivity.class);
-        intent.putExtra("proyecto",usuario);
-        startActivity(intent);*/
+        Intent intent = new Intent(getApplicationContext(),UsuarioActivity.class);
+        intent.putExtra("usuario",usuario);
+        startActivity(intent);
     }
 
     @Override
     public void onProyectoSeleccionadoMapa(Proyecto proyecto) {
-        /*Intent intent = new Intent(getApplicationContext(),ProyectoActivity.class);
+        Intent intent = new Intent(getApplicationContext(),ProyectoActivity.class);
         intent.putExtra("proyecto",proyecto);
-        startActivity(intent);*/
+        startActivity(intent);
     }
     /**
      * Filtra los proyectos por intereses y por usuarios seguidos
      * @return
      */
     private ArrayList<Proyecto> proyectosFiltrados(){
-        Usuario usuario = Sesion.getUsuario(getBaseContext());
         //Sino tengo proyectos o gente que siga y areas de interes devuelvo los proyectos como estan
-        if(proyectos.isEmpty() || (usuario.getMisSeguidos().isEmpty() && usuario.getMisAreasInteres().isEmpty()))
+        if(proyectos.isEmpty() || (usuarioSesion.getMisSeguidos().isEmpty() && usuarioSesion.getMisAreasInteres().isEmpty()))
             return proyectos;
 
         Stream<Proyecto> proyectoStream = proyectos.stream()
                 .filter(
                 proyecto -> proyecto.getMisAreas().stream()
-                        .anyMatch(area -> usuario.getMisAreasInteres().stream()
+                        .anyMatch(area -> usuarioSesion.getMisAreasInteres().stream()
                                 .anyMatch(areaU -> areaU.getNombre().compareTo(area.getNombre()) == 0))
                         ||
-                        usuario.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1.getId() == usuario.getId())
+                        usuarioSesion.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1.getId() == usuarioSesion.getId())
                 );
         Proyecto[] proyectos = proyectoStream.toArray(Proyecto[]::new);
 
@@ -257,16 +251,15 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
      * @return
      */
     private ArrayList<Notificacion> notificacionsFiltradas(){
-        Usuario usuario = Sesion.getUsuario(getBaseContext());
         //Sino tengo proyectos o no tengo notificaciones gente que siga y areas de interes devuelvo los proyectos como estan
-        if(proyectosFiltrados.isEmpty() || notificaciones.isEmpty() || usuario.getMisSeguidos().isEmpty())
+        if(proyectosFiltrados.isEmpty() || notificaciones.isEmpty() || usuarioSesion.getMisSeguidos().isEmpty())
             return notificaciones;
 
        return new ArrayList<Notificacion>(Arrays.asList(notificaciones.stream()
                .filter(notificacion -> proyectosFiltrados.stream()
                        .anyMatch(proyecto -> proyecto.getId()== notificacion.getProyecto().getId())
                                ||
-                               usuario.getMisSeguidos().stream()
+                               usuarioSesion.getMisSeguidos().stream()
                                        .anyMatch(usuario1 -> usuario1.getId() == notificacion.getUsuario().getId())
                         )
                .toArray(Notificacion[]::new)
@@ -278,28 +271,30 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
      * @return
      */
     private ArrayList<Comentario> comentariosFiltrados(){
-        Usuario usuario = Sesion.getUsuario(getBaseContext());
         //Sino tengo proyectos o no tengo notificaciones gente que siga y areas de interes devuelvo los proyectos como estan
-        if(proyectosFiltrados.isEmpty() || comentarios.isEmpty() || usuario.getMisSeguidos().isEmpty())
+        if(proyectosFiltrados.isEmpty() || comentarios.isEmpty() || usuarioSesion.getMisSeguidos().isEmpty())
             return comentarios;
 
         return new ArrayList<Comentario>(Arrays.asList(comentarios.stream()
                 .filter(comentario -> proyectosFiltrados.stream()
                         .anyMatch(proyecto -> proyecto.getId()== comentario.getProyecto().getId())
                         ||
-                        usuario.getMisSeguidos().stream()
+                        usuarioSesion.getMisSeguidos().stream()
                                 .anyMatch(usuario1 -> usuario1.getId() == comentario.getUsuario().getId())
                 )
                 .toArray(Comentario[]::new)));
     }
 
+    /**
+     * Filtra los usuarios por seguidores
+     * @return
+     */
     private ArrayList<Usuario> usuariosFiltrados(){
-        Usuario usuario = Sesion.getUsuario(getBaseContext());
         //Si no tengo gente a la que sigo devuelvo el array como esta
-        if(usuario.getMisSeguidos().isEmpty())
+        if(usuarioSesion.getMisSeguidos().isEmpty())
             return usuarios;
         else
-            return usuario.getMisSeguidos();
+            return usuarioSesion.getMisSeguidos();
     }
 
 

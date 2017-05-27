@@ -1,22 +1,28 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
-import android.os.Parcelable;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
-
+@JsonIgnoreProperties({"usuario","proyecto"})
 public class Comentario extends Publicacion {
     private int id;
     private String descripcion;
     private Date fecha;
+    private int idProyecto;
+    private int idUsuario;
     private Usuario usuario;
     private Proyecto proyecto;
 
+    public Comentario(){
 
+    }
     public Comentario(int id, String descripcion, Date fecha, Usuario usuario, Proyecto proyecto) {
         this.id = id;
         this.descripcion = descripcion;
@@ -31,6 +37,8 @@ public class Comentario extends Publicacion {
         usuario = in.readParcelable(Usuario.class.getClassLoader());
         proyecto = in.readParcelable(Proyecto.class.getClassLoader());
         fecha = new Date(in.readLong());
+        idProyecto = in.readInt();
+        idUsuario = in.readInt();
     }
 
     public static final Creator<Comentario> CREATOR = new Creator<Comentario>() {
@@ -85,6 +93,22 @@ public class Comentario extends Publicacion {
         this.proyecto = proyecto;
     }
 
+    public int getIdProyecto() {
+        return idProyecto;
+    }
+
+    public void setIdProyecto(int idProyecto) {
+        this.idProyecto = idProyecto;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -97,5 +121,7 @@ public class Comentario extends Publicacion {
         dest.writeParcelable(usuario, flags);
         dest.writeParcelable(proyecto, flags);
         dest.writeLong(fecha.getTime());
+        dest.writeInt(idProyecto);
+        dest.writeInt(idUsuario);
     }
 }

@@ -54,7 +54,9 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.smartu.vistas.ProyectoActivity">
+        tools:context="com.smartu.vistas.ProyectoActivity"
+        android:fillViewport="true"
+        android:layout_marginBottom="95dp">
 
         <include layout="@layout/content_proyecto" />
 
@@ -84,7 +86,16 @@
         app:layout_anchor="@+id/proyecto_nested"
         app:layout_anchorGravity="right|end" />
 
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/comentar_proyecto_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="60dp"
+        android:src="@drawable/comentar"
+        app:fabSize="normal"/>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_proyecto"

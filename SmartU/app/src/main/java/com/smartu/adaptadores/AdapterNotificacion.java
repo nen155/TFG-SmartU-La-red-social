@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.smartu.R;
 import com.smartu.modelos.Notificacion;
 import com.smartu.vistas.ProyectoActivity;
+import com.smartu.vistas.UsuarioActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -118,9 +119,9 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 	private void cargaElemento(){
 			if(notificacion.getUsuario()!=null){
 				//TODO CUANDO ESTE HECHA LA ACTIVITY USUARIO
-				/*Intent intent = new Intent(context,UsuarioActivity.class);
-				intent.putExtra("usuario",notificacion.getPropietario());
-				startActivity(intent);*/
+				Intent intent = new Intent(context,UsuarioActivity.class);
+				intent.putExtra("usuario",notificacion.getUsuario());
+				context.startActivity(intent);
 			}else if(notificacion.getProyecto()!=null) {
 				Intent intent = new Intent(context,ProyectoActivity.class);
 				intent.putExtra("proyecto",notificacion.getProyecto());

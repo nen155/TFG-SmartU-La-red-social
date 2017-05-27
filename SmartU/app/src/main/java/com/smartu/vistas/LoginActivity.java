@@ -189,7 +189,12 @@ public class LoginActivity extends AppCompatActivity {
             mLoginFormView.setVisibility(mostrar ? View.GONE : View.VISIBLE);
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * HERBA LOGIN
+     * Esta hebra va a quedarse en esta clase porque es intrínseca a ella y sólo se llama aquí
+     */
+    //////////////////////////////////////////////////////////////////////////////////////////
     private class HLogin  extends AsyncTask<Void, Void, Boolean> {
 
         private Usuario usuario;

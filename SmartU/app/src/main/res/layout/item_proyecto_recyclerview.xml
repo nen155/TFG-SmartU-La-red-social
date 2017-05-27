@@ -60,10 +60,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:layout_weight="0.9"
+                    android:layout_weight="0.7"
                     android:text="propietario"
                     android:textColor="@color/colorPrimaryLight" />
-
+                <TextView
+                    android:id="@+id/buenaidea_contador_proyecto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_buenaidea"
+                    android:text="100"
+                    android:layout_weight="0.1"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"/>
                 <ImageView
                     android:id="@+id/img_idea_proyecto"
                     android:layout_width="35dp"

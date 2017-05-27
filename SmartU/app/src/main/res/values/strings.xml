@@ -47,5 +47,11 @@
     <string name="solicitado_unio_proyecto">Solicitado</string>
     <string name="descripcion_union">Quiero unirme para estas especialidades:</string>
     <string name="unirse">Unirse</string>
+    <string name="comenta">Comenta...</string>
+    <string name="enviar">Enviar</string>
+    <string name="title_activity_usuario">UsuarioActivity</string>
+    <string name="perfil">Perfil</string>
+    <string name="proyectos">Proyectos</string>
+    <string name="areas_interes">Areas de interés</string>
 
 </resources>
