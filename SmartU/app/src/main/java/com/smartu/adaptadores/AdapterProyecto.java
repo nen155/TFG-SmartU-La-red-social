@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,17 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 	private Proyecto proyecto;
 	private Usuario usuarioSesion;
 
+	//Es el número total de elementos que hay en el server
+	//tengo que recogerlo de las hebras de consulta
+	private int totalElementosServer = -1;
 
+	// Dos tipos de vistas para saber si es un ProgressBar lo que muestro o la vista normal
+	public static final int VIEW_TYPE_LOADING = 0;
+	public static final int VIEW_TYPE_ACTIVITY = 1;
+
+	public void setTotalElementosServer(int totalElementosServer) {
+		this.totalElementosServer = totalElementosServer;
+	}
 	public AdapterProyecto(Context context, ArrayList<Proyecto> items, FragmentProyectos.OnProyectoSelectedListener onProyectoSelectedListener) {
 		super();
 		this.context = context;
@@ -49,7 +60,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 	// ViewHolder are used to to store the inflated views in order to recycle them
 
 	public static class ViewHolder extends RecyclerView.ViewHolder {
-
+		int tipoView;
 		TextView nombreProyecto;
 		TextView descripcionProyecto;
 		TextView contadorBuenaIdea;
@@ -59,99 +70,131 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 
 		public ViewHolder(View itemView, int viewType) {
 			super(itemView);
+			if(viewType==VIEW_TYPE_ACTIVITY) {
 			nombreProyecto = (TextView) itemView.findViewById(R.id.nombre_usuario);
 			descripcionProyecto = (TextView) itemView.findViewById(R.id.descripcion_proyecto);
 			contadorBuenaIdea =  (TextView) itemView.findViewById(R.id.buenaidea_contador_proyecto);
 			imgProyecto = (ImageView) itemView.findViewById(R.id.img_proyecto);
 			nombreUsuario = (Button) itemView.findViewById(R.id.nombre_usuario_proyecto);
 			imgBuenaIdea =(ImageView) itemView.findViewById(R.id.img_idea_proyecto);
+				tipoView=1;
+			}else{
+				tipoView=0;
+			}
 		}
 
 	}
 
 	@Override
 	public AdapterProyecto.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_proyecto_recyclerview,parent,false); //Inflating the layout
+		if (viewType == VIEW_TYPE_LOADING) {
+			View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress,parent,false);
 
-		ViewHolder vhItem = new ViewHolder(v,viewType);
+			ViewHolder vhBottom = new ViewHolder(v,viewType);
 
-		return vhItem;
+			if (vhBottom.getAdapterPosition() >= totalElementosServer && totalElementosServer > 0)
+			{
+				// the ListView has reached the last row
+				TextView tvLastRow = new TextView(context);
+				tvLastRow.setHint("No hay más elementos.");
+				tvLastRow.setGravity(Gravity.CENTER);
+				ViewHolder vhUltimo = new ViewHolder(tvLastRow,viewType);
+				return vhUltimo;
+			}
+
+			return vhBottom;
+		}else {
+			View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_proyecto_recyclerview, parent, false); //Inflating the layout
+
+			ViewHolder vhItem = new ViewHolder(v, viewType);
+
+			return vhItem;
+		}
 	}
 
 	@Override
 	public void onBindViewHolder(AdapterProyecto.ViewHolder holder, int position) {
-		proyecto = (Proyecto)this.proyectos.get(position);
-		Picasso.with(context).load(ConsultasBBDD.server+proyecto.getImagenDestacada()).into(holder.imgProyecto);
-		holder.nombreProyecto.setText(proyecto.getNombre());
-		if(proyecto.getDescripcion().length()>150){
-			holder.descripcionProyecto.setText(proyecto.getDescripcion().substring(0,150)+"...");
-		}else
-			holder.descripcionProyecto.setText(proyecto.getDescripcion());
+		//Sino es el último elemento ni es un progress bar pues muestro el elemento que me toca
+		if(holder.tipoView==1) {
+			proyecto = (Proyecto) this.proyectos.get(position);
+			Picasso.with(context).load(ConsultasBBDD.server + proyecto.getImagenDestacada()).into(holder.imgProyecto);
+			holder.nombreProyecto.setText(proyecto.getNombre());
+			if (proyecto.getDescripcion().length() > 150) {
+				holder.descripcionProyecto.setText(proyecto.getDescripcion().substring(0, 150) + "...");
+			} else
+				holder.descripcionProyecto.setText(proyecto.getDescripcion());
 
-		//TODO Para cuando cargue usuarios
-		//holder.nombreUsuario.setText(proyecto.getPropietario().getNombre());
+			//TODO Para cuando cargue usuarios
+			//holder.nombreUsuario.setText(proyecto.getPropietario().getNombre());
 
-		holder.imgProyecto.setOnClickListener(cargaProyecto());
-		holder.descripcionProyecto.setOnClickListener(cargaProyecto());
-		holder.nombreProyecto.setOnClickListener(cargaProyecto());
+			holder.imgProyecto.setOnClickListener(cargaProyecto());
+			holder.descripcionProyecto.setOnClickListener(cargaProyecto());
+			holder.nombreProyecto.setOnClickListener(cargaProyecto());
 
-		//Cargo las preferencias del usuario si tuviese sesión
-		cargarPreferenciasUsuario(holder.imgBuenaIdea);
+			//Cargo las preferencias del usuario si tuviese sesión
+			cargarPreferenciasUsuario(holder.imgBuenaIdea);
 
-		holder.imgBuenaIdea.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				HBuenaIdea hBuenaIdea;
-				usuarioSesion = Sesion.getUsuario(context);
-				//Si el usuario ha iniciado sesión
-				if (usuarioSesion != null) {
-					//Actualizo el botón
-					holder.imgBuenaIdea.setPressed(!holder.imgBuenaIdea.isPressed());
-					//Compruebo como ha quedado su estado después de hacer click
-					if (holder.imgBuenaIdea.isPressed()) {
-						holder.imgBuenaIdea.setImageResource(R.drawable.buenaidea);
-						Toast.makeText(context,"Genial!, este proyecto te parece buena idea!",Toast.LENGTH_SHORT).show();
-						//Inicializo la hebra con false pues voy a añadir una nueva idea
-						hBuenaIdea = new HBuenaIdea(false,context,proyecto,holder.imgBuenaIdea,holder.contadorBuenaIdea);
-						//Para poder poner la referencia a null cuando termine la hebra
-						hBuenaIdea.sethBuenaIdea(hBuenaIdea);
+			holder.imgBuenaIdea.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					HBuenaIdea hBuenaIdea;
+					usuarioSesion = Sesion.getUsuario(context);
+					//Si el usuario ha iniciado sesión
+					if (usuarioSesion != null) {
+						//Actualizo el botón
+						holder.imgBuenaIdea.setPressed(!holder.imgBuenaIdea.isPressed());
+						//Compruebo como ha quedado su estado después de hacer click
+						if (holder.imgBuenaIdea.isPressed()) {
+							holder.imgBuenaIdea.setImageResource(R.drawable.buenaidea);
+							Toast.makeText(context, "Genial!, este proyecto te parece buena idea!", Toast.LENGTH_SHORT).show();
+							//Inicializo la hebra con false pues voy a añadir una nueva idea
+							hBuenaIdea = new HBuenaIdea(false, context, proyecto, holder.imgBuenaIdea, holder.contadorBuenaIdea);
+							//Para poder poner la referencia a null cuando termine la hebra
+							hBuenaIdea.sethBuenaIdea(hBuenaIdea);
+						} else {
+							holder.imgBuenaIdea.setImageResource(R.drawable.idea);
+							Toast.makeText(context, "¿Ya no te parece buena idea?", Toast.LENGTH_SHORT).show();
+							//Inicializo la hebra con true para eliminar la buena idea de la BD.
+							hBuenaIdea = new HBuenaIdea(true, context, proyecto, holder.imgBuenaIdea, holder.contadorBuenaIdea);
+							//Para poder poner la referencia a null cuando termine la hebra
+							hBuenaIdea.sethBuenaIdea(hBuenaIdea);
+						}
+						hBuenaIdea.execute();
+					} else {
+						Intent intent = new Intent(context, LoginActivity.class);
+						context.startActivity(intent);
 					}
-					else {
-						holder.imgBuenaIdea.setImageResource(R.drawable.idea);
-						Toast.makeText(context,"¿Ya no te parece buena idea?",Toast.LENGTH_SHORT).show();
-						//Inicializo la hebra con true para eliminar la buena idea de la BD.
-						hBuenaIdea = new HBuenaIdea(true,context,proyecto,holder.imgBuenaIdea,holder.contadorBuenaIdea);
-						//Para poder poner la referencia a null cuando termine la hebra
-						hBuenaIdea.sethBuenaIdea(hBuenaIdea);
-					}
-					hBuenaIdea.execute();
 				}
-				else
-				{
-					Intent intent = new Intent(context, LoginActivity.class);
+			});
+
+			holder.nombreUsuario.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(context, UsuarioActivity.class);
+					intent.putExtra("usuario", proyecto.getPropietario());
 					context.startActivity(intent);
 				}
-			}
-		});
-
-		holder.nombreUsuario.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(context,UsuarioActivity.class);
-				intent.putExtra("usuario",proyecto.getPropietario());
-				context.startActivity(intent);
-			}
-		});
+			});
+		}
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return ((Proyecto)proyectos.get(position)).getId();
+		return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? proyectos.get(position).getId()
+				: -1;
+	}
+	/**
+	 * Devuelve el tipo de fila,
+	 * El ultimo elemento es el de loading
+	 */
+	@Override
+	public int getItemViewType(int position) {
+		return (position >= proyectos.size()) ? VIEW_TYPE_LOADING : VIEW_TYPE_ACTIVITY;
 	}
 
 	@Override
 	public int getItemCount() {
-		return proyectos.size();
+		return proyectos.size()+1;
 	}
 
 
@@ -177,6 +220,9 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 				imgBuenaIdea.setImageResource(R.drawable.buenaidea);
 		}
 	}
-
+	public void addItem(Proyecto pushMessage) {
+		proyectos.add(pushMessage);
+		notifyItemInserted(0);
+	}
 
 }

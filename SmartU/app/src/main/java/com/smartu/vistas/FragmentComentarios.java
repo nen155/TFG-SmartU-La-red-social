@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterComentario;
+import com.smartu.hebras.HComentarios;
 import com.smartu.modelos.Comentario;
+import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
@@ -28,7 +30,11 @@ public class FragmentComentarios extends Fragment {
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_COMENTARIOS = "comentarios";
     private RecyclerView recyclerViewComentarios;
+    //Va hacer de listener para cuando llegue al final del RecyclerView
+    //y necesite cargar más elementos
+    private EndlessRecyclerViewScrollListener scrollListener;
 
+    private AdapterComentario adapterComentario;
 
     public FragmentComentarios() {
         // Constructor vacío es necesario
@@ -67,14 +73,33 @@ public class FragmentComentarios extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewComentarios = (RecyclerView) fragmen.findViewById(R.id.recyclerComentarios);
         recyclerViewComentarios.setLayoutManager(llm);
-
+        // Guardo la instancia para poder llamar a `resetState()` para nuevas busquedas
+        scrollListener = new EndlessRecyclerViewScrollListener(llm) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // El evento sólo se provoca cuando necesito añadir más elementos
+                cargarMasComentarios(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recyclerViewComentarios.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterComentario.setTotalElementosServer(comentarios.size());
         return fragmen;
     }
+    public void cargarMasComentarios(int offset) {
+        HComentarios hComentarios = new HComentarios(adapterComentario,offset);
+        hComentarios.sethComentarios(hComentarios);
+        hComentarios.execute();
+    }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerViewComentarios.setAdapter(new AdapterComentario(getContext(), comentarios));
+        adapterComentario= new AdapterComentario(getContext(), comentarios);
+        recyclerViewComentarios.setAdapter(adapterComentario);
     }
 
     @Override
@@ -85,7 +110,6 @@ public class FragmentComentarios extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-
     }
 
 }

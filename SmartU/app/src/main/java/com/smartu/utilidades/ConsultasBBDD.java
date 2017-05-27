@@ -17,12 +17,17 @@ import java.net.URL;
 public class ConsultasBBDD {
 
 
-    public static String server ="http://coloredmoon.com:2424";
+    public static String server ="http://coloredmoon.com:2424/";
 
 
     //Consultas
-    public static final String consultaLogin = "/api/content_type/";
-    public static final String consultaPublicaciones ="/api/content/type";
+    public static final String consultaLogin = "api/content_type/";
+    public static final String consultaPublicaciones ="api/content/type";
+    public static final String consultaProyectos ="api/content/type";
+    public static final String consultaUsuarios ="api/content/type";
+    public static final String consultaMultimedia ="api/content/type";
+    public static final String consultaNotificaciones ="api/content/type";
+    public static final String consultaComentarios ="api/content/type";
     //Inserciones y eliminaciones
     public static final String insertaSeguidor ="seguidor";
     public static final String eliminarSeguidor ="seguidor";
@@ -73,7 +78,6 @@ public class ConsultasBBDD {
                         String linea;
 
                         while ((linea = br.readLine())!= null){
-
                             sb.append(linea);
                         }
 

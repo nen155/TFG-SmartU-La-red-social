@@ -20,10 +20,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterComentarioProyecto;
+import com.smartu.hebras.HComentarios;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
+import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 import com.smartu.utilidades.Sesion;
 import com.squareup.picasso.Picasso;
 
@@ -54,7 +56,9 @@ public class FragmentComentariosProyecto extends Fragment {
     private Proyecto proyectoOrigen=null;
     private AdapterComentarioProyecto adapterComentarioProyecto;
     private HComentar hComentar;
-
+    //Va hacer de listener para cuando llegue al final del RecyclerView
+    //y necesite cargar más elementos
+    private EndlessRecyclerViewScrollListener scrollListener;
 
 
     public FragmentComentariosProyecto() {
@@ -100,8 +104,28 @@ public class FragmentComentariosProyecto extends Fragment {
         textoComentario =(EditText) fragmen.findViewById(R.id.text_comentario);
         circleImageView = (CircleImageView) fragmen.findViewById(R.id.img_usuario_comentario);
         usuario =Sesion.getUsuario(getContext());
+
+        // Guardo la instancia para poder llamar a `resetState()` para nuevas busquedas
+        scrollListener = new EndlessRecyclerViewScrollListener(llm) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // El evento sólo se provoca cuando necesito añadir más elementos
+                cargarMasComentarios(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recyclerViewComentarios.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterComentarioProyecto.setTotalElementosServer(comentarios.size());
         return fragmen;
     }
+    public void cargarMasComentarios(int offset) {
+        HComentarios hComentarios = new HComentarios(adapterComentarioProyecto,offset);
+        hComentarios.sethComentarios(hComentarios);
+        hComentarios.execute();
+    }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -150,11 +174,11 @@ public class FragmentComentariosProyecto extends Fragment {
     ///////////////////////////////////////////////////////////////////////////////////////
     /*
      * HEBRAS
+     * Inserta un comentario nuevo, sólo se insertan comentarios aquí por lo que la hebra
+     * la mantendré en este fragment, si cambiase puede añadirse al paquete hebras
      */
     ///////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Hebra para insertar el seguidor
-     */
+
     private class HComentar extends AsyncTask<Void, Void, String> {
 
         private Comentario comentario;
@@ -202,6 +226,8 @@ public class FragmentComentariosProyecto extends Fragment {
                 try {
                     if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")!=0)
                         Toast.makeText(getContext(),"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
+                    else //Añado el comentario al top del adapter y lo actualizo
+                        adapterComentarioProyecto.addItemTop(comentario);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

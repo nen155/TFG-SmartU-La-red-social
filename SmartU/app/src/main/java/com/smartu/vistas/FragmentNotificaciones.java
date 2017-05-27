@@ -201,7 +201,7 @@ public class FragmentNotificaciones extends Fragment {
     }
 
     /**
-     * Cambia la visibilidad del mensaje de notificaciones y del RecyclerView
+     * Cambia la visibilidad del mensaje de qeu NO hay notificaciones en el RecyclerView
      * @param empty
      */
     public void muestraSinNotificaciones(boolean empty) {

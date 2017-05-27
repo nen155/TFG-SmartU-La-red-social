@@ -85,7 +85,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                     "\"usuarios\":[]" +
                     "}" +
                     "}";
-//            String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"","GET");
+            //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
+            //String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\"0\"}","POST");
             JSONObject res =null;
             ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
             try {
