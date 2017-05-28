@@ -18,9 +18,11 @@ import android.widget.LinearLayout;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterNotificacion;
+import com.smartu.hebras.HNotificaciones;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
+import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +51,9 @@ public class FragmentNotificaciones extends Fragment {
     private LinearLayout mNoNotificacionView;
     //Cargo la referencia al FCM
     private final FirebaseMessaging mFCMInteractor = FirebaseMessaging.getInstance();
+    //Va hacer de listener para cuando llegue al final del RecyclerView
+    //y necesite cargar más elementos
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     public FragmentNotificaciones() {
         // Constructor vacío es necesario
@@ -106,7 +111,7 @@ public class FragmentNotificaciones extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                guardaNovedad(notificacion);
+                guardaNotificacion(notificacion);
             }
         };
     }
@@ -122,11 +127,32 @@ public class FragmentNotificaciones extends Fragment {
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewNotificacion.setLayoutManager(llm);
-
+        // Guardo la instancia para poder llamar a `resetState()` para nuevas busquedas
+        scrollListener = new EndlessRecyclerViewScrollListener(llm) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // El evento sólo se provoca cuando necesito añadir más elementos
+                cargarMasNotificaciones(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recyclerViewNotificacion.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterNotificacion.setTotalElementosServer(notificaciones.size());
 
         return fragmen;
     }
-
+    /**
+     * Carga hasta 10 comentarios si hubiese a partir del offset
+     * que le ofrece el método LoadMore
+     * @param offset
+     */
+    public void cargarMasNotificaciones(int offset) {
+        HNotificaciones hNotificaciones = new HNotificaciones(adapterNotificacion,offset);
+        hNotificaciones.sethNotificaciones(hNotificaciones);
+        hNotificaciones.execute();
+    }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -186,7 +212,7 @@ public class FragmentNotificaciones extends Fragment {
      * Añade una notificacion al ArrayList y la pone al principio del RecyclerView
      * @param notificacion
      */
-    public void guardaNovedad(Notificacion notificacion) {
+    public void guardaNotificacion(Notificacion notificacion) {
         notificaciones.add(notificacion);
         muestraSinNotificaciones(false);
         addNotificacionTop(notificacion);

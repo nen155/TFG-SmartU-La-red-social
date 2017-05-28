@@ -13,5 +13,31 @@
         android:horizontalSpacing="5dp"
         android:stretchMode="columnWidth"
         android:gravity="center"/>
+    <LinearLayout
+        android:id="@+id/noMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        tools:visibility="gone">
 
+        <ImageView
+            android:id="@+id/noMessagesIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:src="@drawable/comentario"
+            android:tint="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/noMessagesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="No hay comentarios aun"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+    </LinearLayout>
 </LinearLayout>

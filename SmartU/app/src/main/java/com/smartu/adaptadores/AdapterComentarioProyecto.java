@@ -30,8 +30,8 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
     private int totalElementosServer = -1;
 
     // Dos tipos de vistas para saber si es un ProgressBar lo que muestro o la vista normal
-    public static final int VIEW_TYPE_LOADING = 0;
-    public static final int VIEW_TYPE_ACTIVITY = 1;
+    private static final int VIEW_TYPE_LOADING = 0;
+    private static final int VIEW_TYPE_ACTIVITY = 1;
 
     public void setTotalElementosServer(int totalElementosServer) {
         this.totalElementosServer = totalElementosServer;

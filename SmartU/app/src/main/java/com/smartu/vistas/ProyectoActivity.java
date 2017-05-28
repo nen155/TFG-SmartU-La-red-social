@@ -171,7 +171,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
-                    swicthTo = FragmentMultimedia.newInstance(proyecto.getMisArchivos());
+                    swicthTo = FragmentMultimedia.newInstance(proyecto.getMisArchivos(),proyecto.getId());
                     break;
             }
             if(swicthTo!=null){

@@ -38,7 +38,6 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     private Button seguirUsuarioEditable;
     private TextView seguidoresUsuarioEditable;
     private Proyecto proyecto;
-
     //Es el número total de elementos que hay en el server
     //tengo que recogerlo de las hebras de consulta
     private int totalElementosServer = -1;
@@ -106,11 +105,11 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
             return vhBottom;
         }else {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_integrante_recyclerview, parent, false); //Inflating the layout
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_integrante_recyclerview, parent, false); //Inflating the layout
 
-            ViewHolder vhItem = new ViewHolder(v, viewType);
+        ViewHolder vhItem = new ViewHolder(v, viewType);
 
-            return vhItem;
+        return vhItem;
         }
     }
 
@@ -178,7 +177,6 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     public int getItemViewType(int position) {
         return (position >= usuarios.size()) ? VIEW_TYPE_LOADING : VIEW_TYPE_ACTIVITY;
     }
-
 
     @Override
     public int getItemCount() {

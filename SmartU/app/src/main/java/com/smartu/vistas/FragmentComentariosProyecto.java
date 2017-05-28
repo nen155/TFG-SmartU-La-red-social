@@ -120,9 +120,16 @@ public class FragmentComentariosProyecto extends Fragment {
         adapterComentarioProyecto.setTotalElementosServer(comentarios.size());
         return fragmen;
     }
+
+    /**
+     * Carga hasta 10 comentarios si hubiese a partir del offset
+     * que le ofrece el método LoadMore
+     * @param offset
+     */
     public void cargarMasComentarios(int offset) {
         HComentarios hComentarios = new HComentarios(adapterComentarioProyecto,offset);
         hComentarios.sethComentarios(hComentarios);
+        hComentarios.setIdProyecto(comentarios.get(0).getProyecto().getId());
         hComentarios.execute();
     }
 
@@ -141,6 +148,7 @@ public class FragmentComentariosProyecto extends Fragment {
             public void onClick(View v) {
                 //Si tengo usuario envio el comentario
                 if(usuario!=null){
+                    //Si tengo texto intento enviar
                     if(textoComentario.getText().length()>0) {
                         Comentario comentario = new Comentario();
                         comentario.setId(0);
@@ -148,7 +156,7 @@ public class FragmentComentariosProyecto extends Fragment {
                         comentario.setIdUsuario(usuario.getId());
                         comentario.setIdProyecto(proyectoOrigen.getId());
                         hComentar = new HComentar(comentario);
-                    }else
+                    }else //sino le devuelvo el foco
                     {
                         textoComentario.requestFocus();
                     }

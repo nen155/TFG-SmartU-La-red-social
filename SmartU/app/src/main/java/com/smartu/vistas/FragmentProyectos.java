@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterProyecto;
+import com.smartu.hebras.HProyectos;
 import com.smartu.modelos.Proyecto;
+import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
@@ -33,6 +35,9 @@ public class FragmentProyectos extends Fragment {
     private RecyclerView recyclerViewProyectos;
     private AdapterProyecto adapterProyecto;
     private OnProyectoSelectedListener mListener;
+    //Va hacer de listener para cuando llegue al final del RecyclerView
+    //y necesite cargar más elementos
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     public FragmentProyectos() {
         // Constructor vacío es necesario
@@ -71,10 +76,31 @@ public class FragmentProyectos extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewProyectos = (RecyclerView) fragmen.findViewById(R.id.recyclerProyectos);
         recyclerViewProyectos.setLayoutManager(llm);
-
+        // Guardo la instancia para poder llamar a `resetState()` para nuevas busquedas
+        scrollListener = new EndlessRecyclerViewScrollListener(llm) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // El evento sólo se provoca cuando necesito añadir más elementos
+                cargarMasProyectos(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recyclerViewProyectos.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterProyecto.setTotalElementosServer(proyectos.size());
         return fragmen;
     }
-
+    /**
+     * Carga hasta 10 comentarios si hubiese a partir del offset
+     * que le ofrece el método LoadMore
+     * @param offset
+     */
+    public void cargarMasProyectos(int offset) {
+        HProyectos hProyectos = new HProyectos(adapterProyecto,offset);
+        hProyectos.sethProyectos(hProyectos);
+        hProyectos.execute();
+    }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

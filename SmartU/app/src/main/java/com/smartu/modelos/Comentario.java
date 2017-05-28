@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
-@JsonIgnoreProperties({"usuario","proyecto"})
+
 public class Comentario extends Publicacion {
     private int id;
     private String descripcion;

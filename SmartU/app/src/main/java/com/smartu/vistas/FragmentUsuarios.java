@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import android.view.ViewGroup;
 
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterUsuario;
+import com.smartu.hebras.HUsuarios;
 import com.smartu.modelos.Usuario;
+import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
@@ -32,7 +35,11 @@ public class FragmentUsuarios extends Fragment {
     private RecyclerView recyclerViewUsuarios;
 
     private OnUsuarioSelectedListener mListener;
+    //Va hacer de listener para cuando llegue al final del RecyclerView
+    //y necesite cargar más elementos
+    private EndlessRecyclerViewScrollListener scrollListener;
 
+    private AdapterUsuario adapterUsuario;
     public FragmentUsuarios() {
         // Constructor vacío es necesario
     }
@@ -68,15 +75,43 @@ public class FragmentUsuarios extends Fragment {
         View fragmen =inflater.inflate(R.layout.fragment_usuarios_recientes, container, false);
 
         recyclerViewUsuarios = (RecyclerView) fragmen.findViewById(R.id.recyclerUsuarios);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerViewUsuarios.setLayoutManager(llm);
 
+        // Guardo la instancia para poder llamar a `resetState()` para nuevas busquedas
+        scrollListener = new EndlessRecyclerViewScrollListener(llm) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // El evento sólo se provoca cuando necesito añadir más elementos
+                cargarMasUsuarios(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recyclerViewUsuarios.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterUsuario.setTotalElementosServer(usuarios.size());
 
         return fragmen;
+    }
+
+    /**
+     * Carga hasta 10 comentarios si hubiese a partir del offset
+     * que le ofrece el método LoadMore
+     * @param offset
+     */
+    public void cargarMasUsuarios(int offset) {
+        HUsuarios hUsuarios = new HUsuarios(adapterUsuario,offset);
+        hUsuarios.sethUsuarios(hUsuarios);
+        hUsuarios.execute();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerViewUsuarios.setAdapter(new AdapterUsuario(getContext(), usuarios,mListener));
+        adapterUsuario = new AdapterUsuario(getContext(), usuarios,mListener);
+        recyclerViewUsuarios.setAdapter(adapterUsuario);
 
     }
 

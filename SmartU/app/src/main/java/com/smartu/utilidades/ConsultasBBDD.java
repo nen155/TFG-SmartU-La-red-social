@@ -25,9 +25,11 @@ public class ConsultasBBDD {
     public static final String consultaPublicaciones ="api/content/type";
     public static final String consultaProyectos ="api/content/type";
     public static final String consultaUsuarios ="api/content/type";
+    public static final String consultaIntegrantes ="api/content/type";
     public static final String consultaMultimedia ="api/content/type";
     public static final String consultaNotificaciones ="api/content/type";
     public static final String consultaComentarios ="api/content/type";
+    public static final String consultaComentariosProyecto ="api/content/type";
     //Inserciones y eliminaciones
     public static final String insertaSeguidor ="seguidor";
     public static final String eliminarSeguidor ="seguidor";

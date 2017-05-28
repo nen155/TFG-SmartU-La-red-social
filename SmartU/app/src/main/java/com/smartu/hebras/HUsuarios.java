@@ -6,34 +6,34 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.smartu.adaptadores.AdapterComentario;
-import com.smartu.adaptadores.AdapterComentarioProyecto;
+import com.smartu.adaptadores.AdapterIntegrante;
+import com.smartu.adaptadores.AdapterUsuario;
 import com.smartu.modelos.Comentario;
+import com.smartu.modelos.Usuario;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by Emilio Chica Jiménez on 27/05/2017.
  */
 
-public class HComentarios extends AsyncTask<Void,Void,Void> {
+public class HUsuarios extends AsyncTask<Void,Void,Void> {
 
-    private AdapterComentario adapterComentario=null;
-    private AdapterComentarioProyecto adapterComentarioProyecto=null;
+    private AdapterIntegrante adapterIntegrante =null;
+    private AdapterUsuario adapterUsuario =null;
     private int offset,idProyecto;
-    private HComentarios hComentarios;
+    private HUsuarios hUsuarios;
 
-    public HComentarios(AdapterComentario adapterComentario,int offset) {
-        this.adapterComentario =adapterComentario;
+    public HUsuarios(AdapterIntegrante adapterIntegrante, int offset) {
+        this.adapterIntegrante = adapterIntegrante;
         this.offset = offset;
     }
-    public HComentarios(AdapterComentarioProyecto adapterComentarioProyecto, int offset) {
-        this.adapterComentarioProyecto =adapterComentarioProyecto;
+    public HUsuarios(AdapterUsuario adapterUsuario, int offset) {
+        this.adapterUsuario = adapterUsuario;
         this.offset = offset;
     }
 
@@ -41,47 +41,47 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
         this.idProyecto = idProyecto;
     }
 
-    public void sethComentarios(HComentarios hComentarios) {
-        this.hComentarios = hComentarios;
+    public void sethUsuarios(HUsuarios hUsuarios) {
+        this.hUsuarios = hUsuarios;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
-        String resultado="{\"comentarios\":{" +
-                "\"comentarios\":[" +
+        String resultado="{\"usuarios\":{" +
+                "\"usuarios\":[" +
 
                 "],"
                 + "\"totalserver\":\"15\"" +
                 "}";
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        //String resultado ="";
-        //if(adapterComentarioProyecto==null)
-        //  resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentarios,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
+        //String resultado="";
+        //if(adapterIntegrante==null)
+        // resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaIntegrantes,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idPoryecto+"\"}","POST");
         //else
-        //  resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentariosProyecto,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
+        // resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaUsuarios,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\}","POST");
         JSONObject res =null;
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
         try {
             if(resultado !=null) {
                 res = new JSONObject(resultado);
-                if (!res.isNull("comentarios")) {
-                    JSONObject comentJSON = res.getJSONObject("comentarios");
-                    JSONArray comentariosJSON = comentJSON.getJSONArray("comentarios");
-                    for(int i=0;i<comentariosJSON.length();++i)
+                if (!res.isNull("usuarios")) {
+                    JSONObject usuJSON = res.getJSONObject("usuarios");
+                    JSONArray usuariosJSON = usuJSON.getJSONArray("usuarios");
+                    for(int i=0;i<usuariosJSON.length();++i)
                     {
-                        JSONObject comentario = comentariosJSON.getJSONObject(i);
-                        Comentario c = mapper.readValue(comentario.toString(), Comentario.class);
-                        if(adapterComentarioProyecto==null)
-                            adapterComentario.addItem(c);
+                        JSONObject usuario = usuariosJSON.getJSONObject(i);
+                        Usuario u = mapper.readValue(usuario.toString(), Usuario.class);
+                        if(adapterUsuario ==null)
+                            adapterIntegrante.addItem(u);
                         else
-                            adapterComentarioProyecto.addItem(c);
+                            adapterUsuario.addItem(u);
                     }
                     //Digo a los adapter cual es el total de comentarios que tienen
-                    if(adapterComentarioProyecto==null)
-                        adapterComentario.setTotalElementosServer(comentJSON.getInt("totalserver"));
+                    if(adapterUsuario ==null)
+                        adapterIntegrante.setTotalElementosServer(usuJSON.getInt("totalserver"));
                     else
-                        adapterComentario.setTotalElementosServer(comentJSON.getInt("totalserver"));
+                        adapterIntegrante.setTotalElementosServer(usuJSON.getInt("totalserver"));
                 }
             }
         } catch (JSONException e) {
@@ -101,7 +101,7 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
-        hComentarios=null;
+        hUsuarios =null;
 
     }
 
@@ -109,13 +109,13 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
     protected void onCancelled(Void aVoid) {
         super.onCancelled(aVoid);
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
-        hComentarios=null;
+        hUsuarios =null;
     }
 
     @Override
     protected void onCancelled() {
         super.onCancelled();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
-        hComentarios=null;
+        hUsuarios =null;
     }
 }

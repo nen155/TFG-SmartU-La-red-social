@@ -4,19 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterIntegrante;
-import com.smartu.modelos.Especialidad;
+import com.smartu.hebras.HUsuarios;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Status;
 import com.smartu.modelos.Usuario;
 import com.smartu.modelos.Vacante;
+import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
@@ -43,8 +44,13 @@ public class FragmentIntegrantes extends Fragment {
     private static final String ARG_VACANTES = "vacantes";
     private static final String ARG_PROYECTO = "proyecto";
     private RecyclerView recyclerViewUsuarios;
+    private AdapterIntegrante adapterIntegrante;
 
     private OnIntegranteSelectedListener mListener;
+
+    //Va hacer de listener para cuando llegue al final del RecyclerView
+    //y necesite cargar más elementos
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     public FragmentIntegrantes() {
         // Constructor vacío es necesario
@@ -85,16 +91,42 @@ public class FragmentIntegrantes extends Fragment {
         View fragmen =inflater.inflate(R.layout.fragment_integrantes_proyecto, container, false);
 
         recyclerViewUsuarios = (RecyclerView) fragmen.findViewById(R.id.recyclerIntegrantes);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerViewUsuarios.setLayoutManager(llm);
 
+        // Guardo la instancia para poder llamar a `resetState()` para nuevas busquedas
+        scrollListener = new EndlessRecyclerViewScrollListener(llm) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // El evento sólo se provoca cuando necesito añadir más elementos
+                cargarMasUsuarios(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recyclerViewUsuarios.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterIntegrante.setTotalElementosServer(integrantes.size());
 
         return fragmen;
     }
-
+    /**
+     * Carga hasta 10 comentarios si hubiese a partir del offset
+     * que le ofrece el método LoadMore
+     * @param offset
+     */
+    public void cargarMasUsuarios(int offset) {
+        HUsuarios hUsuarios = new HUsuarios(adapterIntegrante,offset);
+        hUsuarios.sethUsuarios(hUsuarios);
+        hUsuarios.setIdProyecto(proyecto.getId());
+        hUsuarios.execute();
+    }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        recyclerViewUsuarios.setAdapter(new AdapterIntegrante(getContext(), mezclaIntegrantesConVacantes(),mListener,proyecto));
+        adapterIntegrante = new AdapterIntegrante(getContext(), mezclaIntegrantesConVacantes(),mListener,proyecto);
+        recyclerViewUsuarios.setAdapter(adapterIntegrante);
 
     }
 
