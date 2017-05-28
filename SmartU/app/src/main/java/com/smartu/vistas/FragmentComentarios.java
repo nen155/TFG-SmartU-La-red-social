@@ -81,11 +81,8 @@ public class FragmentComentarios extends Fragment {
                 cargarMasComentarios(page);
             }
         };
-        // Adds the scroll listener to RecyclerView
-        recyclerViewComentarios.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterComentario.setTotalElementosServer(comentarios.size());
+
+
         return fragmen;
     }
     public void cargarMasComentarios(int offset) {
@@ -100,6 +97,11 @@ public class FragmentComentarios extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         adapterComentario= new AdapterComentario(getContext(), comentarios);
         recyclerViewComentarios.setAdapter(adapterComentario);
+        // Adds the scroll listener to RecyclerView
+        recyclerViewComentarios.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterComentario.setTotalElementosServer(comentarios.size());
     }
 
     @Override

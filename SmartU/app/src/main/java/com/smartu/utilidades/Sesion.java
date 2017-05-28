@@ -23,29 +23,25 @@ public class Sesion {
     private static Usuario usuario=null;
 
 
-    private static Sesion instance = null;
-
     private Sesion() {
 
     }
-
+    /**
+     * Implementa el patrón Singleton
+     *
+     * @return
+     */
     public static synchronized Usuario getUsuario(Context context){
         if(usuario==null)
             usuario =deserializaUsuario(context);
         return usuario;
     }
 
-    /**
-     * Implementa el patrón Singleton
-     *
-     * @return
-     */
-    public static synchronized Sesion getInstance() {
-        if (instance == null)
-            instance = new Sesion();
-        return instance;
-    }
 
+    public static synchronized void logOut(Context context){
+        usuario=null;
+        serializaUsuario(context,usuario);
+    }
     /**
      * Serializa el usuario para mantener la sesión
      *

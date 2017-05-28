@@ -30,9 +30,11 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
     //tengo que recogerlo de las hebras de consulta
     private int totalElementosServer = -1;
 
-    // Dos tipos de vistas para saber si es un ProgressBar lo que muestro o la vista normal
+    // Tres tipos de vistas para saber si es un ProgressBar lo que muestro o la vista normal
     public static final int VIEW_TYPE_LOADING = 0;
     public static final int VIEW_TYPE_ACTIVITY = 1;
+    public static final int VIEW_TYPE_FINAL = 2;
+
 
     public void setTotalElementosServer(int totalElementosServer) {
         this.totalElementosServer = totalElementosServer;
@@ -68,21 +70,18 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
     public AdapterMultimedia.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_LOADING) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress,parent,false);
-
             ViewHolder vhBottom = new ViewHolder(v,viewType);
 
-            if (vhBottom.getAdapterPosition() >= totalElementosServer && totalElementosServer > 0)
-            {
-                // the ListView has reached the last row
-                TextView tvLastRow = new TextView(context);
-                tvLastRow.setHint("No hay más elementos.");
-                tvLastRow.setGravity(Gravity.CENTER);
-                ViewHolder vhUltimo = new ViewHolder(tvLastRow,viewType);
-                return vhUltimo;
-            }
-
             return vhBottom;
-        }else {
+        }else if(viewType ==VIEW_TYPE_FINAL){
+            // the ListView has reached the last row
+            TextView tvLastRow = new TextView(context);
+            tvLastRow.setHint("");
+            tvLastRow.setGravity(Gravity.CENTER);
+            ViewHolder vhUltimo = new ViewHolder(tvLastRow,viewType);
+            return vhUltimo;
+        }else
+        {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_multimedia_recyclerview, parent, false); //Inflating the layout
 
             ViewHolder vhItem = new ViewHolder(v, viewType);
@@ -137,7 +136,12 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
      */
     @Override
     public int getItemViewType(int position) {
-        return (position >= multimediaList.size()) ? VIEW_TYPE_LOADING : VIEW_TYPE_ACTIVITY;
+        if (position >= multimediaList.size() && position==totalElementosServer && totalElementosServer > 0){
+            return VIEW_TYPE_FINAL;
+        }else if(position >= multimediaList.size()){
+            return VIEW_TYPE_LOADING;
+        }else
+            return VIEW_TYPE_ACTIVITY;
     }
 
     /**

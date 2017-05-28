@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/autentificado" android:checkableBehavior="single" android:visible="true">
+        <item
+            android:id="@+id/nav_inicio"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Inicio" />
         <item
             android:id="@+id/nav_cuenta"
-            android:icon="@drawable/ic_home_black_24dp"
-            android:title="Mi Cuenta" />
+            android:icon="@drawable/usuario"
+            android:title="Mi cuenta" />
         <item
             android:id="@+id/nav_proyectos"
             android:icon="@drawable/ic_dashboard_black_24dp"
             android:title="Mis Proyectos" />
         <item
+            android:id="@+id/nav_mensajes"
+            android:icon="@drawable/mensaje"
+            android:title="Mis Mensajes" />
+        <item
             android:id="@+id/nav_areas"
             android:icon="@drawable/intereses"
             android:title="Mis Intereses" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_contacto"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="Contacto" />
+        <item
+            android:id="@+id/nav_out"
             android:icon="@drawable/logout"
             android:title="Cerrar sesión" />
     </group>
-
-    <!--<item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
-        </menu>
-    </item>-->
-
+    <group android:id="@+id/anonimo" android:checkableBehavior="single" android:visible="false">
+        <item
+            android:id="@+id/nav_log"
+            android:icon="@drawable/login"
+            android:title="Iniciar Sesión" />
+    </group>
 </menu>

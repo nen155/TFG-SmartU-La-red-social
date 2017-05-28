@@ -2,6 +2,8 @@ package com.smartu.utilidades;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.smartu.R;
+import com.smartu.vistas.ContactoActivity;
+import com.smartu.vistas.LoginActivity;
+import com.smartu.vistas.MainActivity;
+import com.smartu.vistas.ProyectosActivity;
 
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
@@ -95,6 +101,14 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(this);
+        if(Sesion.getUsuario(context)!=null) {
+            navigationView.getMenu().setGroupVisible(R.id.autentificado, true);
+            navigationView.getMenu().setGroupVisible(R.id.anonimo,false);
+        }
+        else {
+            navigationView.getMenu().setGroupVisible(R.id.autentificado, false);
+            navigationView.getMenu().setGroupVisible(R.id.anonimo,true);
+        }
     }
 
     @Override
@@ -119,37 +133,48 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        /*boolean fragmentTransaction = false;
-        Fragment fragment = null;*/
-
+        Intent intent1=null;
         switch (item.getItemId()) {
+            case R.id.nav_inicio:
+                intent1=new Intent(context, MainActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent1);
+                break;
             case R.id.nav_cuenta:
-                //Mi CUENTA nueva Activity
-                                /*fragment = new Fragment1();
-                                fragmentTransaction = true;*/
+                //Enlace a la web para que edite oosas de su cuenta
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("http://coloredmoon.com/micuenta"));
+                context.startActivity(new Intent(context, MainActivity.class));
                 break;
             case R.id.nav_proyectos:
-                //
-                                /*fragment = new Fragment2();
-                                fragmentTransaction = true;*/
+                intent1=new Intent(context, ProyectosActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(new Intent(context, ProyectosActivity.class));
+                break;
+            case R.id.nav_mensajes:
+
                 break;
             case R.id.nav_areas:
-                                /*fragment = new Fragment3();
-                                fragmentTransaction = true;*/
+
                 break;
-            case R.id.nav_manage:
-                //Log.i("NavigationView", "Pulsada opción 1");
+            case R.id.nav_contacto:
+                intent1=new Intent(context, ContactoActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent1);
+                break;
+            case R.id.nav_out:
+                Sesion.logOut(context);
+                intent1=new Intent(context, MainActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent1);
+                break;
+            case R.id.nav_log:
+                intent1=new Intent(context, LoginActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent1);
                 break;
         }
 
-       /* if (fragmentTransaction) {
-            ((AppCompatActivity) actualActivity).getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, fragment)
-                    .commit();
-
-            item.setChecked(true);
-            toolbar.setTitle(item.getTitle());
-        }*/
 
         drawerLayout.closeDrawers();
 

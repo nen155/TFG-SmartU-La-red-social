@@ -84,11 +84,8 @@ public class FragmentProyectos extends Fragment {
                 cargarMasProyectos(page);
             }
         };
-        // Adds the scroll listener to RecyclerView
-        recyclerViewProyectos.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterProyecto.setTotalElementosServer(proyectos.size());
+
+
         return fragmen;
     }
     /**
@@ -106,6 +103,11 @@ public class FragmentProyectos extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         adapterProyecto = new AdapterProyecto(getContext(), proyectos,mListener);
         recyclerViewProyectos.setAdapter(adapterProyecto);
+        // Adds the scroll listener to RecyclerView
+        recyclerViewProyectos.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterProyecto.setTotalElementosServer(proyectos.size());
     }
 
 

@@ -11,12 +11,46 @@ public class Area implements Parcelable {
     private int id;
     private String nombre;
     private String descripcion;
+    private String urlImg;
 
-    public Area(int id, String nombre, String descripcion) {
+    public Area(int id, String nombre, String descripcion, String urlImg) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.urlImg = urlImg;
     }
+
+    protected Area(Parcel in) {
+        id = in.readInt();
+        nombre = in.readString();
+        descripcion = in.readString();
+        urlImg = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(nombre);
+        dest.writeString(descripcion);
+        dest.writeString(urlImg);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Area> CREATOR = new Creator<Area>() {
+        @Override
+        public Area createFromParcel(Parcel in) {
+            return new Area(in);
+        }
+
+        @Override
+        public Area[] newArray(int size) {
+            return new Area[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -42,33 +76,11 @@ public class Area implements Parcelable {
         this.descripcion = descripcion;
     }
 
-    protected Area(Parcel in) {
-        id = in.readInt();
-        nombre = in.readString();
-        descripcion = in.readString();
+    public String getUrlImg() {
+        return urlImg;
     }
 
-    public static final Creator<Area> CREATOR = new Creator<Area>() {
-        @Override
-        public Area createFromParcel(Parcel in) {
-            return new Area(in);
-        }
-
-        @Override
-        public Area[] newArray(int size) {
-            return new Area[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(nombre);
-        dest.writeString(descripcion);
+    public void setUrlImg(String urlImg) {
+        this.urlImg = urlImg;
     }
 }

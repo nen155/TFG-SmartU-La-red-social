@@ -113,11 +113,8 @@ public class FragmentComentariosProyecto extends Fragment {
                 cargarMasComentarios(page);
             }
         };
-        // Adds the scroll listener to RecyclerView
-        recyclerViewComentarios.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterComentarioProyecto.setTotalElementosServer(comentarios.size());
+
+
         return fragmen;
     }
 
@@ -165,7 +162,11 @@ public class FragmentComentariosProyecto extends Fragment {
                 }
             }
         });
-
+        // Adds the scroll listener to RecyclerView
+        recyclerViewComentarios.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterComentarioProyecto.setTotalElementosServer(comentarios.size());
     }
 
     @Override

@@ -87,11 +87,7 @@ public class FragmentMultimedia extends Fragment {
                 cargarMasMultimedia(page);
             }
         };
-        // Adds the scroll listener to RecyclerView
-        recyclerViewMultimedia.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterMultimedia.setTotalElementosServer(multimedia.size());
+
         return fragmen;
     }
     /**
@@ -111,6 +107,11 @@ public class FragmentMultimedia extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         adapterMultimedia =new AdapterMultimedia(getContext(), multimedia);
         recyclerViewMultimedia.setAdapter(adapterMultimedia);
+        // Adds the scroll listener to RecyclerView
+        recyclerViewMultimedia.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterMultimedia.setTotalElementosServer(multimedia.size());
     }
 
     @Override

@@ -135,11 +135,7 @@ public class FragmentNotificaciones extends Fragment {
                 cargarMasNotificaciones(page);
             }
         };
-        // Adds the scroll listener to RecyclerView
-        recyclerViewNotificacion.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterNotificacion.setTotalElementosServer(notificaciones.size());
+
 
         return fragmen;
     }
@@ -158,6 +154,11 @@ public class FragmentNotificaciones extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         adapterNotificacion = new AdapterNotificacion(getContext(), notificaciones);
         recyclerViewNotificacion.setAdapter(adapterNotificacion);
+        // Adds the scroll listener to RecyclerView
+        recyclerViewNotificacion.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterNotificacion.setTotalElementosServer(notificaciones.size());
     }
 
     @Override

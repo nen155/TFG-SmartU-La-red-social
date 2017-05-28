@@ -42,43 +42,44 @@ public class UsuarioActivity extends AppCompatActivity {
         //Obtengo el usuario que me han pasado
         if(bundle!=null) {
             usuario = bundle.getParcelable("usuario");
+
+            //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
+            SliderMenu sliderMenu = new SliderMenu(getBaseContext(), this);
+            sliderMenu.inicializateToolbar(usuario.getUser());
+            setTitle(usuario.getUser());
+
+            seguir = (FloatingActionButton) findViewById(R.id.seguir_usuario);
+            mensaje = (FloatingActionButton) findViewById(R.id.enviar_mensaje_usuario);
+            seguirContador = (TextView) findViewById(R.id.seguir_contador_usuario);
+            //Cargo la imagen de perfil del usuario
+            CircleImageView imagenPerfil = (CircleImageView) findViewById(R.id.img_activity_usuario);
+            Picasso.with(getApplicationContext()).load(ConsultasBBDD.server + usuario.getImagenPerfil()).into(imagenPerfil);
+            //Obtengo el usuario que ha iniciado sesión
+            usuarioSesion = Sesion.getUsuario(getApplicationContext());
+
+            seguir.setOnClickListener(seguirUsuario());
+            //Cargo las preferencias del usuario si tuviese sesión
+            cargarPreferenciasUsuario();
+            //Establezco el contador con el número de seguidores del usuario actual
+            seguirContador.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
+
+            mensaje.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    //transaction.replace(R.id.content_usuario,);
+                    transaction.commit();
+                }
+            });
+
+            //Cargo el perfil por defecto
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_usuario, FragmentUsuario.newInstance(usuario));
+            transaction.commit();
         }
-        //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
-        SliderMenu sliderMenu = new SliderMenu(getBaseContext(),this);
-        sliderMenu.inicializateToolbar(usuario.getUser());
-        setTitle(usuario.getUser());
+            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_perfil);
+            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        seguir = (FloatingActionButton) findViewById(R.id.seguir_usuario);
-        mensaje = (FloatingActionButton) findViewById(R.id.enviar_mensaje_usuario);
-        seguirContador =(TextView) findViewById(R.id.seguir_contador_usuario);
-        //Cargo la imagen de perfil del usuario
-        CircleImageView imagenPerfil = (CircleImageView) findViewById(R.id.img_activity_usuario);
-        Picasso.with(getApplicationContext()).load(ConsultasBBDD.server+usuario.getImagenPerfil()).into(imagenPerfil);
-        //Obtengo el usuario que ha iniciado sesión
-        usuarioSesion = Sesion.getUsuario(getApplicationContext());
-
-        seguir.setOnClickListener(seguirUsuario());
-        //Cargo las preferencias del usuario si tuviese sesión
-        cargarPreferenciasUsuario();
-        //Establezco el contador con el número de seguidores del usuario actual
-        seguirContador.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
-
-        mensaje.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                //transaction.replace(R.id.content_usuario,);
-                transaction.commit();
-            }
-        });
-
-        //Cargo el perfil por defecto
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_usuario,FragmentUsuario.newInstance(usuario));
-        transaction.commit();
-
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_perfil);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

@@ -87,11 +87,7 @@ public class FragmentUsuarios extends Fragment {
                 cargarMasUsuarios(page);
             }
         };
-        // Adds the scroll listener to RecyclerView
-        recyclerViewUsuarios.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterUsuario.setTotalElementosServer(usuarios.size());
+
 
         return fragmen;
     }
@@ -112,6 +108,11 @@ public class FragmentUsuarios extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         adapterUsuario = new AdapterUsuario(getContext(), usuarios,mListener);
         recyclerViewUsuarios.setAdapter(adapterUsuario);
+        // Adds the scroll listener to RecyclerView
+        recyclerViewUsuarios.addOnScrollListener(scrollListener);
+        //La primera vez le pongo el tamaño del Array por si no son más de 10
+        //que son lo que me traigo
+        adapterUsuario.setTotalElementosServer(usuarios.size());
 
     }
 

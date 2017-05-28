@@ -40,49 +40,49 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         //Obtengo el proyecto que me han pasado
         if(bundle!=null) {
             proyecto = bundle.getParcelable("proyecto");
+
+            //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
+            SliderMenu sliderMenu = new SliderMenu(getBaseContext(), this);
+            sliderMenu.inicializateToolbar(proyecto.getNombre());
+            setTitle(proyecto.getNombre());
+            //Inicia
+            buenaidea_contador = (TextView) findViewById(R.id.buenaidea_text_proyecto);
+            buenaidea = (FloatingActionButton) findViewById(R.id.buenaidea_proyecto);
+
+            //Obtengo el usuario que ha iniciado sesión
+            usuarioSesion = Sesion.getUsuario(getApplicationContext());
+            //Cargo las preferencias del usuario si tuviese sesión
+            cargarPreferenciasUsuario();
+
+            buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
+            buenaidea.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    darBuenaIdea();
+                }
+            });
+            comentarios = (FloatingActionButton) findViewById(R.id.comentar_proyecto_fab);
+            comentarios.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    //Me deshago de iconos innecesarios
+                    comentarios.setVisibility(View.GONE);
+                    buenaidea.setVisibility(View.GONE);
+                    buenaidea_contador.setVisibility(View.GONE);
+                    transaction.replace(R.id.content_proyecto, FragmentComentariosProyecto.newInstance(proyecto.getMisComentarios(), proyecto));
+                    transaction.commit();
+                }
+            });
+
+            //Cargo el fragment por defecto
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_proyecto, FragmentProyecto.newInstance(proyecto));
+            transaction.commit();
         }
-        //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
-        SliderMenu sliderMenu = new SliderMenu(getBaseContext(),this);
-        sliderMenu.inicializateToolbar(proyecto.getNombre());
-        setTitle(proyecto.getNombre());
-        //Inicia
-        buenaidea_contador = (TextView) findViewById(R.id.buenaidea_text_proyecto);
-        buenaidea = (FloatingActionButton) findViewById(R.id.buenaidea_proyecto);
-
-        //Obtengo el usuario que ha iniciado sesión
-        usuarioSesion =Sesion.getUsuario(getApplicationContext());
-        //Cargo las preferencias del usuario si tuviese sesión
-        cargarPreferenciasUsuario();
-
-        buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
-        buenaidea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                darBuenaIdea();
-            }
-        });
-        comentarios = (FloatingActionButton) findViewById(R.id.comentar_proyecto_fab);
-        comentarios.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                //Me deshago de iconos innecesarios
-                comentarios.setVisibility(View.GONE);
-                buenaidea.setVisibility(View.GONE);
-                buenaidea_contador.setVisibility(View.GONE);
-                transaction.replace(R.id.content_proyecto,FragmentComentariosProyecto.newInstance(proyecto.getMisComentarios(),proyecto));
-                transaction.commit();
-            }
-        });
-
         //Inicializo el menú de abajo
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_proyecto);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        //Cargo el fragment por defecto
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_proyecto, FragmentProyecto.newInstance(proyecto));
-        transaction.commit();
     }
 
     /**

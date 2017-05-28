@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
         setContentView(R.layout.activity_main);
         usuarioSesion =Sesion.getUsuario(getApplicationContext());
         Bundle bundle = getIntent().getExtras();
+        //Cargo el menú lateral
+        SliderMenu sliderMenu = new SliderMenu(getApplicationContext(),this);
+        sliderMenu.inicializateToolbar(getTitle().toString());
         //Obtengo las publicaciones cargadas durante el splashscreen
         if(bundle!=null) {
             proyectos = bundle.getParcelableArrayList("proyectos");
@@ -52,29 +55,23 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
             comentarios = bundle.getParcelableArrayList("comentarios");
             //Si ha iniciado sesión el usuario filtro los arrays para
             //poder mostrarlos en el fragment Intereses
-            if(usuarioSesion!=null) {
+            if (usuarioSesion != null) {
                 proyectosFiltrados = proyectosFiltrados();
                 notificacionesFiltradas = notificacionsFiltradas();
                 comentariosFiltrados = comentariosFiltrados();
                 usuariosFiltrados = usuariosFiltrados();
-            }else {
-                proyectosFiltrados=new ArrayList<>();
-                notificacionesFiltradas=new ArrayList<>();
+            } else {
+                proyectosFiltrados = new ArrayList<>();
+                notificacionesFiltradas = new ArrayList<>();
                 comentariosFiltrados = new ArrayList<>();
                 usuariosFiltrados = new ArrayList<>();
             }
-        }
-        //Cargo el menú lateral
-        SliderMenu sliderMenu = new SliderMenu(getApplicationContext(),this);
-        sliderMenu.inicializateToolbar(getTitle().toString());
-        //Asigno el escuchador al navigationbottom
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        //Cargo el fragment por defecto
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(proyectos));
-        transaction.commit();
 
+            //Cargo el fragment por defecto
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(proyectos));
+            transaction.commit();
+        }
         //Asigno las acciones de filtros que tiene que tienen que realizar los botones flotantes
         filtros = (FloatingActionsMenu) findViewById(R.id.filtros);
         FloatingActionButton filtro_notificaciones = (FloatingActionButton) findViewById(R.id.filtro_notificaciones);
@@ -105,7 +102,9 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
                 filtrar(v);
             }
         });
-
+        //Asigno el escuchador al navigationbottom
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
     /**

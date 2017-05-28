@@ -82,7 +82,10 @@
         <activity android:name=".vistas.Imagen360Activity" />
         <activity
             android:name=".vistas.UsuarioActivity"
-            android:label="@string/title_activity_usuario"></activity>
+            android:label="@string/title_activity_usuario" />
+        <activity android:name=".vistas.ProyectosActivity" />
+        <activity android:name=".vistas.ContactoActivity" />
+        <activity android:name=".vistas.AreasActivity"></activity>
     </application>
 
 </manifest>
