@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
                 proyectosFiltrados = Almacen.proyectosFiltrados(usuarioSesion);
                 notificacionesFiltradas = Almacen.notificacionsFiltradas(usuarioSesion,proyectosFiltrados);
                 comentariosFiltrados = Almacen.comentariosFiltrados(usuarioSesion,proyectosFiltrados);
-                usuariosFiltrados = Almacen.usuariosFiltrados(usuarioSesion);
+                Almacen.usuariosFiltrados(usuarioSesion,usuariosFiltrados,this);
         }
         //Cargo el fragment por defecto
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

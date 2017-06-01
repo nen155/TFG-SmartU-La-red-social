@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 public class ProyectosActivity extends AppCompatActivity implements FragmentProyectos.OnProyectoSelectedListener {
     private Usuario usuarioSesion;
+    private static ArrayList<Proyecto> proyectos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +29,7 @@ public class ProyectosActivity extends AppCompatActivity implements FragmentProy
         sliderMenu.inicializateToolbar(getTitle().toString());
         //Cargo el fragment por defecto
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        ArrayList<Proyecto> proyectos = Almacen.buscarProyectos(usuarioSesion.getMisProyectos());
+        Almacen.buscarProyectos(usuarioSesion.getMisProyectos(),proyectos,this);
         transaction.replace(R.id.content_proyectos, FragmentProyectos.newInstance(proyectos));
         transaction.commit();
     }

@@ -20,6 +20,7 @@ import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
+import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.ControladorPreferencias;
 import com.smartu.vistas.InstruccionesMainActivity;
@@ -94,8 +95,8 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                 "  \"usuarios\":[]\n" +
                 "}\n" +
                 "}";
-        //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
 
+        //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
         /*String resultado="";
         if(tipo==-1)
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\"0\"}","POST");
@@ -201,7 +202,26 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                 }
             }, comienzo);
         }else {
-
+            //Dependiendo del tipo volveré a buscar en el almacen, pues la referencia ya debe de estar
+            //después de buscar en el servidor
+            switch (tipo){
+                case Constantes.PROYECTO:
+                    ArrayList<Proyecto> proyectos = (ArrayList<Proyecto>)(ArrayList<?>) publicaciones;
+                    Almacen.buscarProyectos(idsPublicaciones,proyectos,context);
+                    break;
+                case Constantes.COMENTARIO:
+                    ArrayList<Comentario> comentarios = (ArrayList<Comentario>)(ArrayList<?>) publicaciones;
+                    Almacen.buscarComentarios(idsPublicaciones,comentarios,context);
+                    break;
+                case Constantes.NOTIFICACION:
+                    ArrayList<Notificacion> notificaciones = (ArrayList<Notificacion>)(ArrayList<?>) publicaciones;
+                    Almacen.buscarNotificaciones(idsPublicaciones,notificaciones,context);
+                    break;
+                case Constantes.USUARIO:
+                    ArrayList<Usuario> usuarios = (ArrayList<Usuario>)(ArrayList<?>) publicaciones;
+                    Almacen.buscarUsuarios(idsPublicaciones,usuarios,context);
+                    break;
+            }
         }
 
     }

@@ -45,8 +45,8 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         //Obtengo el proyecto que me han pasado
         if (bundle != null) {
             int idProyecto = bundle.getInt("idProyecto");
-            proyecto = Almacen.buscarProyecto(idProyecto);
-            integrantes = Almacen.buscarUsuarios(proyecto.getIntegrantes());
+            Almacen.buscar(idProyecto,proyecto,this);
+            Almacen.buscarUsuarios(proyecto.getIntegrantes(),integrantes,this);
         }
         //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
         SliderMenu sliderMenu = new SliderMenu(getBaseContext(), this);
@@ -77,13 +77,12 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                 comentarios.setVisibility(View.GONE);
                 buenaidea.setVisibility(View.GONE);
                 buenaidea_contador.setVisibility(View.GONE);
-                //TODO Buscar en el ArrayList de comentarios los comentarios
                 // que pertenezcan al proyecto en lugar de guardarlos
                 ArrayList<Comentario> comentariosProyecto=null;
                 if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
-                 comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(Almacen.comentarios.stream().filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
+                    comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(Almacen.getComentarios().stream().filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
                 else
-                    comentariosProyecto = new ArrayList<Comentario>(StreamSupport.parallelStream(Almacen.comentarios).filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).collect(Collectors.toList()));
+                    comentariosProyecto = new ArrayList<Comentario>(StreamSupport.parallelStream(Almacen.getComentarios()).filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).collect(Collectors.toList()));
                 transaction.replace(R.id.content_proyecto, FragmentComentariosProyecto.newInstance(comentariosProyecto, proyecto));
                 transaction.commit();
             }

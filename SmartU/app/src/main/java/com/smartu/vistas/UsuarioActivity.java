@@ -22,6 +22,7 @@ import com.smartu.almacenamiento.Almacen;
 import com.smartu.hebras.HSeguir;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
+import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
 import com.smartu.utilidades.SliderMenu;
@@ -52,7 +53,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
         //Obtengo el usuario que me han pasado
         if(bundle!=null) {
             int idUsuario =bundle.getInt("idUsuario");
-            usuario = Almacen.buscarUsuario(idUsuario);
+             Almacen.buscar(idUsuario,usuario,this);
 
             //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
             SliderMenu sliderMenu = new SliderMenu(getBaseContext(), this);
@@ -90,7 +91,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                 }
             });
             if(misProyectos==null){
-                misProyectos =Almacen.buscarProyectos(usuario.getMisProyectos());
+                 Almacen.buscarProyectos(usuario.getMisProyectos(),misProyectos,this);
             }
             //Cargo el perfil por defecto
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -193,9 +194,9 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
     }
 
     @Override
-    public void onProyectoSeleccionado(Proyecto proyecto) {
+    public void onProyectoSeleccionado(int idProyecto) {
         Intent intent = new Intent(getApplicationContext(),ProyectoActivity.class);
-        intent.putExtra("proyecto",(Parcelable) proyecto);
+        intent.putExtra(Constantes.ID_PROYECTO,idProyecto);
         startActivity(intent);
     }
 }

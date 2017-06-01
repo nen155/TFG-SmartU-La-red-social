@@ -216,7 +216,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 		return new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onProyectoSelectedListener.onProyectoSeleccionado(proyecto);
+				onProyectoSelectedListener.onProyectoSeleccionado(proyecto.getId());
 			}
 		};
 	}

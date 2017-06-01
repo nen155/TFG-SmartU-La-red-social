@@ -137,12 +137,14 @@ public class Almacen {
         }
     }
     /**
-     * Busca un conjunto de ids de proyectos en el almacen y sino los encuentra los busca en
+     * Busca un conjunto de ids de usuarios en el almacen y sino los encuentra los busca en
      * el servidor
      * @param idsUsuarios
+     * @param usuarios
      */
-    public static void buscarUsuarios(ArrayList<Integer> idsUsuarios, ArrayList<Usuario> usuarios){
+    public static void buscarUsuarios(ArrayList<Integer> idsUsuarios, ArrayList<Usuario> usuarios,Context context){
         ArrayList<Integer> usuariosABuscarServer=new ArrayList<>();
+        usuarios = new ArrayList<>();
         for (int idUsuario: idsUsuarios) {
             Usuario usuario = usuarioHashMap.get(idUsuario);
             if(usuario==null)
@@ -150,18 +152,23 @@ public class Almacen {
             else
                 usuarios.add(usuario);
         }
+        //Significa que no he encontrado algunos elementos que tendré que buscar en el server
         if(usuariosABuscarServer.size()>0){
-            //TODO HEBRA QUE BUSQUE LOS PROYECTOS Y LOS AÑADA AL ALMACEN
-            //CON LOS USUARIOS ASOCIADOS Y NOTIFICACIONES Y COMENTARIOS
+            HPublicaciones hPublicaciones = new HPublicaciones(context);
+            hPublicaciones.sethPublicaciones(hPublicaciones);
+            hPublicaciones.setIdsPublicaciones(usuariosABuscarServer);
+            hPublicaciones.setTipo(Constantes.USUARIO);
         }
     }
     /**
      * Busca un conjunto de ids de proyectos en el almacen y sino los encuentra los busca en
      * el servidor
      * @param idsProyectos
+     * @param proyectos
      */
-    public static void buscarProyectos(ArrayList<Integer> idsProyectos,ArrayList<Proyecto> proyectos){
+    public static void buscarProyectos(ArrayList<Integer> idsProyectos,ArrayList<Proyecto> proyectos,Context context){
         ArrayList<Integer> proyectosABuscarServer=new ArrayList<>();
+        proyectos = new ArrayList<>();
         for (int idProyecto: idsProyectos) {
             Proyecto proyecto = proyectoHashMap.get(idProyecto);
             if(proyecto==null)
@@ -169,17 +176,67 @@ public class Almacen {
             else
                 proyectos.add(proyecto);
         }
+        //Significa que no he encontrado algunos elementos que tendré que buscar en el server
         if(proyectosABuscarServer.size()>0){
-            //TODO HEBRA QUE BUSQUE LOS PROYECTOS Y LOS AÑADA AL ALMACEN
-            //CON LOS USUARIOS ASOCIADOS Y NOTIFICACIONES Y COMENTARIOS
+            HPublicaciones hPublicaciones = new HPublicaciones(context);
+            hPublicaciones.sethPublicaciones(hPublicaciones);
+            hPublicaciones.setIdsPublicaciones(proyectosABuscarServer);
+            hPublicaciones.setTipo(Constantes.PROYECTO);
         }
     }
 
-
+    /**
+     * Busca un conjunto de ids de notificaciones en el almacen y sino las encuentra los busca en
+     * el servidor
+     * @param idsNotificaciones
+     * @param notificacions
+     */
+    public static void buscarNotificaciones(ArrayList<Integer> idsNotificaciones,ArrayList<Notificacion> notificacions,Context context){
+        ArrayList<Integer> notificacionesABuscarServer=new ArrayList<>();
+        notificacions = new ArrayList<>();
+        for (int idNotificacion: idsNotificaciones) {
+            Notificacion notificacion = notificacionHashMap.get(idNotificacion);
+            if(notificacion==null)
+                notificacionesABuscarServer.add(idNotificacion);
+            else
+                notificacions.add(notificacion);
+        }
+        //Significa que no he encontrado algunos elementos que tendré que buscar en el server
+        if(notificacionesABuscarServer.size()>0){
+            HPublicaciones hPublicaciones = new HPublicaciones(context);
+            hPublicaciones.sethPublicaciones(hPublicaciones);
+            hPublicaciones.setIdsPublicaciones(notificacionesABuscarServer);
+            hPublicaciones.setTipo(Constantes.NOTIFICACION);
+        }
+    }
+    /**
+     * Busca un conjunto de ids de comentarios en el almacen y sino los encuentra los busca en
+     * el servidor
+     * @param idsComentarios
+     * @param comentarios
+     */
+    public static void buscarComentarios(ArrayList<Integer> idsComentarios,ArrayList<Comentario> comentarios,Context context){
+        ArrayList<Integer> comentariosABuscarServer=new ArrayList<>();
+        comentarios = new ArrayList<>();
+        for (int idComentario: idsComentarios) {
+            Comentario comentario = comentarioHashMap.get(idComentario);
+            if(comentario==null)
+                comentariosABuscarServer.add(idComentario);
+            else
+                comentarios.add(comentario);
+        }
+        //Significa que no he encontrado algunos elementos que tendré que buscar en el server
+        if(comentariosABuscarServer.size()>0){
+            HPublicaciones hPublicaciones = new HPublicaciones(context);
+            hPublicaciones.sethPublicaciones(hPublicaciones);
+            hPublicaciones.setIdsPublicaciones(comentariosABuscarServer);
+            hPublicaciones.setTipo(Constantes.COMENTARIO);
+        }
+    }
 
     /**
      * Filtra los proyectos por intereses y por usuarios seguidos
-     *
+     * @param usuarioSesion
      * @return
      */
     public static ArrayList<Proyecto> proyectosFiltrados(Usuario usuarioSesion) {
@@ -214,7 +271,8 @@ public class Almacen {
 
     /**
      * Filtra las notificaciones por intereses y por usuarios a los que sigo
-     *
+     * @param usuarioSesion
+     * @param proyectosFiltrados
      * @return
      */
     public static ArrayList<Notificacion> notificacionsFiltradas(Usuario usuarioSesion,ArrayList<Proyecto> proyectosFiltrados) {
@@ -246,7 +304,8 @@ public class Almacen {
 
     /**
      * Filtra los comentarios por intereses y por usuarios a los que sigo
-     *
+      * @param usuarioSesion
+     * @param proyectosFiltrados
      * @return
      */
     public static ArrayList<Comentario> comentariosFiltrados(Usuario usuarioSesion,ArrayList<Proyecto> proyectosFiltrados) {
@@ -280,14 +339,16 @@ public class Almacen {
     }
 
     /**
-     * Filtra los usuarios por seguidores
-     *
+     * Filtra los usuarios por seguidores, sino están dichos usuarios los busca en el servidor
+     * @param usuarioSesion
+     * @param usuariosFiltrados
+     * @param context
      */
-    public static void usuariosFiltrados(Usuario usuarioSesion,ArrayList<Usuario> usuariosFiltrados) {
+    public static void usuariosFiltrados(Usuario usuarioSesion,ArrayList<Usuario> usuariosFiltrados,Context context) {
         //Si no tengo gente a la que sigo devuelvo el array como esta
         if (usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
             usuariosFiltrados = getUsuarios();
         else
-            buscarUsuarios(usuarioSesion.getMisSeguidos(),usuariosFiltrados);
+            buscarUsuarios(usuarioSesion.getMisSeguidos(),usuariosFiltrados,context);
     }
 }
