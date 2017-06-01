@@ -34,25 +34,21 @@ public class AdapterAreasInteres extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return this.areasInteres.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
 		return this.areasInteres.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return areasInteres.get(position).getId();
 	}
 
 	@Override
 	public View getView(int position, final View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
 		View rowView = convertView;
 
 		if (rowView == null) {
@@ -74,7 +70,8 @@ public class AdapterAreasInteres extends BaseAdapter {
 		imgItem.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				//TODO PODER CAMBIAR LAS AREAS DE INTERES DEL USUARIO
+				//SE QUEDA POR IMPLEMENTAR
 			}
 		});
 

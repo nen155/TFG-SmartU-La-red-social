@@ -2,6 +2,7 @@ package com.smartu.adaptadores;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,6 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
+import com.smartu.contratos.OperacionesAdapter;
+import com.smartu.contratos.Publicacion;
 import com.smartu.modelos.Notificacion;
 import com.smartu.vistas.ProyectoActivity;
 import com.smartu.vistas.UsuarioActivity;
@@ -21,7 +25,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 
-public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacion.ViewHolder> {
+public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacion.ViewHolder> implements OperacionesAdapter {
 	private Context context;
 	private ArrayList<Notificacion> notificaciones;
 	private Notificacion notificacion;
@@ -45,6 +49,8 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 		this.context = context;
 		this.notificaciones = items;
 	}
+
+
 
 	//Creating a ViewHolder which extends the RecyclerView View Holder
 	// ViewHolder are used to to store the inflated views in order to recycle them
@@ -114,10 +120,10 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 				holder.fechaNotificacion.setText(hace);
 			}
 			String textoBoton = "";
-			if (notificacion.getUsuario() != null)
-				textoBoton = notificacion.getUsuario().getNombre();
-			else if (notificacion.getProyecto() != null)
-				textoBoton = notificacion.getProyecto().getNombre();
+			if (notificacion.getIdUsuario() != 0)
+				textoBoton = notificacion.getUsuario();
+			else if (notificacion.getIdProyecto() != 0)
+				textoBoton = notificacion.getProyecto();
 			holder.nombreUsuarioOProyecto.setText(textoBoton);
 
 
@@ -168,13 +174,13 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 
 
 	private void cargaElemento(){
-			if(notificacion.getUsuario()!=null){
+			if(notificacion.getIdUsuario()!=0){
 				Intent intent = new Intent(context,UsuarioActivity.class);
-				intent.putExtra("usuario",notificacion.getUsuario());
+				intent.putExtra("idUsuario",  notificacion.getIdUsuario());
 				context.startActivity(intent);
-			}else if(notificacion.getProyecto()!=null) {
+			}else if(notificacion.getIdProyecto()!=0) {
 				Intent intent = new Intent(context,ProyectoActivity.class);
-				intent.putExtra("proyecto",notificacion.getProyecto());
+				intent.putExtra("idProyecot", notificacion.getIdProyecto());
 				context.startActivity(intent);
 			}
 	}
@@ -188,9 +194,10 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 		this.notificaciones = list;
 	}
 
-	public void addItem(Notificacion pushMessage) {
-		notificaciones.add(0, pushMessage);
+	@Override
+	public void addItem(Publicacion publicacion) {
+		notificaciones.add(0, (Notificacion) publicacion);
+		Almacen.add((Notificacion) publicacion);
 		notifyItemInserted(0);
 	}
-
 }

@@ -68,7 +68,7 @@
             android:layout_gravity="end"
             android:layout_margin="15dp"
             android:layout_weight="0.9"
-            android:text="propietario o proyecto"
+            android:text="idPropietario o idProyecto"
             android:textColor="@color/colorPrimaryLight" />
 
 

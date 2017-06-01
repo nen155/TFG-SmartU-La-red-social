@@ -2,6 +2,7 @@ package com.smartu.adaptadores;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,7 +12,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
+import com.smartu.contratos.OperacionesAdapter;
+import com.smartu.contratos.Publicacion;
 import com.smartu.modelos.Comentario;
+import com.smartu.modelos.Proyecto;
 import com.smartu.vistas.ProyectoActivity;
 
 import java.util.ArrayList;
@@ -20,10 +25,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 
-public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComentarioProyecto.ViewHolder> {
+public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComentarioProyecto.ViewHolder> implements OperacionesAdapter {
     private Context context;
     private ArrayList<Comentario> comentarios;
     private Comentario comentario;
+    private Proyecto proyectoOrigen;
 
     //Es el número total de elementos que hay en el server
     //tengo que recogerlo de las hebras de consulta
@@ -38,10 +44,11 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
         this.totalElementosServer = totalElementosServer;
     }
 
-    public AdapterComentarioProyecto(Context context, ArrayList<Comentario> items) {
+    public AdapterComentarioProyecto(Context context, ArrayList<Comentario> items,Proyecto proyectoOrigen) {
         super();
         this.context = context;
         this.comentarios = items;
+        this.proyectoOrigen = proyectoOrigen;
     }
 
     //Creating a ViewHolder which extends the RecyclerView View Holder
@@ -109,8 +116,8 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
                 holder.fechaComentario.setText(hace);
             }
             holder.descripcionComentario.setText(comentario.getDescripcion());
-            holder.btnNombreProyecto.setText(comentario.getProyecto().getNombre());
-            holder.nombreUsuario.setText(comentario.getUsuario().getNombre());
+            holder.btnNombreProyecto.setText(proyectoOrigen.getNombre());
+            holder.nombreUsuario.setText(comentario.getUsuario());
 
             holder.descripcionComentario.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -156,15 +163,18 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
 
     private void cargaProyecto() {
         Intent intent = new Intent(context, ProyectoActivity.class);
-        intent.putExtra("proyecto", comentario.getProyecto());
+        intent.putExtra("idProyecto",  proyectoOrigen.getId());
         context.startActivity(intent);
     }
-    public void addItem(Comentario pushMessage) {
-        comentarios.add(pushMessage);
+    @Override
+    public void addItem(Publicacion publicacion) {
+        comentarios.add((Comentario) publicacion);
+        Almacen.add((Comentario) publicacion);
         notifyItemInserted(0);
     }
     public void addItemTop(Comentario pushMessage) {
         comentarios.add(0,pushMessage);
+        Almacen.add((Comentario) pushMessage);
         notifyItemInserted(0);
     }
 }

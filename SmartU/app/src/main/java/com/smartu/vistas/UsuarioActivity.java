@@ -1,7 +1,9 @@
 package com.smartu.vistas;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -16,21 +18,27 @@ import android.widget.Toast;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
 import com.smartu.hebras.HSeguir;
+import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
 import com.smartu.utilidades.SliderMenu;
 import com.squareup.picasso.Picasso;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.ArrayList;
 
-public class UsuarioActivity extends AppCompatActivity {
+import de.hdodenhof.circleimageview.CircleImageView;
+import java8.util.stream.StreamSupport;
+
+public class UsuarioActivity extends AppCompatActivity implements FragmentProyectos.OnProyectoSelectedListener {
 
     private FloatingActionButton seguir,mensaje;
     private TextView seguirContador;
-    private Usuario usuario;
+    private static Usuario usuario;
     private Usuario usuarioSesion;
+    private static ArrayList<Proyecto> misProyectos=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +46,13 @@ public class UsuarioActivity extends AppCompatActivity {
         //Pongo los iconos para los TextView
         Iconify.with(new FontAwesomeModule());
         setContentView(R.layout.activity_usuario);
+
+
         Bundle bundle = getIntent().getExtras();
         //Obtengo el usuario que me han pasado
         if(bundle!=null) {
-            usuario = bundle.getParcelable("usuario");
+            int idUsuario =bundle.getInt("idUsuario");
+            usuario = Almacen.buscarUsuario(idUsuario);
 
             //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
             SliderMenu sliderMenu = new SliderMenu(getBaseContext(), this);
@@ -62,22 +73,31 @@ public class UsuarioActivity extends AppCompatActivity {
             cargarPreferenciasUsuario();
             //Establezco el contador con el número de seguidores del usuario actual
             seguirContador.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
-
+            //Le envio un mensaje al usuario
             mensaje.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    //transaction.replace(R.id.content_usuario,);
-                    transaction.commit();
+                    if(usuarioSesion!=null) {
+                        Intent intent = new Intent(UsuarioActivity.this, MensajesActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("usuario",(Parcelable) usuario);
+                        startActivity(intent);
+                    }else{
+                        Intent intent = new Intent(UsuarioActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
                 }
             });
-
+            if(misProyectos==null){
+                misProyectos =Almacen.buscarProyectos(usuario.getMisProyectos());
+            }
             //Cargo el perfil por defecto
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_usuario, FragmentUsuario.newInstance(usuario));
             transaction.commit();
         }
-            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_perfil);
+            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigationUsuario);
             navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
@@ -93,7 +113,7 @@ public class UsuarioActivity extends AppCompatActivity {
                     swicthTo = FragmentUsuario.newInstance(usuario);
                     break;
                 case R.id.navigation_proyectos:
-                    swicthTo = FragmentProyectos.newInstance(usuario.getMisProyectos());
+                    swicthTo = FragmentProyectos.newInstance(misProyectos);
                     break;
                 /*case R.id.navigation_notifications:
                     swicthTo = null;
@@ -116,9 +136,13 @@ public class UsuarioActivity extends AppCompatActivity {
      */
     private void cargarPreferenciasUsuario() {
         //Cargo las preferencias del usuario
-        if (usuarioSesion != null) {
+        if (usuarioSesion != null && usuarioSesion.getMisSeguidos()!=null) {
             //Compruebo si el usuario le ha dado antes a seguir a este usuario
-            boolean usuarioSigue = usuarioSesion.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1.getId() == usuario.getId());
+            boolean usuarioSigue = false;
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+                usuarioSigue =usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == usuario.getId());
+            else
+                usuarioSigue = StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
             seguir.setPressed(usuarioSigue);
         }
@@ -166,5 +190,12 @@ public class UsuarioActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    @Override
+    public void onProyectoSeleccionado(Proyecto proyecto) {
+        Intent intent = new Intent(getApplicationContext(),ProyectoActivity.class);
+        intent.putExtra("proyecto",(Parcelable) proyecto);
+        startActivity(intent);
     }
 }

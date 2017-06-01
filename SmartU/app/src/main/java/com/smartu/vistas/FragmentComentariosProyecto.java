@@ -52,7 +52,7 @@ public class FragmentComentariosProyecto extends Fragment {
     private Button enviarComentario;
     private EditText textoComentario;
     private CircleImageView circleImageView;
-    private Usuario usuario = null;
+    private Usuario usuarioSesion = null;
     private Proyecto proyectoOrigen=null;
     private AdapterComentarioProyecto adapterComentarioProyecto;
     private HComentar hComentar;
@@ -103,7 +103,7 @@ public class FragmentComentariosProyecto extends Fragment {
         enviarComentario = (Button) fragmen.findViewById(R.id.enviar_comentario);
         textoComentario =(EditText) fragmen.findViewById(R.id.text_comentario);
         circleImageView = (CircleImageView) fragmen.findViewById(R.id.img_usuario_comentario);
-        usuario =Sesion.getUsuario(getContext());
+        usuarioSesion =Sesion.getUsuario(getContext());
 
         // Guardo la instancia para poder llamar a `resetState()` para nuevas busquedas
         scrollListener = new EndlessRecyclerViewScrollListener(llm) {
@@ -126,7 +126,7 @@ public class FragmentComentariosProyecto extends Fragment {
     public void cargarMasComentarios(int offset) {
         HComentarios hComentarios = new HComentarios(adapterComentarioProyecto,offset);
         hComentarios.sethComentarios(hComentarios);
-        hComentarios.setIdProyecto(comentarios.get(0).getProyecto().getId());
+        hComentarios.setIdProyecto(proyectoOrigen.getId());
         hComentarios.execute();
     }
 
@@ -134,23 +134,23 @@ public class FragmentComentariosProyecto extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapterComentarioProyecto = new AdapterComentarioProyecto(getContext(), comentarios);
+        adapterComentarioProyecto = new AdapterComentarioProyecto(getContext(), comentarios,proyectoOrigen);
         recyclerViewComentarios.setAdapter(adapterComentarioProyecto);
         //Si he iniciado sesión cargo la imagen
-        if(usuario!=null)
-            Picasso.with(getContext()).load(ConsultasBBDD.server+usuario.getImagenPerfil()).into(circleImageView);
+        if(usuarioSesion !=null)
+            Picasso.with(getContext()).load(ConsultasBBDD.server+ usuarioSesion.getImagenPerfil()).into(circleImageView);
 
         enviarComentario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Si tengo usuario envio el comentario
-                if(usuario!=null){
+                //Si tengo usuarioSesion envio el comentario
+                if(usuarioSesion !=null){
                     //Si tengo texto intento enviar
                     if(textoComentario.getText().length()>0) {
                         Comentario comentario = new Comentario();
                         comentario.setId(0);
                         comentario.setDescripcion(textoComentario.getText().toString());
-                        comentario.setIdUsuario(usuario.getId());
+                        comentario.setIdUsuario(usuarioSesion.getId());
                         comentario.setIdProyecto(proyectoOrigen.getId());
                         hComentar = new HComentar(comentario);
                     }else //sino le devuelvo el foco

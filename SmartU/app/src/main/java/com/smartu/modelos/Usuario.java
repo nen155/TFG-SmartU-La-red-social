@@ -1,14 +1,18 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
+import com.smartu.contratos.Publicacion;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Usuario extends Publicacion{
+public class Usuario implements Parcelable,Serializable,Publicacion {
     private int id;
     private String nombre;
     private String apellidos;
@@ -22,13 +26,11 @@ public class Usuario extends Publicacion{
     private String web;
     private String imagenPerfil;
     private boolean verificado;
-    private boolean admin;
-    private boolean activo;
     //Contenedores para los elementos de los que es propietario el usuario
-    private ArrayList<Proyecto> misProyectos;
+    private ArrayList<Integer> misProyectos;
     private ArrayList<Area> misAreasInteres;
     private ArrayList<Especialidad> misEspecialidades;
-    private ArrayList<Usuario> misSeguidos;
+    private ArrayList<Integer> misSeguidos;
     private ArrayList<RedSocial> misRedesSociales;
     private ArrayList<SolicitudUnion> misSolicitudes;
     private Status miStatus;
@@ -47,6 +49,12 @@ public class Usuario extends Publicacion{
     public Usuario(String email, String password) {
         this.email = email;
         this.password = password;
+        misAreasInteres = new ArrayList<>();
+        misEspecialidades = new ArrayList<>();
+        misProyectos = new ArrayList<>();
+        misRedesSociales =new ArrayList<>();
+        misSeguidos = new ArrayList<>();
+        misSolicitudes = new ArrayList<>();
     }
 
     /**
@@ -74,6 +82,7 @@ public class Usuario extends Publicacion{
         misSolicitudes = new ArrayList<>();
     }
 
+
     protected Usuario(Parcel in) {
         id = in.readInt();
         nombre = in.readString();
@@ -88,15 +97,13 @@ public class Usuario extends Publicacion{
         web = in.readString();
         imagenPerfil = in.readString();
         verificado = in.readByte() != 0;
-        admin = in.readByte() != 0;
-        activo = in.readByte() != 0;
-        misProyectos = in.createTypedArrayList(Proyecto.CREATOR);
         misAreasInteres = in.createTypedArrayList(Area.CREATOR);
         misEspecialidades = in.createTypedArrayList(Especialidad.CREATOR);
-        misSeguidos = in.createTypedArrayList(Usuario.CREATOR);
         misRedesSociales = in.createTypedArrayList(RedSocial.CREATOR);
         misSolicitudes = in.createTypedArrayList(SolicitudUnion.CREATOR);
         miStatus = in.readParcelable(Status.class.getClassLoader());
+        in.readList(misSeguidos,Integer.class.getClassLoader());
+        in.readList(misProyectos,Integer.class.getClassLoader());
     }
 
     public static final Creator<Usuario> CREATOR = new Creator<Usuario>() {
@@ -199,22 +206,6 @@ public class Usuario extends Publicacion{
         this.verificado = verificado;
     }
 
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
     public String getImagenPerfil() {
         return imagenPerfil;
     }
@@ -223,11 +214,11 @@ public class Usuario extends Publicacion{
         this.imagenPerfil = imagenPerfil;
     }
 
-    public ArrayList<Proyecto> getMisProyectos() {
+    public ArrayList<Integer> getMisProyectos() {
         return misProyectos;
     }
 
-    public void setMisProyectos(ArrayList<Proyecto> misProyectos) {
+    public void setMisProyectos(ArrayList<Integer> misProyectos) {
         this.misProyectos = misProyectos;
     }
 
@@ -248,11 +239,11 @@ public class Usuario extends Publicacion{
         this.misEspecialidades = misEspecialidades;
     }
 
-    public ArrayList<Usuario> getMisSeguidos() {
+    public ArrayList<Integer> getMisSeguidos() {
         return misSeguidos;
     }
 
-    public void setMisSeguidos(ArrayList<Usuario> misSeguidos) {
+    public void setMisSeguidos(ArrayList<Integer> misSeguidos) {
         this.misSeguidos = misSeguidos;
     }
 
@@ -309,14 +300,12 @@ public class Usuario extends Publicacion{
         dest.writeString(web);
         dest.writeString(imagenPerfil);
         dest.writeByte((byte) (verificado ? 1 : 0));
-        dest.writeByte((byte) (admin ? 1 : 0));
-        dest.writeByte((byte) (activo ? 1 : 0));
-        dest.writeTypedList(misProyectos);
         dest.writeTypedList(misAreasInteres);
         dest.writeTypedList(misEspecialidades);
-        dest.writeTypedList(misSeguidos);
         dest.writeTypedList(misRedesSociales);
         dest.writeTypedList(misSolicitudes);
         dest.writeParcelable(miStatus, flags);
+        dest.writeList(misSeguidos);
+        dest.writeList(misProyectos);
     }
 }

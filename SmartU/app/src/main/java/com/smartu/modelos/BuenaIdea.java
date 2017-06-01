@@ -2,12 +2,15 @@ package com.smartu.modelos;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Button;
+
+import java.io.Serializable;
 
 /**
  * Created by Emilio Chica Jiménez on 25/05/2017.
  */
 
-public class BuenaIdea implements Parcelable{
+public class BuenaIdea implements Parcelable,Serializable {
 
     private int idUsuario;
 
@@ -15,7 +18,9 @@ public class BuenaIdea implements Parcelable{
         this.idUsuario = idUsuario;
     }
 
+    public BuenaIdea(){
 
+    }
     public int getIdUsuario() {
         return idUsuario;
     }

@@ -60,7 +60,7 @@
         android:fillViewport="true"
         android:layout_marginBottom="95dp">
 
-        <include layout="@layout/content_proyecto" />
+        <include layout="@layout/content_usuario" />
 
     </android.support.v4.widget.NestedScrollView>
 

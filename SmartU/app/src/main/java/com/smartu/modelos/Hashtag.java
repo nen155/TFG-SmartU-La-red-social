@@ -11,6 +11,7 @@ public class Hashtag implements Parcelable{
     private int id;
     private String nombre;
 
+    public Hashtag(){}
     public Hashtag(int id, String nombre) {
         this.id = id;
         this.nombre = nombre;

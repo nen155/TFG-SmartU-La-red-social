@@ -2,6 +2,7 @@ package com.smartu.hebras;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -18,6 +19,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import java8.util.stream.StreamSupport;
 
 /**
  * Created by Emilio Chica Jiménez on 27/05/2017.
@@ -100,9 +103,12 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
                 else {
                     Usuario usuario = Sesion.getUsuario(context);
                     if (eliminar)
-                        usuario.getMisSolicitudes().remove(usuario.getMisSolicitudes().stream().filter(solicitudUnion -> solicitudUnion.getProyecto().getId() == proyecto.getId()).findFirst().get());
+                        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+                            usuario.getMisSolicitudes().remove(usuario.getMisSolicitudes().stream().filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findFirst().get());
+                        else
+                            usuario.getMisSolicitudes().remove(StreamSupport.stream(usuario.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findFirst().get());
                     else
-                        usuario.getMisSolicitudes().add(new SolicitudUnion(fechaActual, proyecto));
+                        usuario.getMisSolicitudes().add(new SolicitudUnion(fechaActual, proyecto.getNombre(),proyecto.getId()));
                 }
 
             } catch (JSONException e) {

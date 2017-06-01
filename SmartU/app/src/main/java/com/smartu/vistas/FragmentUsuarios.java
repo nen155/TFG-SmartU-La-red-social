@@ -117,9 +117,9 @@ public class FragmentUsuarios extends Fragment {
     }
 
 
-    public void onButtonPressed(Usuario usuario) {
+    public void onButtonPressed(int idUsuario) {
         if (mListener != null) {
-            mListener.onUsuarioSeleccionado(usuario);
+            mListener.onUsuarioSeleccionado(idUsuario);
         }
     }
 
@@ -151,6 +151,6 @@ public class FragmentUsuarios extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnUsuarioSelectedListener {
-        void onUsuarioSeleccionado(Usuario usuario);
+        void onUsuarioSeleccionado(int idUsuario);
     }
 }

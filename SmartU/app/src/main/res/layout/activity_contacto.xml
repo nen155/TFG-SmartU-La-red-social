@@ -7,14 +7,9 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
-
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.smartu.vistas.MainActivity">
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:orientation="vertical">
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,6 +24,14 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp"
+            tools:context="com.smartu.vistas.ContactoActivity">
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/content_contacto"
             android:layout_width="match_parent"
@@ -97,8 +100,8 @@
 
             </LinearLayout>
         </FrameLayout>
-    </android.support.design.widget.CoordinatorLayout>
-
+        </LinearLayout>
+</LinearLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

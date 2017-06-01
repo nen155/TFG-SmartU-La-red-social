@@ -87,9 +87,9 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
                     reestablecerEstado();
                 else{
                    if(eleminar)
-                       seguidor.getMisSeguidos().remove(seguido);
+                       seguidor.getMisSeguidos().remove(seguido.getId());
                     else
-                        seguidor.getMisSeguidos().add(seguido);
+                        seguidor.getMisSeguidos().add(seguido.getId());
                 }
 
             } catch (JSONException e) {

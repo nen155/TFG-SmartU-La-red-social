@@ -17,7 +17,7 @@ import java.net.URL;
 public class ConsultasBBDD {
 
 
-    public static String server ="http://coloredmoon.com:2424/";
+    public static String server ="http://smartu.coloredmoon.com/";
 
 
     //Consultas

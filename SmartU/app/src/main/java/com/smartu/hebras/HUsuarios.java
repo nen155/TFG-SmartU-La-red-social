@@ -49,7 +49,20 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
         String resultado="{\"usuarios\":{" +
-                "\"usuarios\":[" +
+                "\"usuarios\":[" +"{\"id\":\"1\",\"nombre\":\"Emilio\",\"apellidos\":\"Chica Jiménez\",\"verificado\":\"true\",\"user\":\"emiliocj\",\"email\":\"emiliocj@correo.ugr.es\",\"nPuntos\":\"100\",\"localizacion\":\"C/Poeta Manuel\",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada y es Graduado en Ingeniería Informática\", \"web\":\"http://coloremoon.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/foto-buena.jpg\",\n" +
+                "          \"misProyectos\":[\n" +
+                "            {\"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"Es el primer proyecto\",\"fechaCreacion\":\"2017-01-22\",\"fechaFinalizacion\":\"2018-12-10\",\"imagenDestacada\":\"wp-content/uploads/2017/05/logo_web.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"buenaIdea\":[{\"idUsuario\":\"1\"}],\"web\":\"http://coloredmoon.com\"}\n" +
+                "            ],\n" +
+                "            \"misAreasInteres\":[\n" +
+                "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
+                "              ],\n" +
+                "              \"misEspecialidades\":[\n" +
+                "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
+                "              ],\n" +
+                "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
+                "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
+                "    }\n" +
+                "}"+
 
                 "],"
                 + "\"totalserver\":\"15\"" +

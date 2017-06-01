@@ -1,29 +1,31 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.smartu.contratos.Publicacion;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Comentario extends Publicacion {
+public class Comentario implements Parcelable,Serializable,Publicacion {
     private int id;
     private String descripcion;
     private Date fecha;
     private int idProyecto;
     private int idUsuario;
-    private Usuario usuario;
-    private Proyecto proyecto;
+    private String usuario;
+    private String proyecto;
 
     public Comentario(){
 
     }
-    public Comentario(int id, String descripcion, Date fecha, Usuario usuario, Proyecto proyecto) {
+    public Comentario(int id, String descripcion, Date fecha, String usuario, String proyecto) {
         this.id = id;
         this.descripcion = descripcion;
         this.fecha = fecha;
@@ -34,8 +36,8 @@ public class Comentario extends Publicacion {
     protected Comentario(Parcel in) {
         id = in.readInt();
         descripcion = in.readString();
-        usuario = in.readParcelable(Usuario.class.getClassLoader());
-        proyecto = in.readParcelable(Proyecto.class.getClassLoader());
+        usuario = in.readString();
+        proyecto = in.readString();
         fecha = new Date(in.readLong());
         idProyecto = in.readInt();
         idUsuario = in.readInt();
@@ -77,19 +79,19 @@ public class Comentario extends Publicacion {
         this.fecha = fecha;
     }
 
-    public Usuario getUsuario() {
+    public String getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(String usuario) {
         this.usuario = usuario;
     }
 
-    public Proyecto getProyecto() {
+    public String getProyecto() {
         return proyecto;
     }
 
-    public void setProyecto(Proyecto proyecto) {
+    public void setProyecto(String proyecto) {
         this.proyecto = proyecto;
     }
 
@@ -118,8 +120,8 @@ public class Comentario extends Publicacion {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(descripcion);
-        dest.writeParcelable(usuario, flags);
-        dest.writeParcelable(proyecto, flags);
+        dest.writeString(usuario);
+        dest.writeString(proyecto);
         dest.writeLong(fecha.getTime());
         dest.writeInt(idProyecto);
         dest.writeInt(idUsuario);

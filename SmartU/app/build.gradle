@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 
+
 repositories {
     mavenCentral()
 }
@@ -8,16 +9,16 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.smartu"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        //vectorDrawables.useSupportLibrary = true
         jackOptions {
             enabled true
         }
-        //vectorDrawables.useSupportLibrary = true
+        // Enabling multidex support.
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -40,7 +41,17 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        incremental false
     }
+
+}
+//it needs to translate the Java 8 code we write in the Java 7/ Java 6 bytecode Android understands:
+retrolambda {
+    jdk System.getenv('JAVA8_HOME')
+    oldJdk System.getenv('JAVA7_HOME')
+    jvmArgs '-arg1', '-arg2'
+    defaultMethods false
+    incremental true
 }
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -61,15 +72,26 @@ dependencies {
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-vector-drawable:25.3.1'
-    compile 'com.google.firebase:firebase-messaging:9.6.1'
-    compile 'com.google.android.gms:play-services-maps:9.6.1'
-    compile 'com.google.android.gms:play-services-location:9.6.1'
+    compile 'com.google.firebase:firebase-messaging:10.2.1'
+    compile 'com.google.firebase:firebase-database:10.2.1'
+    compile 'com.google.firebase:firebase-storage:10.2.1'
+    compile 'com.google.firebase:firebase-auth:10.2.1'
+    compile 'com.google.firebase:firebase-appindexing:10.2.1'
+    // Firebase UI
+    compile 'com.firebaseui:firebase-ui-database:1.2.0'
+    compile 'com.google.android.gms:play-services-maps:10.2.1'
+    compile 'com.google.android.gms:play-services-location:10.2.1'
     compile 'com.ns-developer:tagcloudview:0.1.0'
     compile 'com.github.toanvc:floatingactionmenu:0.8.9'
     compile 'com.github.ashqal:MD360Player4Android:2.4.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
+    compile 'net.sourceforge.streamsupport:streamsupport:1.5.5'
+    compile 'net.sourceforge.streamsupport:streamsupport-cfuture:1.5.5'
+    compile 'net.sourceforge.streamsupport:streamsupport-atomic:1.5.5'
+    compile 'net.sourceforge.streamsupport:streamsupport-flow:1.5.5'
+    compile 'net.sourceforge.streamsupport:streamsupport-literal:1.5.5'
+    compile 'com.android.support:multidex:1.0.1'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'
-

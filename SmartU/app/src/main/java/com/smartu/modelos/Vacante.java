@@ -3,15 +3,17 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by NeN on 25/05/2017.
  */
 
-public class Vacante implements Parcelable {
+public class Vacante implements Parcelable,Serializable {
     private int id;
     private ArrayList<Especialidad> especialidades=null;
+
 
     public Vacante(int id, ArrayList<Especialidad> especialidades) {
         this.id = id;

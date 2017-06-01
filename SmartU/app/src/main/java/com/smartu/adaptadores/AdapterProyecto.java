@@ -4,6 +4,8 @@ import android.content.Context;
 
 import android.content.Intent;
 
+import android.os.Build;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
+import com.smartu.contratos.OperacionesAdapter;
+import com.smartu.contratos.Publicacion;
 import com.smartu.hebras.HBuenaIdea;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
@@ -29,9 +34,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import java8.util.stream.StreamSupport;
 
 
-public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHolder> {
+public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHolder> implements OperacionesAdapter {
 	private Context context;
 	private ArrayList<Proyecto> proyectos;
 	private FragmentProyectos.OnProyectoSelectedListener onProyectoSelectedListener;
@@ -55,7 +61,10 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 		this.context = context;
 		this.proyectos = items;
 		this.onProyectoSelectedListener = onProyectoSelectedListener;
+		usuarioSesion = Sesion.getUsuario(context);
 	}
+
+
 
 	//Creating a ViewHolder which extends the RecyclerView View Holder
 	// ViewHolder are used to to store the inflated views in order to recycle them
@@ -120,9 +129,13 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 				holder.descripcionProyecto.setText(proyecto.getDescripcion().substring(0, 150) + "...");
 			} else
 				holder.descripcionProyecto.setText(proyecto.getDescripcion());
+			if(proyecto.getIdPropietario()!=0)
+				holder.nombreUsuario.setText(proyecto.getPropietarioUser());
+
+			holder.contadorBuenaIdea.setText(String.valueOf(proyecto.getBuenaIdea().size()));
 
 			//TODO Para cuando cargue usuarios
-			//holder.nombreUsuario.setText(proyecto.getPropietario().getNombre());
+			//holder.nombreUsuario.setTexto(proyecto.getIdPropietario().getNombre());
 
 			holder.imgProyecto.setOnClickListener(cargaProyecto());
 			holder.descripcionProyecto.setOnClickListener(cargaProyecto());
@@ -135,7 +148,6 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 				@Override
 				public void onClick(View v) {
 					HBuenaIdea hBuenaIdea;
-					usuarioSesion = Sesion.getUsuario(context);
 					//Si el usuario ha iniciado sesión
 					if (usuarioSesion != null) {
 						//Actualizo el botón
@@ -168,7 +180,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(context, UsuarioActivity.class);
-					intent.putExtra("usuario", proyecto.getPropietario());
+					intent.putExtra("idUsuario",proyecto.getIdPropietario() );
 					context.startActivity(intent);
 				}
 			});
@@ -213,17 +225,23 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 	 */
 	private void cargarPreferenciasUsuario(ImageView imgBuenaIdea){
 		//Cargo las preferencias del usuario
-		if(usuarioSesion!=null) {
+		if(usuarioSesion!=null && proyecto.getBuenaIdea()!=null) {
 			//Compruebo si el usuario le ha dado antes a buena idea a este proyecto
-			boolean usuarioBuenaidea  = proyecto.getBuenaIdea().stream().anyMatch(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId());
+			boolean usuarioBuenaidea=false;
+			if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+			 usuarioBuenaidea  = proyecto.getBuenaIdea().parallelStream().anyMatch(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId());
+			else
+				usuarioBuenaidea  = StreamSupport.parallelStream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();
 			//Si es así lo dejo presionado y le cambio la imagen
 			imgBuenaIdea.setPressed(usuarioBuenaidea);
 			if (usuarioBuenaidea)
 				imgBuenaIdea.setImageResource(R.drawable.buenaidea);
 		}
 	}
-	public void addItem(Proyecto pushMessage) {
-		proyectos.add(pushMessage);
+	@Override
+	public void addItem(Publicacion publicacion) {
+		proyectos.add((Proyecto) publicacion);
+		Almacen.add((Proyecto) publicacion);
 		notifyItemInserted(0);
 	}
 

@@ -1,40 +1,51 @@
 package com.smartu.modelos;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
+import com.smartu.contratos.Publicacion;
+
+import java.io.Serializable;
+import java.security.PublicKey;
 import java.util.Date;
 
 /**
  * Created by Emilio Chica Jiménez on 19/05/2017.
  */
 
-public class Notificacion extends Publicacion {
+public class Notificacion implements Parcelable,Serializable,Publicacion {
     private int id;
     private Date fecha;
     private String nombre;
     private String descripcion;
-    private Usuario usuario;
-    private Proyecto proyecto;
+    private int idUsuario;
+    private int idProyecto;
+    private String proyecto;
+    private String usuario;
 
     public Notificacion() {
     }
 
-    public Notificacion(int id, Date fecha, String nombre, String descripcion, Usuario usuario, Proyecto proyecto) {
+    public Notificacion(int id, Date fecha, String nombre, String descripcion, int idUsuario, int idProyecto,String proyecto,String usuario) {
         this.id = id;
         this.fecha = fecha;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.usuario = usuario;
+        this.idUsuario = idUsuario;
+        this.idProyecto = idProyecto;
         this.proyecto = proyecto;
+        this.usuario = usuario;
     }
 
     protected Notificacion(Parcel in) {
         id = in.readInt();
         nombre = in.readString();
         descripcion = in.readString();
-        usuario = in.readParcelable(Usuario.class.getClassLoader());
-        proyecto = in.readParcelable(Proyecto.class.getClassLoader());
+        idUsuario = in.readInt();
+        idProyecto = in.readInt();
         fecha = new Date(in.readLong());
+        usuario = in.readString();
+        proyecto = in.readString();
     }
 
     public static final Creator<Notificacion> CREATOR = new Creator<Notificacion>() {
@@ -81,20 +92,36 @@ public class Notificacion extends Publicacion {
         this.descripcion = descripcion;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
-    public Proyecto getProyecto() {
+    public int getIdProyecto() {
+        return idProyecto;
+    }
+
+    public void setIdProyecto(int idProyecto) {
+        this.idProyecto = idProyecto;
+    }
+
+    public String getProyecto() {
         return proyecto;
     }
 
-    public void setProyecto(Proyecto proyecto) {
+    public void setProyecto(String proyecto) {
         this.proyecto = proyecto;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     @Override
@@ -107,8 +134,10 @@ public class Notificacion extends Publicacion {
         dest.writeInt(id);
         dest.writeString(nombre);
         dest.writeString(descripcion);
-        dest.writeParcelable(usuario, flags);
-        dest.writeParcelable(proyecto, flags);
+        dest.writeInt(idUsuario);
+        dest.writeInt(idProyecto);
         dest.writeLong(fecha.getTime());
+        dest.writeString(usuario);
+        dest.writeString(proyecto);
     }
 }

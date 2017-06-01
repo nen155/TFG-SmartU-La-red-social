@@ -63,7 +63,7 @@ public class FragmentIntegrantes extends Fragment {
      * @param usuarios Parametro 1.
      * @return A devuelve una nueva instancia del fragment.
      */
-    public static FragmentIntegrantes newInstance(ArrayList<Usuario> usuarios,ArrayList<Vacante> vacantesUsuarios,Proyecto proyecto) {
+    public static FragmentIntegrantes newInstance(ArrayList<Usuario> usuarios, ArrayList<Vacante> vacantesUsuarios, Proyecto proyecto) {
         FragmentIntegrantes fragment = new FragmentIntegrantes();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_INTEGRANTES, usuarios);
@@ -153,9 +153,9 @@ public class FragmentIntegrantes extends Fragment {
     }
 
 
-    public void onButtonPressed(Usuario usuario) {
+    public void onButtonPressed(int idUsuario) {
         if (mListener != null) {
-            mListener.onUsuarioSeleccionado(usuario);
+            mListener.onUsuarioSeleccionado(idUsuario);
         }
     }
 
@@ -166,7 +166,7 @@ public class FragmentIntegrantes extends Fragment {
             mListener = (OnIntegranteSelectedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " debe implementar OnNovedadSelectedListener");
+                    + " debe implementar OnIntegranteSelectedListener");
         }
     }
 
@@ -187,6 +187,6 @@ public class FragmentIntegrantes extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnIntegranteSelectedListener {
-        void onUsuarioSeleccionado(Usuario usuario);
+        void onUsuarioSeleccionado(int idUsuario);
     }
 }

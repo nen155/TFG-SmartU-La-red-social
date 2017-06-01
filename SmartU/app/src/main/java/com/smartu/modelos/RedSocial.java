@@ -3,15 +3,20 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class RedSocial implements Parcelable{
+public class RedSocial implements Parcelable,Serializable {
     private int id;
     private String nombre;
     private String url;
 
+    public RedSocial(){
+
+    }
     public RedSocial(int id, String nombre, String url) {
         this.id = id;
         this.nombre = nombre;

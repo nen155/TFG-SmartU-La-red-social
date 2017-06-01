@@ -9,8 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.joanzapata.iconify.Iconify;
+import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.ns.developer.tagview.entity.Tag;
 import com.ns.developer.tagview.widget.TagCloudLinkView;
 import com.smartu.R;
@@ -67,12 +70,15 @@ public class FragmentUsuario extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Pongo los iconos para los TextView
+        Iconify.with(new FontAwesomeModule());
         View inflatedView =inflater.inflate(R.layout.fragment_usuario, container, false);
 
         TextView nombreCompleto = (TextView) inflatedView.findViewById(R.id.nombre_completo_usuario);
         TextView status = (TextView) inflatedView.findViewById(R.id.status_usuario);
         TextView web = (TextView) inflatedView.findViewById(R.id.web_usuario);
         TextView biografia = (TextView) inflatedView.findViewById(R.id.biografia_usuario);
+        ImageView verficado =(ImageView) inflatedView.findViewById(R.id.verificado);
         TagCloudLinkView areasInteres = (TagCloudLinkView) inflatedView.findViewById(R.id.areas_interes_usuario);
         TagCloudLinkView especialidades = (TagCloudLinkView) inflatedView.findViewById(R.id.especialidades_usuario);
         RecyclerView redesSociales =(RecyclerView) inflatedView.findViewById(R.id.redesSociales);
@@ -84,8 +90,13 @@ public class FragmentUsuario extends Fragment {
         redesSociales.setAdapter(new AdapterRedesSociales(getContext(),usuario.getMisRedesSociales()));
 
         //Relleno los campos del usuario
-        nombreCompleto.setText(usuario.getNombre()+usuario.getApellidos());
+        nombreCompleto.setText(usuario.getNombre()+" "+usuario.getApellidos());
         status.setText(usuario.getMiStatus().getNombre());
+
+        if(usuario.isVerificado())
+            verficado.setVisibility(View.VISIBLE);
+        else
+            verficado.setVisibility(View.GONE);
 
         if(usuario.getWeb()!=null && usuario.getWeb().compareTo("")!=0)
             web.setText(usuario.getWeb());

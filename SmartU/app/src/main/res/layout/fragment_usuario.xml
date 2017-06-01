@@ -18,7 +18,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.smartu.vistas.FragmentProyecto"
+    tools:context="com.smartu.vistas.FragmentUsuario"
     android:padding="16dp">
     <TextView
         android:id="@+id/text_nombre_completo"

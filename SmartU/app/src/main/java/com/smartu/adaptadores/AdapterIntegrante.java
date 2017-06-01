@@ -2,6 +2,7 @@ package com.smartu.adaptadores;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 import com.ns.developer.tagview.entity.Tag;
 import com.ns.developer.tagview.widget.TagCloudLinkView;
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
+import com.smartu.contratos.OperacionesAdapter;
+import com.smartu.contratos.Publicacion;
 import com.smartu.hebras.HSeguir;
 import com.smartu.hebras.HSolicitud;
 import com.smartu.modelos.Especialidad;
@@ -28,8 +32,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import java8.util.stream.StreamSupport;
 
-public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.ViewHolder> {
+
+public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.ViewHolder> implements OperacionesAdapter {
     private Context context;
     private ArrayList<Usuario> usuarios;
     private FragmentIntegrantes.OnIntegranteSelectedListener onIntegranteSelectedListener;
@@ -51,13 +57,14 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
         this.totalElementosServer = totalElementosServer;
     }
 
-    public AdapterIntegrante(Context context, ArrayList<Usuario> items, FragmentIntegrantes.OnIntegranteSelectedListener onIntegranteSelectedListener,Proyecto proyecto) {
+    public AdapterIntegrante(Context context, ArrayList<Usuario> items, FragmentIntegrantes.OnIntegranteSelectedListener onIntegranteSelectedListener, Proyecto proyecto) {
         super();
         this.context = context;
         this.usuarios = items;
         this.onIntegranteSelectedListener = onIntegranteSelectedListener;
         this.proyecto = proyecto;
     }
+
 
     //Creating a ViewHolder which extends the RecyclerView View Holder
     // ViewHolder are used to to store the inflated views in order to recycle them
@@ -78,7 +85,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
             seguidoresUsuario = (TextView) itemView.findViewById(R.id.seguidores_usuario);
             especialidadUsuario = (TagCloudLinkView) itemView.findViewById(R.id.especialidad_usuario);
             imgUsuario = (ImageView) itemView.findViewById(R.id.img_usuario);
-            seguirUsuario = (Button) itemView.findViewById(R.id.nombre_usuario_o_proyecto);
+            seguirUsuario = (Button) itemView.findViewById(R.id.seguir_usuario);
                 tipoView=1;
             }else{
                 tipoView=0;
@@ -191,8 +198,12 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
      * pone los botones deshabilitados
      */
     private void cargarSolicitudesUnion(){
-        if (usuarioSesion != null) {
-            boolean solicitado = usuarioSesion.getMisSolicitudes().stream().anyMatch(solicitudUnion -> solicitudUnion.getProyecto().getId() == proyecto.getId());
+        if (usuarioSesion != null && usuarioSesion.getMisSolicitudes()!=null) {
+            boolean solicitado=false;
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+             solicitado = usuarioSesion.getMisSolicitudes().parallelStream().anyMatch(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId());
+            else
+                solicitado = StreamSupport.parallelStream(usuarioSesion.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findAny().isPresent();
             if(solicitado){
                 seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
                 seguidoresUsuarioEditable.setPressed(true);
@@ -206,9 +217,13 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
      */
     private void cargarPreferenciasUsuario() {
         //Cargo las preferencias del usuario
-        if (usuarioSesion != null) {
+        if (usuarioSesion != null && usuarioSesion.getMisSeguidos()!=null) {
             //Compruebo si el usuario le ha dado antes a seguir a este usuario
-            boolean usuarioSigue = usuarioSesion.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1.getId() == usuario.getId());
+            boolean usuarioSigue=false;
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+             usuarioSigue = usuarioSesion.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1 == usuario.getId());
+            else
+                usuarioSigue =  StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
             seguirUsuarioEditable.setPressed(usuarioSigue);
             if (usuarioSigue)
@@ -268,7 +283,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onIntegranteSelectedListener.onUsuarioSeleccionado(usuario);
+                onIntegranteSelectedListener.onUsuarioSeleccionado(usuario.getId());
             }
         };
     }
@@ -299,8 +314,11 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
             }
         };
     }
-    public void addItem(Usuario pushMessage) {
-        usuarios.add(pushMessage);
+    @Override
+    public void addItem(Publicacion publicacion) {
+        usuarios.add((Usuario) publicacion);
+        Almacen.add((Usuario) publicacion);
         notifyItemInserted(0);
     }
+
 }

@@ -3,16 +3,19 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Especialidad implements Parcelable {
+public class Especialidad implements Parcelable,Serializable {
     private int id;
     private String nombre;
     private String descripcion;
     private int experiencia;
 
+    public Especialidad(){}
     public Especialidad(int id, String nombre, String descripcion,int experiencia) {
         this.id = id;
         this.nombre = nombre;

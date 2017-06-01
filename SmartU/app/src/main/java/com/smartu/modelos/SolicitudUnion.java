@@ -3,30 +3,38 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.appindexing.Thing;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Emilio Chica Jiménez on 26/05/2017.
  */
 
-public class SolicitudUnion implements Parcelable {
+public class SolicitudUnion implements Parcelable,Serializable {
     private Date fecha;
-    private Proyecto proyecto;
+    private String proyecto;
+    private int idProyecto;
 
-    public SolicitudUnion(Date fecha, Proyecto proyecto) {
+    public SolicitudUnion(){}
+    public SolicitudUnion(Date fecha, String proyecto,int idProyecto) {
         this.fecha = fecha;
         this.proyecto = proyecto;
+        this.idProyecto = idProyecto;
     }
 
     protected SolicitudUnion(Parcel in) {
-        proyecto = in.readParcelable(Proyecto.class.getClassLoader());
+        proyecto = in.readString();
         fecha = new Date(in.readLong());
+        idProyecto = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(proyecto, flags);
+        dest.writeString(proyecto);
         dest.writeLong(fecha.getTime());
+        dest.writeInt(idProyecto);
     }
 
     @Override
@@ -54,11 +62,19 @@ public class SolicitudUnion implements Parcelable {
         this.fecha = fecha;
     }
 
-    public Proyecto getProyecto() {
+    public String getProyecto() {
         return proyecto;
     }
 
-    public void setProyecto(Proyecto proyecto) {
+    public void setProyecto(String proyecto) {
         this.proyecto = proyecto;
+    }
+
+    public int getIdProyecto() {
+        return idProyecto;
+    }
+
+    public void setIdProyecto(int idProyecto) {
+        this.idProyecto = idProyecto;
     }
 }

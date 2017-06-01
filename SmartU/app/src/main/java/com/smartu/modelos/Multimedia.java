@@ -3,11 +3,13 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Multimedia implements Parcelable{
+public class Multimedia implements Parcelable,Serializable {
     private int id;
     private String nombre;
     private String url;
@@ -15,6 +17,7 @@ public class Multimedia implements Parcelable{
     private String urlPreview;
     private String urlSubtitulos;
 
+    public Multimedia(){}
     public Multimedia(int id, String nombre, String url, String tipo, String urlPreview, String urlSubtitulos) {
         this.id = id;
         this.nombre = nombre;

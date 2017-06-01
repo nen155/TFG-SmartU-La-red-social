@@ -36,7 +36,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="proyecto">Proyecto</string>
+    <string name="idProyecto">Proyecto</string>
     <string name="integrantes">Integrantes</string>
     <string name="multimedia">Multimedia</string>
     <string name="areas">Areas</string>
@@ -53,5 +53,6 @@
     <string name="perfil">Perfil</string>
     <string name="proyectos">Proyectos</string>
     <string name="areas_interes">Areas de interés</string>
+    <string name="title_activity_mensajes">MensajesActivity</string>
 
 </resources>

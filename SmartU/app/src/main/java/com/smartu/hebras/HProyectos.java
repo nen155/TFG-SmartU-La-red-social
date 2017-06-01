@@ -43,6 +43,7 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
 
                 "],"
                 + "\"totalserver\":\"15\"" +
+                "}"+
                 "}";
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
         //String resultado =resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaProyectos,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");

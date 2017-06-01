@@ -110,10 +110,27 @@ public class FragmentProyectos extends Fragment {
         adapterProyecto.setTotalElementosServer(proyectos.size());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        scrollListener.resetState();
+    }
 
-    public void onButtonPressed(Proyecto proyecto) {
+    @Override
+    public void onPause() {
+        super.onPause();
+        scrollListener.resetState();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        scrollListener.resetState();
+    }
+
+    public void onButtonPressed(int idProyecto) {
         if (mListener != null) {
-            mListener.onProyectoSeleccionado(proyecto);
+            mListener.onProyectoSeleccionado(idProyecto);
         }
     }
 
@@ -145,6 +162,6 @@ public class FragmentProyectos extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnProyectoSelectedListener {
-        void onProyectoSeleccionado(Proyecto proyecto);
+        void onProyectoSeleccionado(int idProyecto);
     }
 }

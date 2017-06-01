@@ -15,10 +15,6 @@
             android:icon="@drawable/ic_dashboard_black_24dp"
             android:title="Mis Proyectos" />
         <item
-            android:id="@+id/nav_mensajes"
-            android:icon="@drawable/mensaje"
-            android:title="Mis Mensajes" />
-        <item
             android:id="@+id/nav_areas"
             android:icon="@drawable/intereses"
             android:title="Mis Intereses" />
@@ -32,6 +28,10 @@
             android:title="Cerrar sesión" />
     </group>
     <group android:id="@+id/anonimo" android:checkableBehavior="single" android:visible="false">
+        <item
+            android:id="@+id/nav_inicio_anonimo"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Inicio" />
         <item
             android:id="@+id/nav_log"
             android:icon="@drawable/login"

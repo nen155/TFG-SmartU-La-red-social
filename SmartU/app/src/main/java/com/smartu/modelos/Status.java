@@ -3,11 +3,13 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Status implements Parcelable {
+public class Status implements Parcelable,Serializable {
     private int id;
     private String nombre;
     private int puntos;
@@ -15,6 +17,7 @@ public class Status implements Parcelable {
     //en la tabla seguidor
     private int numSeguidores;
 
+    public Status(){}
     public Status(int id, String nombre, int puntos, int numSeguidores) {
         this.id = id;
         this.nombre = nombre;

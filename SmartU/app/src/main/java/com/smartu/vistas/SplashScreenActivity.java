@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
@@ -52,20 +53,10 @@ public class SplashScreenActivity extends AppCompatActivity {
      * de cada tipo de publicación, para no llenar la memoria del smartphone
      */
     private class HPublicaciones extends AsyncTask<Void,Void,Void>{
-        //Voy a mantener arrays distintos para los elementos del muro
-        //para que a la hora de actualizar con FCM actualice el array
-        //que necesite
-        private ArrayList<Proyecto> proyectos;
-        private ArrayList<Notificacion> notificaciones;
-        private ArrayList<Usuario> usuarios;
-        private ArrayList<Comentario> comentarios;
+
 
         private long start;
         HPublicaciones() {
-            proyectos = new ArrayList<>();
-            notificaciones = new ArrayList<>();
-            usuarios = new ArrayList<>();
-            comentarios = new ArrayList<>();
         }
 
         @Override
@@ -73,54 +64,68 @@ public class SplashScreenActivity extends AppCompatActivity {
             //Miro el momento en el que comienzo a cargar
             start = System.currentTimeMillis();
             //Recojo el resultado en un String
-            String resultado="{\"muro\":{" +
-                    "\"proyectos\":[" +
-                    "{" +
-                    "\"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas 'Letraset', las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum. That’s the core part of this article. First, the collapsing layout specify how it will behave when the content is scrolled using the flags scroll|exitUntilCollapsed, so it will scroll until it’s completely collapsed. Then we specify the contentScrim, which is the color the toolbar will take when it reaches it’s collapsed state. I’ll be changing this programmatically and use palette to decide its color. We can also specify the margins for the title when it’s expanded. It will create a nice effect over the toolbar title. You can define some other things, such as the statusScrim or the textAppearance for the collapsed and expanded title." +
-                    "Al contrario del pensamiento popular, el texto de Lorem Ipsum no es simplemente texto aleatorio. Tiene sus raices en una pieza cl´sica de la literatura del Latin, que data del año 45 antes de Cristo, haciendo que este adquiera mas de 2000 años de antiguedad. Richard McClintock, un profesor de Latin de la Universidad de Hampden-Sydney en Virginia, encontró una de las palabras más oscuras de la lengua del latín.\",\"fechaCreacion\":\"2017-01-22\",\"fechaFinalizacion\":\"2018-12-10\",\"imagenDestacada\":\"https://www.google.es/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"web\":\"http://coloredmoon.com\"" +
-                    "}" +
-                    "]," +
-                    "\"comentarios\":[]," +
-                    "\"notificaciones\":[]," +
-                    "\"usuarios\":[]" +
-                    "}" +
+            String resultado="{\"publicaciones\":{\n" +
+                    "  \"proyectos\":[\n" +
+                    "    {\n" +
+                    "      \"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"Es el primer proyecto\",\"fechaCreacion\":\"2017-01-12\",\"fechaFinalizacion\":\"2018-03-29\",\"imagenDestacada\":\"wp-content/uploads/2017/05/logo_web.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"web\":\"http://coloredmoon.com\",\"idPropietario\":\"1\",\n" +
+                    "        \"buenaIdea\":[{\"idUsuario\":\"1\"}],\n" +
+                    "        \"misComentarios\":[{\"id\":\"1\",\"descripcion\":\"Es un buen proyecto, esta genial!\",\"fecha\":\"2017-05-29\",\"idUsuario\":\"1\",\"idProyecto\":\"1\",\"usuario\":\"Emilio\",\"proyecto\":\"SmartU\"}],\n" +
+                    "        \"misAreas\":[{\"id\":\"1\",\"nombre\":\"Informatica\"},{\"id\":\"2\",\"nombre\":\"Empresariales\"}],\n" +
+                    "        \"vacantesProyecto\":[{\"id\":\"1\",\"especialidades\":[\n" +
+                    "              {\"id\":\"1\",\"nombre\":\"Informática\"}]}],\n" +
+                    "              \"misArchivos\":[{\"id\":\"1\",\"nombre\":\"logo\",\"url\":\"wp-content/uploads/2017/05/logo_web.png\",\"tipo\":\"imagen\"}],\n" +
+                    "              \"misAvances\":[{\"id\":\"1\",\"nombre\":\"Casi hemos terminado la app!\",\"fecha\":\"2017-01-12\",\"descripcion\":\"Hemos trabajado duro desde octubre de 2016 para que este proyecto saliese adelante y ahora hemos conseguido casi terminarlo.\",\n" +
+                    "                \"misArchivos\":[{\"id\":\"1\",\"nombre\":\"logo\",\"url\":\"wp-content/uploads/2017/05/logo_web.png\",\"tipo\":\"imagen\"}]\n" +
+                    "              }],\n" +
+                    "              \"integrantes\":[\"1\",\"2\"]\n" +
+                    "              ,\n" +
+                    "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
+                    "    }\n" +
+                    "    ],\n" +
+                    "  \"comentarios\":[],\n" +
+                    "  \"notificaciones\":[],\n" +
+                    "  \"usuarios\":[]\n" +
+                    "}\n" +
                     "}";
             //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
             //String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\"0\"}","POST");
+            //Voy a mantener arrays distintos para los elementos del muro
+            //para que a la hora de actualizar con FCM actualice el array
+            //que necesite
             JSONObject res =null;
             ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
             try {
                 if(resultado !=null) {
                     res = new JSONObject(resultado);
-                    if (!res.isNull("muro")) {
-                        JSONObject muroJSON = res.getJSONObject("muro");
+                    if (!res.isNull("publicaciones")) {
+                        JSONObject muroJSON = res.getJSONObject("publicaciones");
                         JSONArray proyectosJSON = muroJSON.getJSONArray("proyectos");
                         for(int i=0;i<proyectosJSON.length();++i)
                         {
                             JSONObject proyecto = proyectosJSON.getJSONObject(i);
                             Proyecto p = mapper.readValue(proyecto.toString(), Proyecto.class);
-                            proyectos.add(p);
+                            Almacen.proyectos.add(p);
                         }
                         JSONArray comentariosJSON = muroJSON.getJSONArray("comentarios");
                         for(int i=0;i<comentariosJSON.length();++i)
                         {
                             JSONObject comentario = comentariosJSON.getJSONObject(i);
                             Comentario c = mapper.readValue(comentario.toString(), Comentario.class);
-                            comentarios.add(c);
+                            Almacen.comentarios.add(c);
                         }
                         JSONArray notificacionesJSON = muroJSON.getJSONArray("notificaciones");
                         for(int i=0;i<notificacionesJSON.length();++i)
                         {
                             JSONObject notificacion = notificacionesJSON.getJSONObject(i);
                             Notificacion n = mapper.readValue(notificacion.toString(), Notificacion.class);
-                            notificaciones.add(n);
+                            Almacen.notificaciones.add(n);
                         }
                         JSONArray usuariosJSON = muroJSON.getJSONArray("usuarios");
                         for(int i=0;i<usuariosJSON.length();++i)
                         {
                             JSONObject usuario = usuariosJSON.getJSONObject(i);
                             Usuario u = mapper.readValue(usuario.toString(), Usuario.class);
-                            usuarios.add(u);
+                            Almacen.usuarios.add(u);
                         }
 
                     }
@@ -172,10 +177,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                         intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                     //Establezo que se elimine esta pantalla de la pila y añado los arrays al extra
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.putParcelableArrayListExtra("proyectos",proyectos);
-                    intent.putParcelableArrayListExtra("notificaciones",notificaciones);
-                    intent.putParcelableArrayListExtra("usuarios",usuarios);
-                    intent.putParcelableArrayListExtra("comentarios",comentarios);
                     startActivity(intent);
                 }
             }, comienzo);

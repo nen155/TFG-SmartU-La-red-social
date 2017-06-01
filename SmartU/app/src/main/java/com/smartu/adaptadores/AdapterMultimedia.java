@@ -2,6 +2,7 @@ package com.smartu.adaptadores;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.smartu.R;
+import com.smartu.contratos.OperacionesAdapter;
+import com.smartu.contratos.Publicacion;
 import com.smartu.modelos.Multimedia;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.vistas.Imagen360Activity;
@@ -21,7 +24,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 
-public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.ViewHolder> {
+public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.ViewHolder>  {
     private Context context;
     private ArrayList<Multimedia> multimediaList;
     private Multimedia multimedia;
@@ -45,6 +48,8 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
         this.context = context;
         this.multimediaList = items;
     }
+
+
 
     //Creating a ViewHolder which extends the RecyclerView View Holder
     // ViewHolder are used to to store the inflated views in order to recycle them
@@ -160,7 +165,7 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
                 intent=new Intent(context, Imagen360Activity.class);
                 break;
         }
-        intent.putExtra("multimedia",multimedia);
+        intent.putExtra("multimedia",(Parcelable) multimedia);
         context.startActivity(intent);
     }
 

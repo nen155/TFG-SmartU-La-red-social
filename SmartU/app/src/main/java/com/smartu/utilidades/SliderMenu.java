@@ -17,7 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.smartu.R;
+import com.smartu.vistas.AreasActivity;
 import com.smartu.vistas.ContactoActivity;
 import com.smartu.vistas.LoginActivity;
 import com.smartu.vistas.MainActivity;
@@ -62,6 +64,14 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                if(Sesion.getUsuario(context)!=null) {
+                    navigationView.getMenu().setGroupVisible(R.id.autentificado, true);
+                    navigationView.getMenu().setGroupVisible(R.id.anonimo,false);
+                }
+                else {
+                    navigationView.getMenu().setGroupVisible(R.id.autentificado, false);
+                    navigationView.getMenu().setGroupVisible(R.id.anonimo,true);
+                }
             }
 
             @Override
@@ -115,6 +125,14 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
             ((AppCompatActivity) actualActivity).getMenuInflater().inflate(R.menu.main, menu);
+            if(Sesion.getUsuario(context)!=null) {
+                navigationView.getMenu().setGroupVisible(R.id.autentificado, true);
+                navigationView.getMenu().setGroupVisible(R.id.anonimo,false);
+            }
+            else {
+                navigationView.getMenu().setGroupVisible(R.id.autentificado, false);
+                navigationView.getMenu().setGroupVisible(R.id.anonimo,true);
+            }
             return true;
         }
         return super.onCreateOptionsMenu(menu);
@@ -135,6 +153,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
 
         Intent intent1=null;
         switch (item.getItemId()) {
+            case R.id.nav_inicio_anonimo:
             case R.id.nav_inicio:
                 intent1=new Intent(context, MainActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -144,18 +163,18 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
                 //Enlace a la web para que edite oosas de su cuenta
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("http://coloredmoon.com/micuenta"));
-                context.startActivity(new Intent(context, MainActivity.class));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
                 break;
             case R.id.nav_proyectos:
                 intent1=new Intent(context, ProyectosActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(new Intent(context, ProyectosActivity.class));
-                break;
-            case R.id.nav_mensajes:
-
+                context.startActivity(intent1);
                 break;
             case R.id.nav_areas:
-
+                intent1=new Intent(context, AreasActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent1);
                 break;
             case R.id.nav_contacto:
                 intent1=new Intent(context, ContactoActivity.class);
@@ -164,6 +183,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
                 break;
             case R.id.nav_out:
                 Sesion.logOut(context);
+                FirebaseAuth.getInstance().signOut();
                 intent1=new Intent(context, MainActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent1);

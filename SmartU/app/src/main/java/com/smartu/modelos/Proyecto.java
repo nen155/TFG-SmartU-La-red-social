@@ -3,6 +3,9 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.smartu.contratos.Publicacion;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -10,7 +13,7 @@ import java.util.Date;
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Proyecto implements Parcelable {
+public class Proyecto implements Parcelable,Serializable,Publicacion {
     private int id;
     private String nombre;
     private String descripcion;
@@ -20,20 +23,19 @@ public class Proyecto implements Parcelable {
     private String localizacion;
     private String coordenadas;
     private String web;
-    private Usuario propietario =null;
-    //Contenedores de los que es propietario
+    private int idPropietario;
+    private String propietarioUser;
+    //Contenedores de los que es idPropietario
     private ArrayList<BuenaIdea> buenaIdea;
-    private ArrayList<Comentario> misComentarios=null;
     private ArrayList<Area> misAreas=null;
     private ArrayList<Vacante> vacantesProyecto =null;
     private ArrayList<Multimedia> misArchivos=null;
     private ArrayList<RedSocial> misRedesSociales=null;
     private ArrayList<Hashtag> misHashtag=null;
     private ArrayList<Avance> misAvances=null;
-    private ArrayList<Usuario> integrantes=null;
+    private ArrayList<Integer> integrantes=null;
 
     public Proyecto(){
-        misComentarios =new ArrayList<>();
         misAreas =new ArrayList<>();
         vacantesProyecto =new ArrayList<>();
         misRedesSociales = new ArrayList<>();
@@ -43,7 +45,7 @@ public class Proyecto implements Parcelable {
         buenaIdea = new ArrayList<>();
         integrantes = new ArrayList<>();
     }
-    public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion, String imagenDestacada, Date fechaFinalizacion, String localizacion, String web, Usuario propietario) {
+    public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion, String imagenDestacada, Date fechaFinalizacion, String localizacion, String web, Integer idPropietario) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -52,10 +54,10 @@ public class Proyecto implements Parcelable {
         this.fechaFinalizacion = fechaFinalizacion;
         this.localizacion = localizacion;
         this.web = web;
-        this.propietario = propietario;
-        misComentarios =new ArrayList<>();
+        this.idPropietario = idPropietario;
         misAreas =new ArrayList<>();
         vacantesProyecto =new ArrayList<>();
+        misRedesSociales = new ArrayList<>();
         misArchivos =new ArrayList<>();
         misHashtag =new ArrayList<>();
         misAvances =new ArrayList<>();
@@ -72,18 +74,18 @@ public class Proyecto implements Parcelable {
         localizacion = in.readString();
         coordenadas = in.readString();
         web = in.readString();
-        propietario = in.readParcelable(Usuario.class.getClassLoader());
+        idPropietario = in.readInt();
         buenaIdea = in.createTypedArrayList(BuenaIdea.CREATOR);
-        misComentarios = in.createTypedArrayList(Comentario.CREATOR);
         misAreas = in.createTypedArrayList(Area.CREATOR);
         misArchivos = in.createTypedArrayList(Multimedia.CREATOR);
         misRedesSociales = in.createTypedArrayList(RedSocial.CREATOR);
         misHashtag = in.createTypedArrayList(Hashtag.CREATOR);
         misAvances = in.createTypedArrayList(Avance.CREATOR);
-        integrantes = in.createTypedArrayList(Usuario.CREATOR);
+        in.readList(integrantes,Integer.class.getClassLoader());
         vacantesProyecto = in.createTypedArrayList(Vacante.CREATOR);
         fechaCreacion = new Date(in.readLong());
         fechaFinalizacion = new Date(in.readLong());
+        propietarioUser = in.readString();
     }
 
     public static final Creator<Proyecto> CREATOR = new Creator<Proyecto>() {
@@ -162,12 +164,12 @@ public class Proyecto implements Parcelable {
         this.web = web;
     }
 
-    public Usuario getPropietario() {
-        return propietario;
+    public int getIdPropietario() {
+        return idPropietario;
     }
 
-    public void setPropietario(Usuario propietario) {
-        this.propietario = propietario;
+    public void setIdPropietario(int idPropietario) {
+        this.idPropietario = idPropietario;
     }
 
     public String getImagenDestacada() {
@@ -186,13 +188,6 @@ public class Proyecto implements Parcelable {
         this.coordenadas = coordenadas;
     }
 
-    public ArrayList<Comentario> getMisComentarios() {
-        return misComentarios;
-    }
-
-    public void setMisComentarios(ArrayList<Comentario> misComentarios) {
-        this.misComentarios = misComentarios;
-    }
 
     public ArrayList<Area> getMisAreas() {
         return misAreas;
@@ -242,14 +237,21 @@ public class Proyecto implements Parcelable {
         this.misAvances = misAvances;
     }
 
-    public ArrayList<Usuario> getIntegrantes() {
+    public ArrayList<Integer> getIntegrantes() {
         return integrantes;
     }
 
-    public void setIntegrantes(ArrayList<Usuario> integrantes) {
+    public void setIntegrantes(ArrayList<Integer> integrantes) {
         this.integrantes = integrantes;
     }
 
+    public String getPropietarioUser() {
+        return propietarioUser;
+    }
+
+    public void setPropietarioUser(String propietarioUser) {
+        this.propietarioUser = propietarioUser;
+    }
 
     @Override
     public int describeContents() {
@@ -265,17 +267,17 @@ public class Proyecto implements Parcelable {
         dest.writeString(localizacion);
         dest.writeString(coordenadas);
         dest.writeString(web);
-        dest.writeParcelable(propietario, flags);
+        dest.writeInt(idPropietario);
         dest.writeTypedList(buenaIdea);
-        dest.writeTypedList(misComentarios);
         dest.writeTypedList(misAreas);
         dest.writeTypedList(misArchivos);
         dest.writeTypedList(misRedesSociales);
         dest.writeTypedList(misHashtag);
         dest.writeTypedList(misAvances);
-        dest.writeTypedList(integrantes);
+        dest.writeList(integrantes);
         dest.writeTypedList(vacantesProyecto);
         dest.writeLong(fechaCreacion.getTime());
         dest.writeLong(fechaFinalizacion.getTime());
+        dest.writeString(propietarioUser);
     }
 }

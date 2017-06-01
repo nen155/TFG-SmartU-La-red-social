@@ -13,11 +13,12 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launch"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -71,9 +72,6 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".vistas.MapsActivity"
-            android:label="@string/title_activity_maps" />
-        <activity
             android:name=".vistas.ProyectoActivity"
             android:label="@string/title_activity_proyecto"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -82,10 +80,31 @@
         <activity android:name=".vistas.Imagen360Activity" />
         <activity
             android:name=".vistas.UsuarioActivity"
-            android:label="@string/title_activity_usuario" />
-        <activity android:name=".vistas.ProyectosActivity" />
-        <activity android:name=".vistas.ContactoActivity" />
-        <activity android:name=".vistas.AreasActivity"></activity>
+            android:label="@string/title_activity_usuario"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".vistas.ProyectosActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".vistas.ContactoActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".vistas.AreasActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".vistas.MensajesActivity"
+            android:label="@string/title_activity_mensajes"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="friendlychat.firebase.google.com"
+                    android:scheme="http"
+                    android:pathPrefix="/message"
+                    />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

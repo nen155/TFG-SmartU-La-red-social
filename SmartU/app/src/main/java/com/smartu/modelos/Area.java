@@ -3,16 +3,19 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
  */
 
-public class Area implements Parcelable {
+public class Area implements Parcelable,Serializable {
     private int id;
     private String nombre;
     private String descripcion;
     private String urlImg;
 
+    public Area(){}
     public Area(int id, String nombre, String descripcion, String urlImg) {
         this.id = id;
         this.nombre = nombre;

@@ -64,7 +64,7 @@ public class AdapterRedesSociales extends RecyclerView.Adapter<AdapterRedesSocia
             sinHTTPS= redSocial.getUrl().split("https://");
         //Divido el resultado por los puntos por lo que me quedaría algo así
         // facebook  .com/assdasdasd
-        String[] sinURLCOMPLETA = sinHTTPS[1].split(".");
+        String[] sinURLCOMPLETA = sinHTTPS[1].split("\\.");
         //Lo paso a minúsculas por si acaso
         String nombreRed = sinURLCOMPLETA[0].toLowerCase();
         //Establezco el icono que quiero mostrar en el TextView

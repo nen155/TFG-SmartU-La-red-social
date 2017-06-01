@@ -3,6 +3,9 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.smartu.contratos.Publicacion;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -10,13 +13,14 @@ import java.util.Date;
  * Created by Emilio Chica Jiménez on 19/05/2017.
  */
 
-public class Avance extends Publicacion {
+public class Avance implements Parcelable,Serializable{
     private int id;
     private Date fecha;
     private String nombre;
     private String descripcion;
     private ArrayList<Multimedia> misArchivos;
 
+    public Avance(){}
     public Avance(int id, Date fecha, String nombre, String descripcion) {
         this.id = id;
         this.fecha = fecha;

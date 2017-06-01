@@ -2,6 +2,7 @@ package com.smartu.adaptadores;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 import com.ns.developer.tagview.entity.Tag;
 import com.ns.developer.tagview.widget.TagCloudLinkView;
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
+import com.smartu.contratos.OperacionesAdapter;
+import com.smartu.contratos.Publicacion;
 import com.smartu.hebras.HSeguir;
 import com.smartu.modelos.Especialidad;
 import com.smartu.modelos.Usuario;
@@ -26,8 +30,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import java8.util.stream.StreamSupport;
 
-public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHolder> {
+
+public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHolder> implements OperacionesAdapter {
     private Context context;
     private ArrayList<Usuario> usuarios;
     private FragmentUsuarios.OnUsuarioSelectedListener onUsuarioSelectedListener;
@@ -55,6 +61,8 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
         this.usuarios = items;
         this.onUsuarioSelectedListener = onUsuarioSelectedListener;
     }
+
+
 
     //Creating a ViewHolder which extends the RecyclerView View Holder
     // ViewHolder are used to to store the inflated views in order to recycle them
@@ -205,7 +213,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onUsuarioSelectedListener.onUsuarioSeleccionado(usuario);
+                onUsuarioSelectedListener.onUsuarioSeleccionado(usuario.getId());
             }
         };
     }
@@ -214,17 +222,25 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
      */
     private void cargarPreferenciasUsuario(Button seguirUsuario){
         //Cargo las preferencias del usuario
-        if(usuarioSesion!=null) {
+        if(usuarioSesion!=null && usuarioSesion.getMisSeguidos()!=null) {
             //Compruebo si el usuario le ha dado antes a seguir a este usuario
-            boolean usuarioSigue =  usuarioSesion.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1.getId() == usuario.getId());
+            boolean usuarioSigue = false;
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+                usuarioSigue=  usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == usuario.getId());
+            else
+                usuarioSigue= StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
             seguirUsuario.setPressed(usuarioSigue);
             if(usuarioSigue)
                 seguirUsuario.setText(R.string.no_seguir);
         }
     }
-    public void addItem(Usuario pushMessage) {
-        usuarios.add(pushMessage);
+
+    @Override
+    public void addItem(Publicacion publicacion) {
+        usuarios.add((Usuario)publicacion);
+        Almacen.add((Usuario)publicacion);
         notifyItemInserted(0);
     }
+
 }

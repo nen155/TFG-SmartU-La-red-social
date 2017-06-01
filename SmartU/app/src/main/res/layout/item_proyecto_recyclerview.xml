@@ -61,7 +61,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
                     android:layout_weight="0.7"
-                    android:text="propietario"
+                    android:text="idPropietario"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start|center"
                     android:textColor="@color/colorPrimaryLight" />
                 <TextView
                     android:id="@+id/buenaidea_contador_proyecto"

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,6 +29,8 @@ import com.smartu.R;
 import com.smartu.modelos.Proyecto;
 
 import java.util.ArrayList;
+
+import java8.util.stream.StreamSupport;
 
 /**
  * Una subclase simple {@link Fragment}.
@@ -156,9 +159,9 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback, Google
         super.onDestroyView();
     }
 
-    public void onButtonPressed(Proyecto proyecto) {
+    public void onButtonPressed(int idProyecto) {
         if (mListener != null) {
-            mListener.onProyectoSeleccionadoMapa(proyecto);
+            mListener.onProyectoSeleccionadoMapa(idProyecto);
         }
     }
 
@@ -221,8 +224,12 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback, Google
             @Override
             public void onInfoWindowClick(Marker marker) {
                 long id=(long)marker.getZIndex();
-                Proyecto p = proyectos.stream().filter(proyecto -> proyecto.getId()==id).findFirst().get();
-                mListener.onProyectoSeleccionadoMapa(p);
+                Proyecto p=null;
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+                    p = proyectos.stream().filter(proyecto -> proyecto.getId()==id).findFirst().get();
+                else
+                    p = StreamSupport.stream(proyectos).filter(proyecto -> proyecto.getId()==id).findFirst().get();
+                mListener.onProyectoSeleccionadoMapa(p.getId());
             }
         });
     }
@@ -263,6 +270,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback, Google
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnProyectoSeleccionadoMapaListener {
-        void onProyectoSeleccionadoMapa(Proyecto proyecto);
+        void onProyectoSeleccionadoMapa(int idProyecto);
     }
 }

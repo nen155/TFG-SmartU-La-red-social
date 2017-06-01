@@ -3,6 +3,7 @@ package com.smartu.adaptadores;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,6 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
+import com.smartu.contratos.OperacionesAdapter;
+import com.smartu.contratos.Publicacion;
 import com.smartu.modelos.Comentario;
 import com.smartu.vistas.ProyectoActivity;
 
@@ -21,7 +25,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 
-public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.ViewHolder> {
+public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.ViewHolder> implements OperacionesAdapter {
 
     private Context context;
     private ArrayList<Comentario> comentarios;
@@ -45,6 +49,8 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
         this.context = context;
         this.comentarios = items;
     }
+
+
 
 
     //Creating a ViewHolder which extends the RecyclerView View Holder
@@ -123,8 +129,8 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
             } else
                 holder.descripcionComentario.setText(comentario.getDescripcion());
 
-            holder.btnNombreProyecto.setText(comentario.getProyecto().getNombre());
-            holder.nombreUsuario.setText(comentario.getUsuario().getNombre());
+            holder.btnNombreProyecto.setText(comentario.getProyecto());
+            holder.nombreUsuario.setText(comentario.getUsuario());
 
             holder.descripcionComentario.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -172,11 +178,14 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
 
     private void cargaProyecto() {
         Intent intent = new Intent(context, ProyectoActivity.class);
-        intent.putExtra("proyecto", comentario.getProyecto());
+        intent.putExtra("idProyecto",  comentario.getIdProyecto());
         context.startActivity(intent);
     }
-    public void addItem(Comentario pushMessage) {
-        comentarios.add(pushMessage);
+
+    @Override
+    public void addItem(Publicacion publicacion) {
+        comentarios.add((Comentario) publicacion);
+        Almacen.add((Comentario) publicacion);
         notifyItemInserted(0);
     }
 }

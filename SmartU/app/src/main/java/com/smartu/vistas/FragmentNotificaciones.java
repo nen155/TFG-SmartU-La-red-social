@@ -90,20 +90,20 @@ public class FragmentNotificaciones extends Fragment {
                 String fecha = intent.getStringExtra("fecha");
                 String idusuario = intent.getStringExtra("idusuario");
                 String idproyecto = intent.getStringExtra("idproyecto");
+                String usuario = intent.getStringExtra("usuario");
+                String proyecto = intent.getStringExtra("proyecto");
 
 
                 Notificacion notificacion = new Notificacion();
                 notificacion.setNombre(nombre);
                 notificacion.setDescripcion(description);
                 if(idusuario.compareTo("0")!=0) {
-                    Usuario u = new Usuario();
-                    u.setId(Integer.parseInt(idusuario));
-                    notificacion.setUsuario(u);
+                    notificacion.setIdUsuario(Integer.parseInt(idusuario));
+                    notificacion.setUsuario(usuario);
                 }
                 if(idproyecto.compareTo("0")!=0) {
-                    Proyecto p = new Proyecto();
-                    p.setId(Integer.parseInt(idproyecto));
-                    notificacion.setProyecto(p);
+                    notificacion.setIdProyecto(Integer.parseInt(idproyecto));
+                    notificacion.setProyecto(proyecto);
                 }
 
                 try {

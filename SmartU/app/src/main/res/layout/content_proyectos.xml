@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.smartu.vistas.ProyectosActivity"
+    tools:showIn="@layout/app_bar_proyectos"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/linearcontainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.smartu.vistas.ProyectosActivity">
 <FrameLayout android:id="@+id/content_proyectos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,3 +23,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 </FrameLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
