@@ -34,9 +34,9 @@ public class ProyectosActivity extends AppCompatActivity implements FragmentProy
     }
 
     @Override
-    public void onProyectoSeleccionado(Proyecto proyecto) {
+    public void onProyectoSeleccionado(int idProyecto) {
         Intent intent = new Intent(this,ProyectoActivity.class);
-        intent.putExtra("proyecto",(Parcelable) proyecto);
+        intent.putExtra("idProyecto", idProyecto);
         startActivity(intent);
     }
 

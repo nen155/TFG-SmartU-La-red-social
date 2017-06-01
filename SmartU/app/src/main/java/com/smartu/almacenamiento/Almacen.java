@@ -1,11 +1,15 @@
 package com.smartu.almacenamiento;
 
+import android.content.Context;
 import android.os.Build;
 
+import com.smartu.hebras.HPublicacion;
+import com.smartu.hebras.HPublicaciones;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
+import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.Sesion;
 
 import java.util.ArrayList;
@@ -69,112 +73,106 @@ public class Almacen {
     }
 
     /**
-     * Busca un proyecto en el almancen si no lo encuentra devuelve null
+     * Busca un proyecto en el almacen, sino lo encuentra busca en el server
      * @param id
-     * @return
+     * @param p
+     * @param context
      */
-    public static Proyecto buscarProyecto(int id){
-        Proyecto p =proyectoHashMap.get(id);
-        if(p!=null )
-            return p;
-        else
+    public static void buscar(int id,Proyecto p,Context context){
+         p =proyectoHashMap.get(id);
+        if(p==null )
         {
-            //TODO HEBRA QUE BUSQUE LOS PROYECTOS Y LOS AÑADA AL ALMACEN
-            //CON LOS USUARIOS ASOCIADOS Y NOTIFICACIONES Y COMENTARIOS
-            return null;
+            //Busca el proyecto y lo guarda en p, y añade al almacen comentarios y usuarios asociados
+            HPublicacion hPublicacion = new HPublicacion(context,p, Constantes.PROYECTO,id);
+            hPublicacion.sethPublicaciones(hPublicacion);
+            hPublicacion.execute();
         }
     }
     /**
-     * Busca un proyecto en el almancen si no lo encuentra devuelve null
+     * Busca un comentario en el almacen, sino lo encuentra busca en el server
      * @param id
-     * @return
+     * @param c
+     * @param context
      */
-    public static Comentario buscarComentario(int id){
-        Comentario c =comentarioHashMap.get(id);
-        if(c!=null )
-            return c;
-        else
+    public static void buscar(int id,Comentario c,Context context){
+        c =comentarioHashMap.get(id);
+        if(c==null )
         {
-            //TODO HEBRA QUE BUSQUE LOS PROYECTOS Y LOS AÑADA AL ALMACEN
-            //CON LOS USUARIOS ASOCIADOS Y NOTIFICACIONES Y COMENTARIOS
-            return null;
+            //Busca el comentario y lo guarda en c, y añade al almacen proyectos y usuarios asociados
+            HPublicacion hPublicacion = new HPublicacion(context,c, Constantes.COMENTARIO,id);
+            hPublicacion.sethPublicaciones(hPublicacion);
+            hPublicacion.execute();
         }
     }
     /**
-     * Busca un proyecto en el almancen si no lo encuentra devuelve null
+     * Busca un usuario en el almacen, sino lo encuentra busca en el server
      * @param id
-     * @return
+     * @param u
+     * @param context
      */
-    public static Usuario buscarUsuario(int id){
-        Usuario u =usuarioHashMap.get(id);
-        if(u !=null )
-            return u ;
-        else
+    public static void buscar(int id,Usuario u,Context context){
+         u =usuarioHashMap.get(id);
+        if(u ==null )
         {
-            //TODO HEBRA QUE BUSQUE LOS PROYECTOS Y LOS AÑADA AL ALMACEN
-            //CON LOS USUARIOS ASOCIADOS Y NOTIFICACIONES Y COMENTARIOS
-            return null;
+            //Busca el usuario y lo guarda en u, y añade al almacen comentarios y proyectos asociados
+            HPublicacion hPublicacion = new HPublicacion(context,u, Constantes.USUARIO,id);
+            hPublicacion.sethPublicaciones(hPublicacion);
+            hPublicacion.execute();
         }
     }
     /**
-     * Busca un proyecto en el almancen si no lo encuentra devuelve null
+     * Busca una notificacion en el almacen, sino lo encuentra busca en el server
      * @param id
-     * @return
+     * @param n
+     * @param context
      */
-    public static Notificacion buscarNotificacion(int id){
-        Notificacion n =notificacionHashMap.get(id);
-        if(n !=null )
-            return n ;
-        else
+    public static void buscar(int id, Notificacion n, Context context){
+        n =notificacionHashMap.get(id);
+        if(n ==null )
         {
-            //TODO HEBRA QUE BUSQUE LOS PROYECTOS Y LOS AÑADA AL ALMACEN
-            //CON LOS USUARIOS ASOCIADOS Y NOTIFICACIONES Y COMENTARIOS
-            return null;
+            //Busca la notificacion y lo guarda en n, y añade al almacen comentarios y usuarios asociados
+            HPublicacion hPublicacion = new HPublicacion(context,n, Constantes.NOTIFICACION,id);
+            hPublicacion.sethPublicaciones(hPublicacion);
+            hPublicacion.execute();
         }
     }
     /**
      * Busca un conjunto de ids de proyectos en el almacen y sino los encuentra los busca en
      * el servidor
      * @param idsUsuarios
-     * @return
      */
-    public static ArrayList<Usuario> buscarUsuarios(ArrayList<Integer> idsUsuarios){
+    public static void buscarUsuarios(ArrayList<Integer> idsUsuarios, ArrayList<Usuario> usuarios){
         ArrayList<Integer> usuariosABuscarServer=new ArrayList<>();
-        ArrayList<Usuario> usuariosFilt=new ArrayList<>();
         for (int idUsuario: idsUsuarios) {
             Usuario usuario = usuarioHashMap.get(idUsuario);
             if(usuario==null)
                 usuariosABuscarServer.add(idUsuario);
             else
-                usuariosFilt.add(usuario);
+                usuarios.add(usuario);
         }
         if(usuariosABuscarServer.size()>0){
             //TODO HEBRA QUE BUSQUE LOS PROYECTOS Y LOS AÑADA AL ALMACEN
             //CON LOS USUARIOS ASOCIADOS Y NOTIFICACIONES Y COMENTARIOS
         }
-        return usuariosFilt;
     }
     /**
      * Busca un conjunto de ids de proyectos en el almacen y sino los encuentra los busca en
      * el servidor
      * @param idsProyectos
-     * @return
      */
-    public static ArrayList<Proyecto> buscarProyectos(ArrayList<Integer> idsProyectos){
+    public static void buscarProyectos(ArrayList<Integer> idsProyectos,ArrayList<Proyecto> proyectos){
         ArrayList<Integer> proyectosABuscarServer=new ArrayList<>();
-        ArrayList<Proyecto> proyectosFilt=new ArrayList<>();
         for (int idProyecto: idsProyectos) {
             Proyecto proyecto = proyectoHashMap.get(idProyecto);
             if(proyecto==null)
                 proyectosABuscarServer.add(idProyecto);
             else
-                proyectosFilt.add(proyecto);
+                proyectos.add(proyecto);
         }
         if(proyectosABuscarServer.size()>0){
             //TODO HEBRA QUE BUSQUE LOS PROYECTOS Y LOS AÑADA AL ALMACEN
             //CON LOS USUARIOS ASOCIADOS Y NOTIFICACIONES Y COMENTARIOS
         }
-        return proyectosFilt;
     }
 
 
@@ -284,13 +282,12 @@ public class Almacen {
     /**
      * Filtra los usuarios por seguidores
      *
-     * @return
      */
-    public static ArrayList<Usuario> usuariosFiltrados(Usuario usuarioSesion) {
+    public static void usuariosFiltrados(Usuario usuarioSesion,ArrayList<Usuario> usuariosFiltrados) {
         //Si no tengo gente a la que sigo devuelvo el array como esta
         if (usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
-            return getUsuarios();
+            usuariosFiltrados = getUsuarios();
         else
-            return Almacen.buscarUsuarios(usuarioSesion.getMisSeguidos());
+            buscarUsuarios(usuarioSesion.getMisSeguidos(),usuariosFiltrados);
     }
 }
