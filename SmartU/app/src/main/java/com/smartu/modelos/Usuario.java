@@ -142,6 +142,8 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
         misRedesSociales = in.createTypedArrayList(RedSocial.CREATOR);
         misSolicitudes = in.createTypedArrayList(SolicitudUnion.CREATOR);
         miStatus = in.readParcelable(Status.class.getClassLoader());
+        misSeguidos = new ArrayList<>();
+        misProyectos = new ArrayList<>();
         in.readList(misSeguidos,Integer.class.getClassLoader());
         in.readList(misProyectos,Integer.class.getClassLoader());
     }

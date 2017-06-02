@@ -210,12 +210,17 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                 public void run() {
                     Intent intent = null;
                     //Compruebo si es la primera vez que abre la aplicación
-                    if (ControladorPreferencias.isFirstTime())
+                    if (ControladorPreferencias.isFirstTime()) {
+
                         //Sino es así le muestro las instrucciones
                         intent = new Intent(context, InstruccionesMainActivity.class);
-                    else
+                        //Ya no es la primera vez por lo que guardo en las preferencias para que no muestre
+                        //otra vez
+                        ControladorPreferencias.guardarPreferenciasFirstTime(context, false);
+                    }else {
                         //Sino me voy al Main
                         intent = new Intent(context, MainActivity.class);
+                    }
                     //Establezo que se elimine esta pantalla de la pila y añado los arrays al extra
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);
