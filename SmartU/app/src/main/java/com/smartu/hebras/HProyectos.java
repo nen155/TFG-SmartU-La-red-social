@@ -83,7 +83,7 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
                             }
                         });
                     }
-                    adapterProyecto.setTotalElementosServer(res.getInt("totalserver"));
+                    adapterProyecto.setTotalElementosServer(proyectJSON.getInt("totalserver"));
                 }
             }
         } catch (JSONException e) {

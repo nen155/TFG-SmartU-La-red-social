@@ -5,6 +5,7 @@ import android.os.Build;
 
 import com.smartu.hebras.HPublicacion;
 import com.smartu.hebras.HPublicaciones;
+import com.smartu.modelos.Area;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
@@ -31,8 +32,11 @@ public class Almacen {
     private static Map<Integer,Usuario> usuarioHashMap = new HashMap<>();
     private static Map<Integer,Notificacion> notificacionHashMap = new HashMap<>();
     private static Map<Integer,Comentario> comentarioHashMap = new HashMap<>();
+    private static Map<Integer,Area> areasHashMap = new HashMap<>();
 
-
+    public static void add(Area a){
+        areasHashMap.put(a.getId(),a);
+    }
     public static void add(Proyecto p){
         proyectoHashMap.put(p.getId(),p);
     }
@@ -46,6 +50,9 @@ public class Almacen {
         comentarioHashMap.put(c.getId(),c);
     }
 
+    public static void removeArea(int id){
+        areasHashMap.remove(id);
+    }
     public static void removeProyecto(int id){
         proyectoHashMap.remove(id);
     }
@@ -70,6 +77,9 @@ public class Almacen {
     }
     public static ArrayList<Comentario> getComentarios(){
         return new ArrayList<Comentario>(comentarioHashMap.values());
+    }
+    public static ArrayList<Area> getAreas(){
+        return new ArrayList<Area>(areasHashMap.values());
     }
 
     /**

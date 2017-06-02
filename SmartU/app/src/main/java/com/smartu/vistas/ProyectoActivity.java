@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java8.util.stream.Collectors;
@@ -24,8 +25,10 @@ import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 
+import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
 import com.smartu.utilidades.SliderMenu;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,6 +57,10 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         //Inicia
         buenaidea_contador = (TextView) findViewById(R.id.buenaidea_text_proyecto);
         buenaidea = (FloatingActionButton) findViewById(R.id.buenaidea_proyecto);
+
+        //Cargo la imágen destacada del proyecto en la parte superior
+        ImageView imgDestadada = (ImageView) findViewById(R.id.img_activity_proyecto);
+        Picasso.with(getApplicationContext()).load(ConsultasBBDD.server+proyecto.getImagenDestacada()).into(imgDestadada);
 
         //Obtengo el usuario que ha iniciado sesión
         usuarioSesion = Sesion.getUsuario(getApplicationContext());

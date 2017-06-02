@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.almacenamiento.Almacen;
 import com.smartu.contratos.Publicacion;
+import com.smartu.modelos.Area;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
@@ -111,7 +112,8 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                 "              ],\n" +
                 "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
                 "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
-                "    }]\n" +
+                "    }],\n" +
+                "\"areas\":[{\"id\":\"1\",\"nombre\":\"Informática\"},{\"id\":\"2\",\"nombre\":\"Diseño gráfico\"},{\"id\":\"3\",\"nombre\":\"Edificación\"},{\"id\":\"4\",\"nombre\":\"Empresariales\"},{\"id\":\"5\",\"nombre\":\"Audio visuales\"},{\"id\":\"6\",\"nombre\":\"Comunicación\"}]"+
                 "}\n" +
                 "}";
 
@@ -164,6 +166,13 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                         JSONObject usuario = usuariosJSON.getJSONObject(i);
                         Usuario u = mapper.readValue(usuario.toString(), Usuario.class);
                         Almacen.add(u);
+                    }
+                    JSONArray areasJSON = muroJSON.getJSONArray("areas");
+                    for(int i=0;i<areasJSON.length();++i)
+                    {
+                        JSONObject area = areasJSON.getJSONObject(i);
+                        Area a = mapper.readValue(area.toString(), Area.class);
+                        Almacen.add(a);
                     }
 
                 }
