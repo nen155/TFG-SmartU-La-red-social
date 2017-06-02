@@ -1,5 +1,8 @@
 package com.smartu.hebras;
 
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -16,6 +19,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Created by Emilio Chica Jiménez on 27/05/2017.
  */
@@ -25,12 +30,22 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
     private AdapterNotificacion adapterNotificacion =null;
     private int offset;
     private HNotificaciones hNotificaciones;
+    private SweetAlertDialog pDialog;
+    private Context context;
 
-    public HNotificaciones(AdapterNotificacion adapterNotificacion, int offset) {
+    public HNotificaciones(AdapterNotificacion adapterNotificacion, int offset, Context context) {
         this.adapterNotificacion = adapterNotificacion;
         this.offset = offset;
+        this.context = context;
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Cargando...");
+        pDialog.setCancelable(false);
     }
-
+    @Override
+    protected void onPreExecute() {
+        pDialog.show();
+    }
     public void sethNotificaciones(HNotificaciones hNotificaciones) {
         this.hNotificaciones = hNotificaciones;
     }
@@ -59,7 +74,12 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
                     {
                         JSONObject notificacion = notificacionesJSON.getJSONObject(i);
                         Notificacion n = mapper.readValue(notificacion.toString(), Notificacion.class);
-                        adapterNotificacion.addItem(n);
+                        ((Activity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapterNotificacion.addItem(n);
+                            }
+                        });
                     }
                     adapterNotificacion.setTotalElementosServer(notiJSON.getInt("totalserver"));
                 }
@@ -80,6 +100,7 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hNotificaciones =null;
 
@@ -88,6 +109,7 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled(Void aVoid) {
         super.onCancelled(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hNotificaciones =null;
     }
@@ -95,6 +117,7 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hNotificaciones =null;
     }

@@ -124,7 +124,7 @@ public class FragmentComentariosProyecto extends Fragment {
      * @param offset
      */
     public void cargarMasComentarios(int offset) {
-        HComentarios hComentarios = new HComentarios(adapterComentarioProyecto,offset);
+        HComentarios hComentarios = new HComentarios(adapterComentarioProyecto,offset,getContext());
         hComentarios.sethComentarios(hComentarios);
         hComentarios.setIdProyecto(proyectoOrigen.getId());
         hComentarios.execute();

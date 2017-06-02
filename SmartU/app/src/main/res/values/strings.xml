@@ -41,8 +41,8 @@
     <string name="multimedia">Multimedia</string>
     <string name="areas">Areas</string>
     <string name="descripcion">Descripción</string>
-    <string name="status">Status</string>
-    <string name="especialidades">Especialidades</string>
+    <string name="status">Status:</string>
+    <string name="especialidades">Especialidades:</string>
     <string name="seguir">Seguir</string>
     <string name="solicitado_unio_proyecto">Solicitado</string>
     <string name="descripcion_union">Quiero unirme para estas especialidades:</string>

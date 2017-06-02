@@ -22,6 +22,15 @@ public class Comentario implements Parcelable,Serializable,Publicacion {
     private String usuario;
     private String proyecto;
 
+    public void clonar(Comentario c){
+        id=c.getId();
+        descripcion=c.getDescripcion();
+        fecha=c.getFecha();
+        idUsuario=c.getIdUsuario();
+        idProyecto=c.getIdProyecto();
+        usuario=c.getUsuario();
+        proyecto=c.getProyecto();
+    }
     public Comentario(){
 
     }

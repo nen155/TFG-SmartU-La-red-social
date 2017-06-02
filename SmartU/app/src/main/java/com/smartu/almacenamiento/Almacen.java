@@ -79,8 +79,9 @@ public class Almacen {
      * @param context
      */
     public static void buscar(int id,Proyecto p,Context context){
-         p =proyectoHashMap.get(id);
-        if(p==null )
+        if(proyectoHashMap.get(id)!=null)
+            p.clonar(proyectoHashMap.get(id));
+        else
         {
             //Busca el proyecto y lo guarda en p, y añade al almacen comentarios y usuarios asociados
             HPublicacion hPublicacion = new HPublicacion(context,p, Constantes.PROYECTO,id);
@@ -95,8 +96,9 @@ public class Almacen {
      * @param context
      */
     public static void buscar(int id,Comentario c,Context context){
-        c =comentarioHashMap.get(id);
-        if(c==null )
+        if(comentarioHashMap.get(id)!=null)
+        c.clonar(comentarioHashMap.get(id));
+        else
         {
             //Busca el comentario y lo guarda en c, y añade al almacen proyectos y usuarios asociados
             HPublicacion hPublicacion = new HPublicacion(context,c, Constantes.COMENTARIO,id);
@@ -111,8 +113,9 @@ public class Almacen {
      * @param context
      */
     public static void buscar(int id,Usuario u,Context context){
-         u =usuarioHashMap.get(id);
-        if(u ==null )
+        if(usuarioHashMap.get(id)!=null)
+            u.clonar(usuarioHashMap.get(id));
+        else
         {
             //Busca el usuario y lo guarda en u, y añade al almacen comentarios y proyectos asociados
             HPublicacion hPublicacion = new HPublicacion(context,u, Constantes.USUARIO,id);
@@ -127,8 +130,9 @@ public class Almacen {
      * @param context
      */
     public static void buscar(int id, Notificacion n, Context context){
-        n =notificacionHashMap.get(id);
-        if(n ==null )
+        if(notificacionHashMap.get(id)!=null)
+            n.clonar(notificacionHashMap.get(id));
+        else
         {
             //Busca la notificacion y lo guarda en n, y añade al almacen comentarios y usuarios asociados
             HPublicacion hPublicacion = new HPublicacion(context,n, Constantes.NOTIFICACION,id);
@@ -144,13 +148,15 @@ public class Almacen {
      */
     public static void buscarUsuarios(ArrayList<Integer> idsUsuarios, ArrayList<Usuario> usuarios,Context context){
         ArrayList<Integer> usuariosABuscarServer=new ArrayList<>();
-        usuarios = new ArrayList<>();
         for (int idUsuario: idsUsuarios) {
             Usuario usuario = usuarioHashMap.get(idUsuario);
             if(usuario==null)
                 usuariosABuscarServer.add(idUsuario);
-            else
-                usuarios.add(usuario);
+            else {
+                boolean esta =StreamSupport.parallelStream(usuarios).filter(usuario1 -> usuario1.getId() == usuario.getId()).findAny().isPresent();
+                if(!esta)
+                    usuarios.add(usuario);
+            }
         }
         //Significa que no he encontrado algunos elementos que tendré que buscar en el server
         if(usuariosABuscarServer.size()>0){
@@ -168,13 +174,15 @@ public class Almacen {
      */
     public static void buscarProyectos(ArrayList<Integer> idsProyectos,ArrayList<Proyecto> proyectos,Context context){
         ArrayList<Integer> proyectosABuscarServer=new ArrayList<>();
-        proyectos = new ArrayList<>();
         for (int idProyecto: idsProyectos) {
             Proyecto proyecto = proyectoHashMap.get(idProyecto);
             if(proyecto==null)
                 proyectosABuscarServer.add(idProyecto);
-            else
-                proyectos.add(proyecto);
+            else {
+                boolean esta =StreamSupport.parallelStream(proyectos).filter(usuario1 -> usuario1.getId() == proyecto.getId()).findAny().isPresent();
+                if(!esta)
+                    proyectos.add(proyecto);
+            }
         }
         //Significa que no he encontrado algunos elementos que tendré que buscar en el server
         if(proyectosABuscarServer.size()>0){
@@ -193,13 +201,15 @@ public class Almacen {
      */
     public static void buscarNotificaciones(ArrayList<Integer> idsNotificaciones,ArrayList<Notificacion> notificacions,Context context){
         ArrayList<Integer> notificacionesABuscarServer=new ArrayList<>();
-        notificacions = new ArrayList<>();
         for (int idNotificacion: idsNotificaciones) {
             Notificacion notificacion = notificacionHashMap.get(idNotificacion);
             if(notificacion==null)
                 notificacionesABuscarServer.add(idNotificacion);
-            else
-                notificacions.add(notificacion);
+            else {
+                boolean esta =StreamSupport.parallelStream(notificacions).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
+                if(!esta)
+                    notificacions.add(notificacion);
+            }
         }
         //Significa que no he encontrado algunos elementos que tendré que buscar en el server
         if(notificacionesABuscarServer.size()>0){
@@ -217,13 +227,15 @@ public class Almacen {
      */
     public static void buscarComentarios(ArrayList<Integer> idsComentarios,ArrayList<Comentario> comentarios,Context context){
         ArrayList<Integer> comentariosABuscarServer=new ArrayList<>();
-        comentarios = new ArrayList<>();
         for (int idComentario: idsComentarios) {
             Comentario comentario = comentarioHashMap.get(idComentario);
             if(comentario==null)
                 comentariosABuscarServer.add(idComentario);
-            else
-                comentarios.add(comentario);
+            else {
+                boolean esta =StreamSupport.parallelStream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
+                if(!esta)
+                    comentarios.add(comentario);
+            }
         }
         //Significa que no he encontrado algunos elementos que tendré que buscar en el server
         if(comentariosABuscarServer.size()>0){
@@ -347,7 +359,7 @@ public class Almacen {
     public static void usuariosFiltrados(Usuario usuarioSesion,ArrayList<Usuario> usuariosFiltrados,Context context) {
         //Si no tengo gente a la que sigo devuelvo el array como esta
         if (usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
-            usuariosFiltrados = getUsuarios();
+            usuariosFiltrados = new ArrayList<>(getUsuarios());
         else
             buscarUsuarios(usuarioSesion.getMisSeguidos(),usuariosFiltrados,context);
     }

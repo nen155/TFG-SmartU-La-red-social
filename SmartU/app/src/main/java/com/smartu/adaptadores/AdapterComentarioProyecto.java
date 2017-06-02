@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import java8.util.stream.StreamSupport;
+
 
 public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComentarioProyecto.ViewHolder> implements OperacionesAdapter {
     private Context context;
@@ -108,11 +110,19 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
             comentario = (Comentario) this.comentarios.get(position);
             Date fecha = comentario.getFecha();
             if (fecha != null) {
-                Date tiempo = new Date(fecha.getTime() - new Date().getTime());
-                Calendar calendar = GregorianCalendar.getInstance();
-                calendar.setTime(tiempo);
-                int horas = calendar.get(Calendar.HOUR);
-                String hace = "Hace " + horas + " horas";
+                long res = (((new Date().getTime()-fecha.getTime())/1000)/60)/60;
+                String hace ="";
+                if(res>24) {
+                    res = res / 24;
+                    if(res>1)
+                        hace = "Hace " + res + " dias";
+                    else
+                        hace = "Hace " + res + " día";
+                }else
+                if(res>1)
+                    hace = "Hace " + res + " horas";
+                else
+                    hace = "Hace " + res + " hora";
                 holder.fechaComentario.setText(hace);
             }
             holder.descripcionComentario.setText(comentario.getDescripcion());
@@ -146,7 +156,7 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
      */
     @Override
     public int getItemViewType(int position) {
-        if (position >= comentarios.size() && position==totalElementosServer && totalElementosServer > 0){
+        if (position >= comentarios.size() && position>=totalElementosServer && totalElementosServer > 0){
             return VIEW_TYPE_FINAL;
         }else if(position >= comentarios.size()){
             return VIEW_TYPE_LOADING;
@@ -170,11 +180,15 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
     public void addItem(Publicacion publicacion) {
         comentarios.add((Comentario) publicacion);
         Almacen.add((Comentario) publicacion);
-        notifyItemInserted(0);
+        notifyItemInserted(comentarios.size()-1);
     }
     public void addItemTop(Comentario pushMessage) {
-        comentarios.add(0,pushMessage);
-        Almacen.add((Comentario) pushMessage);
-        notifyItemInserted(0);
+        Comentario comentario= pushMessage;
+        boolean esta = StreamSupport.parallelStream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
+        if (!esta) {
+            comentarios.add(comentario);
+            Almacen.add(comentario);
+            notifyItemInserted(0);
+        }
     }
 }

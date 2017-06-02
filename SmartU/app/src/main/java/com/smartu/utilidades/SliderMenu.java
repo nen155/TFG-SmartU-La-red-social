@@ -16,14 +16,18 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.smartu.R;
+import com.smartu.modelos.Usuario;
 import com.smartu.vistas.AreasActivity;
 import com.smartu.vistas.ContactoActivity;
 import com.smartu.vistas.LoginActivity;
 import com.smartu.vistas.MainActivity;
 import com.smartu.vistas.ProyectosActivity;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
@@ -38,6 +42,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
     Context context;
     Activity actualActivity;
     NavigationView navigationView;
+    private Usuario usuarioSesion;
 
     public SliderMenu(Context context, Activity v) {
         this.context = context;
@@ -46,6 +51,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
         toolbar = (Toolbar) v.findViewById(R.id.my_toolbar);
         drawerLayout = (DrawerLayout) v.findViewById(R.id.drawer_layout);        // drawerLayout object Assigned to the view
         navigationView = (NavigationView) v.findViewById(R.id.nav_view);
+        usuarioSesion=Sesion.getUsuario(context);
 
     }
 
@@ -64,7 +70,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                if(Sesion.getUsuario(context)!=null) {
+                if(usuarioSesion!=null) {
                     navigationView.getMenu().setGroupVisible(R.id.autentificado, true);
                     navigationView.getMenu().setGroupVisible(R.id.anonimo,false);
                 }
@@ -111,7 +117,13 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(this);
-        if(Sesion.getUsuario(context)!=null) {
+        if(usuarioSesion!=null) {
+            ImageView imagenPerfil = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.image_perfil);
+            TextView usuario = (TextView)navigationView.getHeaderView(0).findViewById(R.id.nombre_usuario_perfil);
+            TextView email = (TextView)navigationView.getHeaderView(0).findViewById(R.id.email_usuario_perfil);
+            Picasso.with(context).load(ConsultasBBDD.server+usuarioSesion.getImagenPerfil()).into(imagenPerfil);
+            usuario.setText(usuarioSesion.getUser());
+            email.setText(usuarioSesion.getEmail());
             navigationView.getMenu().setGroupVisible(R.id.autentificado, true);
             navigationView.getMenu().setGroupVisible(R.id.anonimo,false);
         }
@@ -158,6 +170,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
                 intent1=new Intent(context, MainActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent1);
+                finish();
                 break;
             case R.id.nav_cuenta:
                 //Enlace a la web para que edite oosas de su cuenta

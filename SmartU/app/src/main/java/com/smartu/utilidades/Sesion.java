@@ -70,6 +70,8 @@ public class Sesion {
      */
     public static Usuario deserializaUsuario(Context context) {
         Usuario aux = null;
+        File file = new File(context.getFilesDir(), "usu.bin");
+        if(file.exists()) {
             try {
                 fis = context.openFileInput("usu.bin");
                 if (fis.available() > 0) {
@@ -87,6 +89,7 @@ public class Sesion {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
         return aux;
     }
 

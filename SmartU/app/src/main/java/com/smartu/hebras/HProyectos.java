@@ -1,5 +1,8 @@
 package com.smartu.hebras;
 
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -16,6 +19,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Created by Emilio Chica Jiménez on 27/05/2017.
  */
@@ -25,10 +30,21 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
     private AdapterProyecto adapterProyecto =null;
     private int offset;
     private HProyectos hProyectos;
+    private SweetAlertDialog pDialog;
+    private Context context;
 
-    public HProyectos(AdapterProyecto adapterProyecto, int offset) {
+    public HProyectos(AdapterProyecto adapterProyecto, int offset, Context context) {
         this.adapterProyecto = adapterProyecto;
         this.offset = offset;
+        this.context=context;
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Cargando...");
+        pDialog.setCancelable(false);
+    }
+    @Override
+    protected void onPreExecute() {
+        pDialog.show();
     }
 
     public void sethProyectos(HProyectos hProyectos) {
@@ -42,7 +58,7 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
                 "\"proyectos\":[" +
 
                 "],"
-                + "\"totalserver\":\"15\"" +
+                + "\"totalserver\":\"1\"" +
                 "}"+
                 "}";
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
@@ -60,9 +76,14 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
                     {
                         JSONObject proyecto = proyectosJSON.getJSONObject(i);
                         Proyecto p = mapper.readValue(proyecto.toString(), Proyecto.class);
-                        adapterProyecto.addItem(p);
+                        ((Activity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapterProyecto.addItem(p);
+                            }
+                        });
                     }
-                    adapterProyecto.setTotalElementosServer(proyectJSON.getInt("totalserver"));
+                    adapterProyecto.setTotalElementosServer(res.getInt("totalserver"));
                 }
             }
         } catch (JSONException e) {
@@ -81,6 +102,7 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hProyectos =null;
 
@@ -89,6 +111,7 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled(Void aVoid) {
         super.onCancelled(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hProyectos =null;
     }
@@ -96,6 +119,7 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hProyectos =null;
     }

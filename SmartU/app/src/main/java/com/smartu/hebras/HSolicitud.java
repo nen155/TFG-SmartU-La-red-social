@@ -1,6 +1,7 @@
 package com.smartu.hebras;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import java8.util.stream.StreamSupport;
 
 /**
@@ -36,7 +38,7 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
     private HSolicitud hSolicitud;
     private boolean eliminar;
     private Date fechaActual;
-
+    private SweetAlertDialog pDialog;
 
     public HSolicitud(boolean eliminar, Proyecto proyecto, int idUsuario, ArrayList<Especialidad> especialidades, Context context, Button solicitarUnion) {
         this.proyecto = proyecto;
@@ -46,8 +48,15 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
         this.solicitarUnion = solicitarUnion;
         this.eliminar = eliminar;
         this.fechaActual = new Date();
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Cargando...");
+        pDialog.setCancelable(false);
     }
-
+    @Override
+    protected void onPreExecute() {
+        pDialog.show();
+    }
     /**
      * Este método está para poder asignar a null la referencia de la hebra
      * para que el recolector de basura la elimine
@@ -85,6 +94,7 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String resultado) {
         super.onPostExecute(resultado);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hSolicitud = null;
         //Obtengo el objeto JSON con el resultado
@@ -122,6 +132,7 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
     @Override
     protected void onCancelled(String resultado) {
         super.onCancelled(resultado);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hSolicitud = null;
     }
@@ -129,6 +140,7 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hSolicitud = null;
     }

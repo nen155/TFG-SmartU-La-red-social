@@ -6,11 +6,12 @@ package com.smartu.hebras;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.view.View;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,11 +22,9 @@ import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.Constantes;
-import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.ControladorPreferencias;
 import com.smartu.vistas.InstruccionesMainActivity;
 import com.smartu.vistas.MainActivity;
-import com.smartu.vistas.SplashScreenActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +32,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Cargaría las 10 primeras más actuales ordenadas por fecha
@@ -47,9 +48,16 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
     private ArrayList<Integer> idsPublicaciones=null;
     private ArrayList<Publicacion> publicaciones =null;
     private int tipo=-1;
+    private SweetAlertDialog pDialog;
 
     public HPublicaciones(Context context) {
+
         this.context = context;
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Cargando...");
+        pDialog.setCancelable(false);
+
     }
 
     public void setTipo(int tipo) {
@@ -65,7 +73,10 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
     public void sethPublicaciones(HPublicaciones hPublicaciones) {
         this.hPublicaciones = hPublicaciones;
     }
-
+    @Override
+    protected void onPreExecute() {
+        pDialog.show();
+    }
     @Override
     protected Void doInBackground(Void... params) {
         //Miro el momento en el que comienzo a cargar
@@ -75,24 +86,32 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
         String resultado="{\"publicaciones\":{\n" +
                 "  \"proyectos\":[\n" +
                 "    {\n" +
-                "      \"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"Es el primer proyecto\",\"fechaCreacion\":\"2017-01-12\",\"fechaFinalizacion\":\"2018-03-29\",\"imagenDestacada\":\"wp-content/uploads/2017/05/logo_web.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"web\":\"http://coloredmoon.com\",\"idPropietario\":\"1\",\n" +
+                "      \"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"La idea general de este proyecto es mediante el uso de herramientas, metodologías y técnicas provenientes de todas las disciplinas integrantes del proyecto se obtenga como resultado un producto final, el cual conecte la Universidad con la ciudad mediante un espacio de coworking de ideas y servicios.\",\"fechaCreacion\":\"2017-01-12\",\"fechaFinalizacion\":\"2018-03-29\",\"imagenDestacada\":\"wp-content/uploads/2017/05/logo_web.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"web\":\"http://coloredmoon.com\",\"idPropietario\":\"1\",\n" +
                 "        \"buenaIdea\":[{\"idUsuario\":\"1\"}],\n" +
-                "        \"misComentarios\":[{\"id\":\"1\",\"descripcion\":\"Es un buen proyecto, esta genial!\",\"fecha\":\"2017-05-29\",\"idUsuario\":\"1\",\"idProyecto\":\"1\",\"usuario\":\"Emilio\",\"proyecto\":\"SmartU\"}],\n" +
                 "        \"misAreas\":[{\"id\":\"1\",\"nombre\":\"Informatica\"},{\"id\":\"2\",\"nombre\":\"Empresariales\"}],\n" +
                 "        \"vacantesProyecto\":[{\"id\":\"1\",\"especialidades\":[\n" +
                 "              {\"id\":\"1\",\"nombre\":\"Informática\"}]}],\n" +
-                "              \"misArchivos\":[{\"id\":\"1\",\"nombre\":\"logo\",\"url\":\"wp-content/uploads/2017/05/logo_web.png\",\"tipo\":\"imagen\"}],\n" +
-                "              \"misAvances\":[{\"id\":\"1\",\"nombre\":\"Casi hemos terminado la app!\",\"fecha\":\"2017-01-12\",\"descripcion\":\"Hemos trabajado duro desde octubre de 2016 para que este proyecto saliese adelante y ahora hemos conseguido casi terminarlo.\",\n" +
+                "        \"misArchivos\":[{\"id\":\"1\",\"nombre\":\"logo\",\"url\":\"wp-content/uploads/2017/05/logo_web.png\",\"tipo\":\"imagen\"}],\n" +
+                "        \"misAvances\":[{\"id\":\"1\",\"nombre\":\"Casi hemos terminado la app!\",\"fecha\":\"2017-01-12\",\"descripcion\":\"Hemos trabajado duro desde octubre de 2016 para que este proyecto saliese adelante y ahora hemos conseguido casi terminarlo.\",\n" +
                 "                \"misArchivos\":[{\"id\":\"1\",\"nombre\":\"logo\",\"url\":\"wp-content/uploads/2017/05/logo_web.png\",\"tipo\":\"imagen\"}]\n" +
                 "              }],\n" +
-                "              \"integrantes\":[\"1\",\"2\"]\n" +
-                "              ,\n" +
-                "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
+                "        \"integrantes\":[\"1\"],\n" +
+                "        \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
                 "    }\n" +
                 "    ],\n" +
-                "  \"comentarios\":[],\n" +
+                "  \"comentarios\":[{\"id\":\"1\",\"descripcion\":\"Es un buen proyecto, esta genial!\",\"fecha\":\"2017-05-29\",\"idUsuario\":\"1\",\"idProyecto\":\"1\",\"usuario\":\"emiliocj\",\"proyecto\":\"SmartU\"}],\n" +
                 "  \"notificaciones\":[],\n" +
-                "  \"usuarios\":[]\n" +
+                "  \"usuarios\":[{\"id\":\"1\",\"nombre\":\"Emilio\",\"apellidos\":\"Chica Jiménez\",\"verificado\":\"true\",\"user\":\"emiliocj\",\"email\":\"emiliocj@correo.ugr.es\",\"nPuntos\":\"100\",\"localizacion\":\"C/Poeta Manuel\",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada y es Graduado en Ingeniería Informática\", \"web\":\"http://coloremoon.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/foto-buena.jpg\",\n" +
+                "          \"misProyectos\":[\"1\"],\n" +
+                "            \"misAreasInteres\":[\n" +
+                "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
+                "              ],\n" +
+                "              \"misEspecialidades\":[\n" +
+                "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
+                "              ],\n" +
+                "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
+                "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
+                "    }]\n" +
                 "}\n" +
                 "}";
 
@@ -165,6 +184,7 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hPublicaciones=null;
         //Significa que estoy en la hebra del SplashScreen
@@ -229,6 +249,7 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled(Void aVoid) {
         super.onCancelled(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hPublicaciones=null;
     }
@@ -236,6 +257,7 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hPublicaciones=null;
     }

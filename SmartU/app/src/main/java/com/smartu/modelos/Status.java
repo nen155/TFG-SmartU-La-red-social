@@ -17,6 +17,12 @@ public class Status implements Parcelable,Serializable {
     //en la tabla seguidor
     private int numSeguidores;
 
+    public Status(Status s){
+        id =s.getId();
+        nombre =s.getNombre();
+        puntos=s.getPuntos();
+        numSeguidores=s.getNumSeguidores();
+    }
     public Status(){}
     public Status(int id, String nombre, int puntos, int numSeguidores) {
         this.id = id;

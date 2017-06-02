@@ -145,7 +145,7 @@ public class FragmentNotificaciones extends Fragment {
      * @param offset
      */
     public void cargarMasNotificaciones(int offset) {
-        HNotificaciones hNotificaciones = new HNotificaciones(adapterNotificacion,offset);
+        HNotificaciones hNotificaciones = new HNotificaciones(adapterNotificacion,offset,getContext());
         hNotificaciones.sethNotificaciones(hNotificaciones);
         hNotificaciones.execute();
     }
@@ -241,7 +241,7 @@ public class FragmentNotificaciones extends Fragment {
      * @param notificacion
      */
     public void addNotificacionTop(Notificacion notificacion) {
-        adapterNotificacion.addItem(notificacion);
+        adapterNotificacion.addItemTop(notificacion);
     }
 
 

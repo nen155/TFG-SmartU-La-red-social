@@ -131,22 +131,34 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                 Picasso.with(context).load(ConsultasBBDD.server + usuario.getImagenPerfil()).into(holder.imgUsuario);
 
             holder.nombreUsuario.setText(usuario.getNombre());
-            for (Especialidad e : usuario.getMisEspecialidades()) {
-                holder.especialidadUsuario.add(new Tag(e.getId(), e.getNombre()));
+
+            if(usuario.getMisEspecialidades()!=null) {
+                int numEspecialidades = 3;
+                //Pongo de previsualización 3 especialidades como mucho
+                if (usuario.getMisEspecialidades().size() < 3)
+                    numEspecialidades = usuario.getMisEspecialidades().size();
+                //Añado las especialidades al TagCloud
+                for (int i = 0; i < numEspecialidades; ++i) {
+                    Especialidad e = usuario.getMisEspecialidades().get(i);
+                    holder.especialidadUsuario.add(new Tag(e.getId(), e.getNombre()));
+                }
             }
+
             //Guardo una referencia para usarlo dentro de los métodos externos a la clase
             seguirUsuarioEditable = holder.seguirUsuario;
             seguidoresUsuarioEditable = holder.seguidoresUsuario;
 
             //Si es un usuario del proyecto
             if (usuario.getId() != -1) {
-                holder.seguidoresUsuario.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
+                if(usuario.getMiStatus()!=null)
+                    holder.seguidoresUsuario.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
                 holder.seguirUsuario.setText(context.getString(R.string.seguir));
             } else {//Si es una vacante
                 holder.seguidoresUsuario.setText("");
                 holder.seguirUsuario.setText(R.string.unirse);
             }
-            holder.statusUsuario.setText(usuario.getMiStatus().getNombre());
+            if(usuario.getMiStatus()!=null)
+                holder.statusUsuario.setText(usuario.getMiStatus().getNombre());
 
             //Compruebo que no sean los usuarios que he metido como vacantes
             if (usuario.getId() != -1) {
@@ -180,7 +192,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
      */
     @Override
     public int getItemViewType(int position) {
-        if (position >= usuarios.size() && position==totalElementosServer && totalElementosServer > 0){
+        if (position >= usuarios.size() && position>=totalElementosServer && totalElementosServer > 0){
             return VIEW_TYPE_FINAL;
         }else if(position >= usuarios.size()){
             return VIEW_TYPE_LOADING;
@@ -316,9 +328,14 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     }
     @Override
     public void addItem(Publicacion publicacion) {
-        usuarios.add((Usuario) publicacion);
-        Almacen.add((Usuario) publicacion);
-        notifyItemInserted(0);
+            Usuario u = (Usuario) publicacion;
+            boolean esta =StreamSupport.parallelStream(usuarios).filter(usuario1 -> usuario1.getId() == u.getId()).findAny().isPresent();
+            if(!esta) {
+                usuarios.add(u);
+                if(u.getId()!=-1)
+                    Almacen.add(u);
+                notifyItemInserted(usuarios.size()-1);
+            }
     }
 
 }

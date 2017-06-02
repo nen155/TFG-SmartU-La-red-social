@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterIntegrante;
+import com.smartu.almacenamiento.Almacen;
 import com.smartu.hebras.HUsuarios;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Status;
@@ -35,8 +36,6 @@ public class FragmentIntegrantes extends Fragment {
     private ArrayList<Usuario> integrantes = new ArrayList<>();
     //ArrayList de  vacantes para añadir integrantes vacantes al ArrayList de integrantesConVacantes
     private ArrayList<Vacante> vacantesUsuarios = new ArrayList<>();
-    //Me creo un arraylist para no modificar el que me pasan como integrantes
-    private ArrayList<Usuario> integrantesConVacantes = new ArrayList<>();
     //Lo necesito para comparar solitudes de unión a este proyecto
     private Proyecto proyecto;
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
@@ -60,13 +59,13 @@ public class FragmentIntegrantes extends Fragment {
      * Usar este constructor para crear una instancia de
      * este fragment con parámetros
      *
-     * @param usuarios Parametro 1.
+     * @param integrantes Parametro 1.
      * @return A devuelve una nueva instancia del fragment.
      */
-    public static FragmentIntegrantes newInstance(ArrayList<Usuario> usuarios, ArrayList<Vacante> vacantesUsuarios, Proyecto proyecto) {
+    public static FragmentIntegrantes newInstance(ArrayList<Usuario> integrantes, ArrayList<Vacante> vacantesUsuarios, Proyecto proyecto) {
         FragmentIntegrantes fragment = new FragmentIntegrantes();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(ARG_INTEGRANTES, usuarios);
+        args.putParcelableArrayList(ARG_INTEGRANTES, integrantes);
         args.putParcelableArrayList(ARG_VACANTES, vacantesUsuarios);
         args.putParcelable(ARG_PROYECTO,proyecto);
         fragment.setArguments(args);
@@ -81,7 +80,8 @@ public class FragmentIntegrantes extends Fragment {
             vacantesUsuarios = getArguments().getParcelableArrayList(ARG_VACANTES);
             proyecto = getArguments().getParcelable(ARG_PROYECTO);
         }
-
+        if(proyecto.getIntegrantes()!=null)
+            Almacen.buscarUsuarios(proyecto.getIntegrantes(),integrantes,getContext());
     }
 
     @Override
@@ -108,12 +108,12 @@ public class FragmentIntegrantes extends Fragment {
         return fragmen;
     }
     /**
-     * Carga hasta 10 comentarios si hubiese a partir del offset
+     * Carga hasta 10 usuarios si hubiese a partir del offset
      * que le ofrece el método LoadMore
      * @param offset
      */
     public void cargarMasUsuarios(int offset) {
-        HUsuarios hUsuarios = new HUsuarios(adapterIntegrante,offset);
+        HUsuarios hUsuarios = new HUsuarios(adapterIntegrante,offset,getContext());
         hUsuarios.sethUsuarios(hUsuarios);
         hUsuarios.setIdProyecto(proyecto.getId());
         hUsuarios.execute();
@@ -136,6 +136,7 @@ public class FragmentIntegrantes extends Fragment {
      * @return
      */
     private ArrayList<Usuario> mezclaIntegrantesConVacantes(){
+        ArrayList<Usuario> integrantesConVacantes = new ArrayList<>();
         //Paso los usuarios que tengo en el proyecto al array
         for(Usuario usuario: integrantes)
             integrantesConVacantes.add(usuario);

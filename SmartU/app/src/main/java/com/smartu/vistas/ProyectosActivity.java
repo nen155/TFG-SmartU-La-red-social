@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class ProyectosActivity extends AppCompatActivity implements FragmentProyectos.OnProyectoSelectedListener {
     private Usuario usuarioSesion;
-    private static ArrayList<Proyecto> proyectos;
+    private static ArrayList<Proyecto> proyectos = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

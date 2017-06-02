@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
      * @param v
      */
     private void filtrar(View v) {
+        filtros.collapse();
         Fragment swicthTo = null;
         switch (v.getId()) {
             case R.id.filtro_notificaciones:

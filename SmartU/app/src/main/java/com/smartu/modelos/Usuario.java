@@ -35,7 +35,47 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
     private ArrayList<SolicitudUnion> misSolicitudes;
     private Status miStatus;
 
-
+    public void clonar(Usuario u){
+        id = u.getId();
+        nombre=u.getNombre();
+        apellidos=u.getApellidos();
+        user=u.getUser();
+        email=u.getEmail();
+        password=u.getPassword();
+        nPuntos=u.getnPuntos();
+        CIF=u.getCIF();
+        localizacion=u.getLocalizacion();
+        biografia=u.getBiografia();
+        web=u.getWeb();
+        imagenPerfil=u.getImagenPerfil();
+        verificado=u.isVerificado();
+        if(u.getMisProyectos()!=null)
+            misProyectos = new ArrayList<>(u.getMisProyectos());
+        else
+            misProyectos =new ArrayList<>();
+        if(u.getMisAreasInteres()!=null)
+            misAreasInteres =new ArrayList<>(u.getMisAreasInteres());
+        else
+            misAreasInteres =new ArrayList<>();
+        if(u.getMisEspecialidades()!=null)
+            misEspecialidades = new ArrayList<>(u.getMisEspecialidades());
+        else
+            misEspecialidades =new ArrayList<>();
+        if(u.getMisSeguidos()!=null)
+            misSeguidos = new ArrayList<>(u.getMisSeguidos());
+        else
+            misSeguidos =new ArrayList<>();
+        if(u.getMisRedesSociales()!=null)
+            misRedesSociales = new ArrayList<>(u.getMisRedesSociales());
+        else
+            misRedesSociales =new ArrayList<>();
+        if(u.getMisSolicitudes()!=null)
+            misSolicitudes = new ArrayList<>(u.getMisSolicitudes());
+        else
+            misSolicitudes =new ArrayList<>();
+        if(u.getMiStatus()!=null)
+            miStatus = new Status(u.getMiStatus());
+    }
 
     public Usuario(){
 

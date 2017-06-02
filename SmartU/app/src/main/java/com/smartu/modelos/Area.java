@@ -15,6 +15,11 @@ public class Area implements Parcelable,Serializable {
     private String descripcion;
     private String urlImg;
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     public Area(){}
     public Area(int id, String nombre, String descripcion, String urlImg) {
         this.id = id;

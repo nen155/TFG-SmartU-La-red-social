@@ -1,5 +1,7 @@
 package com.smartu.hebras;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -17,6 +19,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Created by Emilio Chica Jiménez on 27/05/2017.
  */
@@ -27,14 +31,18 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
     private AdapterComentarioProyecto adapterComentarioProyecto=null;
     private int offset,idProyecto;
     private HComentarios hComentarios;
+    private SweetAlertDialog pDialog;
+    private Context context;
 
-    public HComentarios(AdapterComentario adapterComentario,int offset) {
+    public HComentarios(AdapterComentario adapterComentario, int offset, Context context) {
         this.adapterComentario =adapterComentario;
         this.offset = offset;
+        this.context = context;
     }
-    public HComentarios(AdapterComentarioProyecto adapterComentarioProyecto, int offset) {
+    public HComentarios(AdapterComentarioProyecto adapterComentarioProyecto, int offset, Context context) {
         this.adapterComentarioProyecto =adapterComentarioProyecto;
         this.offset = offset;
+        this.context = context;
     }
 
     public void setIdProyecto(int idProyecto) {
@@ -44,7 +52,14 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
     public void sethComentarios(HComentarios hComentarios) {
         this.hComentarios = hComentarios;
     }
-
+    @Override
+    protected void onPreExecute() {
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Cargando...");
+        pDialog.setCancelable(false);
+        pDialog.show();
+    }
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
@@ -100,6 +115,7 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hComentarios=null;
 
@@ -108,6 +124,7 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled(Void aVoid) {
         super.onCancelled(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hComentarios=null;
     }
@@ -115,6 +132,7 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hComentarios=null;
     }

@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import java8.util.stream.StreamSupport;
+
 
 public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacion.ViewHolder> implements OperacionesAdapter {
 	private Context context;
@@ -159,7 +161,7 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 	 */
 	@Override
 	public int getItemViewType(int position) {
-		if (position >= notificaciones.size() && position==totalElementosServer && totalElementosServer > 0){
+		if (position >= notificaciones.size() && position>=totalElementosServer && totalElementosServer > 0){
 			return VIEW_TYPE_FINAL;
 		}else if(position >= notificaciones.size()){
 			return VIEW_TYPE_LOADING;
@@ -194,10 +196,25 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 		this.notificaciones = list;
 	}
 
+	public void addItemTop(Publicacion publicacion) {
+		Notificacion notificacion =(Notificacion) publicacion;
+
+		boolean esta = StreamSupport.parallelStream(notificaciones).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
+		if(!esta) {
+			notificaciones.add(0, notificacion);
+			Almacen.add(notificacion);
+			notifyItemInserted(0);
+		}
+	}
 	@Override
 	public void addItem(Publicacion publicacion) {
-		notificaciones.add(0, (Notificacion) publicacion);
-		Almacen.add((Notificacion) publicacion);
-		notifyItemInserted(0);
+		Notificacion notificacion =(Notificacion) publicacion;
+
+		boolean esta = StreamSupport.parallelStream(notificaciones).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
+		if(!esta) {
+			notificaciones.add(notificacion);
+			Almacen.add(notificacion);
+			notifyItemInserted(notificaciones.size()-1);
+		}
 	}
 }

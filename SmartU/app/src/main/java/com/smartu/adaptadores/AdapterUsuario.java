@@ -63,7 +63,6 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     }
 
 
-
     //Creating a ViewHolder which extends the RecyclerView View Holder
     // ViewHolder are used to to store the inflated views in order to recycle them
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -77,16 +76,16 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
-            if(viewType==VIEW_TYPE_ACTIVITY) {
-            nombreUsuario = (TextView) itemView.findViewById(R.id.nombre_usuario);
-            statusUsuario = (TextView) itemView.findViewById(R.id.status_usuario);
-            seguidoresUsuario = (TextView) itemView.findViewById(R.id.seguidores_usuario);
-            especialidadUsuario = (TagCloudLinkView) itemView.findViewById(R.id.especialidad_usuario);
-            imgUsuario = (ImageView) itemView.findViewById(R.id.img_usuario);
-            seguirUsuario = (Button) itemView.findViewById(R.id.nombre_usuario_o_proyecto);
-                tipoView=1;
-            }else{
-                tipoView=0;
+            if (viewType == VIEW_TYPE_ACTIVITY) {
+                nombreUsuario = (TextView) itemView.findViewById(R.id.nombre_usuario);
+                statusUsuario = (TextView) itemView.findViewById(R.id.status_usuario);
+                seguidoresUsuario = (TextView) itemView.findViewById(R.id.seguidores_usuario);
+                especialidadUsuario = (TagCloudLinkView) itemView.findViewById(R.id.especialidad_usuario);
+                imgUsuario = (ImageView) itemView.findViewById(R.id.img_usuario);
+                seguirUsuario = (Button) itemView.findViewById(R.id.seguir_usuario);
+                tipoView = 1;
+            } else {
+                tipoView = 0;
             }
         }
 
@@ -95,19 +94,18 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     @Override
     public AdapterUsuario.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_LOADING) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress,parent,false);
-            ViewHolder vhBottom = new ViewHolder(v,viewType);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress, parent, false);
+            ViewHolder vhBottom = new ViewHolder(v, viewType);
 
             return vhBottom;
-        }else if(viewType ==VIEW_TYPE_FINAL){
+        } else if (viewType == VIEW_TYPE_FINAL) {
             // the ListView has reached the last row
             TextView tvLastRow = new TextView(context);
             tvLastRow.setHint("");
             tvLastRow.setGravity(Gravity.CENTER);
-            ViewHolder vhUltimo = new ViewHolder(tvLastRow,viewType);
+            ViewHolder vhUltimo = new ViewHolder(tvLastRow, viewType);
             return vhUltimo;
-        }else
-        {
+        } else {
 
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_usuario_recyclerview, parent, false); //Inflating the layout
 
@@ -120,23 +118,26 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     @Override
     public void onBindViewHolder(final AdapterUsuario.ViewHolder holder, int position) {
         //Sino es el último elemento ni es un progress bar pues muestro el elemento que me toca
-        if(holder.tipoView==1) {
+        if (holder.tipoView == 1) {
             usuario = (Usuario) this.usuarios.get(position);
             Picasso.with(context).load(ConsultasBBDD.server + usuario.getImagenPerfil()).into(holder.imgUsuario);
             holder.nombreUsuario.setText(usuario.getNombre());
-            int numEspecialidades = 3;
-            //Pongo de previsualización 3 especialidades como mucho
-            if (usuario.getMisEspecialidades().size() < 3)
-                numEspecialidades = usuario.getMisEspecialidades().size();
-            //Añado las especialidades al TagCloud
-            for (int i = 0; i < numEspecialidades; ++i) {
-                Especialidad e = usuario.getMisEspecialidades().get(i);
-                holder.especialidadUsuario.add(new Tag(e.getId(), e.getNombre()));
+
+            if(usuario.getMisEspecialidades()!=null) {
+                int numEspecialidades = 3;
+                //Pongo de previsualización 3 especialidades como mucho
+                if (usuario.getMisEspecialidades().size() < 3)
+                    numEspecialidades = usuario.getMisEspecialidades().size();
+                //Añado las especialidades al TagCloud
+                for (int i = 0; i < numEspecialidades; ++i) {
+                    Especialidad e = usuario.getMisEspecialidades().get(i);
+                    holder.especialidadUsuario.add(new Tag(e.getId(), e.getNombre()));
+                }
             }
-
-            holder.seguidoresUsuario.setText(String.valueOf(usuario.getMisSeguidos().size()));
-            holder.statusUsuario.setText(usuario.getMiStatus().getNombre());
-
+            if(usuario.getMiStatus()!=null) {
+                holder.seguidoresUsuario.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
+                holder.statusUsuario.setText(usuario.getMiStatus().getNombre());
+            }
             holder.imgUsuario.setOnClickListener(cargaUsuario());
             holder.statusUsuario.setOnClickListener(cargaUsuario());
             holder.nombreUsuario.setOnClickListener(cargaUsuario());
@@ -189,23 +190,24 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
         return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? usuarios.get(position).getId()
                 : -1;
     }
+
     /**
      * Devuelve el tipo de fila,
      * El ultimo elemento es el de loading
      */
     @Override
     public int getItemViewType(int position) {
-        if (position >= usuarios.size() && position==totalElementosServer && totalElementosServer > 0){
+        if (position >= usuarios.size() && position >= totalElementosServer && totalElementosServer > 0) {
             return VIEW_TYPE_FINAL;
-        }else if(position >= usuarios.size()){
+        } else if (position >= usuarios.size()) {
             return VIEW_TYPE_LOADING;
-        }else
+        } else
             return VIEW_TYPE_ACTIVITY;
     }
 
     @Override
     public int getItemCount() {
-        return usuarios.size()+1;
+        return usuarios.size() + 1;
     }
 
 
@@ -217,30 +219,37 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
             }
         };
     }
+
     /**
      * Comprueba si el usuario ha dado buena idea al proyecto
      */
-    private void cargarPreferenciasUsuario(Button seguirUsuario){
+    private void cargarPreferenciasUsuario(Button seguirUsuario) {
         //Cargo las preferencias del usuario
-        if(usuarioSesion!=null && usuarioSesion.getMisSeguidos()!=null) {
+        if (usuarioSesion != null && usuarioSesion.getMisSeguidos() != null) {
             //Compruebo si el usuario le ha dado antes a seguir a este usuario
             boolean usuarioSigue = false;
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
-                usuarioSigue=  usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == usuario.getId());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                usuarioSigue = usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == usuario.getId());
             else
-                usuarioSigue= StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
+                usuarioSigue = StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
             seguirUsuario.setPressed(usuarioSigue);
-            if(usuarioSigue)
+            if (usuarioSigue)
                 seguirUsuario.setText(R.string.no_seguir);
         }
     }
 
     @Override
     public void addItem(Publicacion publicacion) {
-        usuarios.add((Usuario)publicacion);
-        Almacen.add((Usuario)publicacion);
-        notifyItemInserted(0);
+        Usuario usuario = (Usuario) publicacion;
+
+        boolean esta = StreamSupport.parallelStream(usuarios).filter(usuario1 -> usuario1.getId() == usuario.getId()).findAny().isPresent();
+        if (!esta)
+        {
+            usuarios.add(usuario);
+            Almacen.add(usuario);
+            notifyItemInserted(usuarios.size()-1);
+        }
     }
 
 }

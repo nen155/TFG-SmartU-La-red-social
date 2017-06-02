@@ -33,7 +33,10 @@ import com.squareup.picasso.Picasso;
 
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.function.Function;
 
+import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
 
@@ -198,7 +201,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 	 */
 	@Override
 	public int getItemViewType(int position) {
-		if (position >= proyectos.size() && position==totalElementosServer && totalElementosServer > 0){
+		if (position >= proyectos.size() && position>=totalElementosServer && totalElementosServer > 0){
 			return VIEW_TYPE_FINAL;
 		}else if(position >= proyectos.size()){
 			return VIEW_TYPE_LOADING;
@@ -240,9 +243,13 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 	}
 	@Override
 	public void addItem(Publicacion publicacion) {
-		proyectos.add((Proyecto) publicacion);
-		Almacen.add((Proyecto) publicacion);
-		notifyItemInserted(0);
+		Proyecto proyecto =(Proyecto) publicacion;
+		boolean esta = StreamSupport.parallelStream(proyectos).filter(usuario1 -> usuario1.getId() == proyecto.getId()).findAny().isPresent();
+		if(!esta) {
+			proyectos.add(proyecto);
+			Almacen.add(proyecto);
+			notifyItemInserted(proyectos.size()-1);
+		}
 	}
 
 }

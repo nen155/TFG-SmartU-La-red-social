@@ -94,7 +94,7 @@ public class FragmentProyectos extends Fragment {
      * @param offset
      */
     public void cargarMasProyectos(int offset) {
-        HProyectos hProyectos = new HProyectos(adapterProyecto,offset);
+        HProyectos hProyectos = new HProyectos(adapterProyecto,offset,getContext());
         hProyectos.sethProyectos(hProyectos);
         hProyectos.execute();
     }

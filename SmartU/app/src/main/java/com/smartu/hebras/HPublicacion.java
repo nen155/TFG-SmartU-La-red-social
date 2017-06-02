@@ -6,6 +6,7 @@ package com.smartu.hebras;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 
@@ -31,6 +32,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Cargaría las 10 primeras más actuales ordenadas por fecha
  * Para cargar otras 10 se haría en el evento onScroll del RecyclerView
@@ -42,14 +45,23 @@ public class HPublicacion extends AsyncTask<Void,Void,Void> {
     private Context context;
     private int tipo=-1,id=-1;
     private Publicacion publicacion;
+    private SweetAlertDialog pDialog;
 
     public HPublicacion(Context context, Publicacion publicacion,int tipo,int id) {
         this.context = context;
         this.publicacion = publicacion;
         this.tipo = tipo;
         this.id =id;
-    }
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Cargando...");
+        pDialog.setCancelable(false);
 
+    }
+    @Override
+    protected void onPreExecute() {
+        pDialog.show();
+    }
     public void sethPublicaciones(HPublicacion hPublicaciones) {
         this.hPublicaciones = hPublicaciones;
     }
@@ -140,6 +152,7 @@ public class HPublicacion extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hPublicaciones=null;
         //Dependiendo del tipo volveré a buscar en el almacen, pues la referencia ya debe de estar
@@ -167,6 +180,7 @@ public class HPublicacion extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled(Void aVoid) {
         super.onCancelled(aVoid);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hPublicaciones=null;
     }
@@ -174,6 +188,7 @@ public class HPublicacion extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hPublicaciones=null;
     }

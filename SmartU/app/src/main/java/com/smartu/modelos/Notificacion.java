@@ -23,6 +23,16 @@ public class Notificacion implements Parcelable,Serializable,Publicacion {
     private String proyecto;
     private String usuario;
 
+    public void clonar(Notificacion n){
+        id=n.getId();
+        fecha=n.getFecha();
+        nombre=n.getNombre();
+        descripcion=n.getDescripcion();
+        idUsuario=n.getIdUsuario();
+        idProyecto=n.getIdProyecto();
+        proyecto=n.getProyecto();
+        usuario=n.getUsuario();
+    }
     public Notificacion() {
     }
 

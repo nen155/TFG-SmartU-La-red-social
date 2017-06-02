@@ -278,9 +278,7 @@ public class LoginActivity extends AppCompatActivity {
             String resultado="";
             if(usuario.getEmail().compareTo("emiliocj@correo.ugr.es")==0) {
                 resultado = "{\"usuario\":{\"id\":\"1\",\"nombre\":\"Emilio\",\"apellidos\":\"Chica Jiménez\",\"verificado\":\"true\",\"user\":\"emiliocj\",\"email\":\"emiliocj@correo.ugr.es\",\"nPuntos\":\"100\",\"localizacion\":\"C/Poeta Manuel\",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada y es Graduado en Ingeniería Informática\", \"web\":\"http://coloremoon.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/foto-buena.jpg\",\n" +
-                        "          \"misProyectos\":[\n" +
-                        "            {\"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"La idea general de este proyecto es mediante el uso de herramientas, metodologías y técnicas provenientes de todas las disciplinas integrantes del proyecto se obtenga como resultado un producto final, el cual conecte la Universidad con la ciudad mediante un espacio de coworking de ideas y servicios.\",\"fechaCreacion\":\"2017-01-22\",\"fechaFinalizacion\":\"2018-12-10\",\"imagenDestacada\":\"wp-content/uploads/2017/05/logo_web.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"buenaIdea\":[{\"idUsuario\":\"1\"}],\"web\":\"http://smartu.coloredmoon.com\"}\n" +
-                        "            ],\n" +
+                        "          \"misProyectos\":[\n" +"\"1\"],\n" +
                         "            \"misAreasInteres\":[\n" +
                         "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
                         "              ],\n" +
@@ -292,33 +290,29 @@ public class LoginActivity extends AppCompatActivity {
                         "    }\n" +
                         "}";
             }else if(usuario.getEmail().compareTo("juanji@gmail.com")==0){
-                resultado = "{\"usuario\":{\"id\":\"1\",\"nombre\":\"Juanjo\",\"apellidos\":\"Jiménez\",\"verificado\":\"true\",\"user\":\"juanjo\",\"email\":\"juanji@gmail.com\",\"nPuntos\":\"150\",\"localizacion\":\"C/Armilla \",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada, en Armilla y es Graduado en Ingeniería Informática\", \"web\":\"http://juanjo.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/AtBE7.png\",\n" +
-                        "          \"misProyectos\":[\n" +
-                        "            {\"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"La idea general de este proyecto es mediante el uso de herramientas, metodologías y técnicas provenientes de todas las disciplinas integrantes del proyecto se obtenga como resultado un producto final, el cual conecte la Universidad con la ciudad mediante un espacio de coworking de ideas y servicios.\",\"fechaCreacion\":\"2017-01-22\",\"fechaFinalizacion\":\"2018-12-10\",\"imagenDestacada\":\"wp-content/uploads/2017/05/logo_web.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"buenaIdea\":[{\"idUsuario\":\"1\"}],\"web\":\"http://smartu.coloredmoon.com\"}\n" +
-                        "            ],\n" +
+                resultado = "{\"usuario\":{\"id\":\"2\",\"nombre\":\"Juanjo\",\"apellidos\":\"Jiménez\",\"verificado\":\"true\",\"user\":\"juanjo\",\"email\":\"juanji@gmail.com\",\"nPuntos\":\"150\",\"localizacion\":\"C/Armilla \",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada, en Armilla y es Graduado en Ingeniería Informática\", \"web\":\"http://juanjo.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/AtBE7.png\",\n" +
+                        "          \"misProyectos\":[\n" +"\"1\"],\n" +
                         "            \"misAreasInteres\":[\n" +
                         "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
                         "              ],\n" +
                         "              \"misEspecialidades\":[\n" +
                         "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
                         "              ],\n" +
-                        "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
+                        "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"2\"},\n" +
                         "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
                         "    }\n" +
                         "}";
             }else if(usuario.getEmail().compareTo("german@gmail.com")==0){
-                resultado = "{\"usuario\":{\"id\":\"1\",\"nombre\":\"German\",\"apellidos\":\"Zayas Cabrera\",\"verificado\":\"true\",\"user\":\"german\",\"email\":\"german@gmail.com\",\"nPuntos\":\"150\",\"localizacion\":\"C/Ceballos \",\"biografia\":\"Estudiante universitario de la UGR que vive en Granada, en Peligros con el Grado en Bellas Artes\", \"web\":\"http://german.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/j5xrbugqkkalex-avatar.png\",\n" +
-                        "          \"misProyectos\":[\n" +
-                        "            {\"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"La idea general de este proyecto es mediante el uso de herramientas, metodologías y técnicas provenientes de todas las disciplinas integrantes del proyecto se obtenga como resultado un producto final, el cual conecte la Universidad con la ciudad mediante un espacio de coworking de ideas y servicios.\",\"fechaCreacion\":\"2017-01-22\",\"fechaFinalizacion\":\"2018-12-10\",\"imagenDestacada\":\"wp-content/uploads/2017/05/logo_web.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"buenaIdea\":[{\"idUsuario\":\"1\"}],\"web\":\"http://smartu.coloredmoon.com\"}\n" +
-                        "            ],\n" +
+                resultado = "{\"usuario\":{\"id\":\"3\",\"nombre\":\"German\",\"apellidos\":\"Zayas Cabrera\",\"verificado\":\"true\",\"user\":\"german\",\"email\":\"german@gmail.com\",\"nPuntos\":\"150\",\"localizacion\":\"C/Ceballos \",\"biografia\":\"Estudiante universitario de la UGR que vive en Granada, en Peligros con el Grado en Bellas Artes\", \"web\":\"http://german.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/j5xrbugqkkalex-avatar.png\",\n" +
+                        "          \"misProyectos\":[\n" +"\"1\"],\n" +
                         "            \"misAreasInteres\":[\n" +
-                        "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
+                        "              {\"id\":\"2\",\"nombre\":\"Bellas artes\"}\n" +
                         "              ],\n" +
                         "              \"misEspecialidades\":[\n" +
-                        "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
+                        "              {\"id\":\"2\",\"nombre\":\"Diseño gráfico\"}\n" +
                         "              ],\n" +
-                        "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
-                        "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
+                        "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"2\"},\n" +
+                        "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.twitter.com/\"}]\n" +
                         "    }\n" +
                         "}";
             }

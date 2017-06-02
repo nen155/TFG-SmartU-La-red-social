@@ -1,6 +1,7 @@
 package com.smartu.hebras;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.widget.Button;
@@ -15,6 +16,8 @@ import com.smartu.utilidades.Sesion;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Created by Emilio Chica Jiménez on 27/05/2017.
  */
@@ -28,6 +31,7 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
     private FloatingActionButton seguirFlotante;
     private TextView seguidoresUsuario;
     private HSeguir hSeguir;
+    private SweetAlertDialog pDialog;
 
 
     public HSeguir(boolean eleminar, Usuario seguido, Context context, Button seguirUsuario, TextView seguidoresUsuario) {
@@ -37,8 +41,15 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
         this.seguidoresUsuario=seguidoresUsuario;
         this.seguidor = Sesion.getUsuario(context);
         this.eleminar = eleminar;
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Cargando...");
+        pDialog.setCancelable(false);
     }
-
+    @Override
+    protected void onPreExecute() {
+        pDialog.show();
+    }
     /**
      * Este método está para poder asignar a null la referencia de la hebra
      * para que el recolector de basura la elimine
@@ -70,6 +81,7 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String resultado) {
         super.onPostExecute(resultado);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         this.hSeguir = null;
         //Obtengo el objeto JSON con el resultado
@@ -103,6 +115,7 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
     @Override
     protected void onCancelled(String resultado) {
         super.onCancelled(resultado);
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         this.hSeguir = null;
     }
@@ -110,6 +123,7 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
+        pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         this.hSeguir = null;
     }

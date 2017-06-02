@@ -23,6 +23,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import java8.util.stream.StreamSupport;
+
 
 public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.ViewHolder>  {
     private Context context;
@@ -141,7 +143,7 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
      */
     @Override
     public int getItemViewType(int position) {
-        if (position >= multimediaList.size() && position==totalElementosServer && totalElementosServer > 0){
+        if (position >= multimediaList.size() && position>=totalElementosServer && totalElementosServer > 0){
             return VIEW_TYPE_FINAL;
         }else if(position >= multimediaList.size()){
             return VIEW_TYPE_LOADING;
@@ -176,7 +178,10 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
     }
 
     public void addItem(Multimedia pushMessage) {
-        multimediaList.add(pushMessage);
-        notifyItemInserted(0);
+        boolean esta = StreamSupport.parallelStream(multimediaList).filter(usuario1 -> usuario1.getId() == multimedia.getId()).findAny().isPresent();
+        if(!esta) {
+            multimediaList.add(pushMessage);
+            notifyItemInserted(multimediaList.size()-1);
+        }
     }
 }

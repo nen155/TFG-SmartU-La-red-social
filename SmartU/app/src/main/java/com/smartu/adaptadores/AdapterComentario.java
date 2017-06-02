@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import java8.util.stream.StreamSupport;
+
 
 public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.ViewHolder> implements OperacionesAdapter {
 
@@ -116,11 +118,19 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
             Date fecha = comentario.getFecha();
 
             if (fecha != null) {
-                Date tiempo = new Date(fecha.getTime() - new Date().getTime());
-                Calendar calendar = GregorianCalendar.getInstance();
-                calendar.setTime(tiempo);
-                int horas = calendar.get(Calendar.HOUR);
-                String hace = "Hace " + horas + " horas";
+                long res = (((new Date().getTime()-fecha.getTime())/1000)/60)/60;
+                String hace ="";
+                if(res>24) {
+                    res = res / 24;
+                    if(res>1)
+                        hace = "Hace " + res + " dias";
+                    else
+                        hace = "Hace " + res + " día";
+                }else
+                    if(res>1)
+                        hace = "Hace " + res + " horas";
+                    else
+                        hace = "Hace " + res + " hora";
                 holder.fechaComentario.setText(hace);
             }
 
@@ -168,7 +178,7 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
      */
     @Override
     public int getItemViewType(int position) {
-        if (position >= comentarios.size() && position==totalElementosServer && totalElementosServer > 0){
+        if (position >= comentarios.size() && position>=totalElementosServer && totalElementosServer > 0){
             return VIEW_TYPE_FINAL;
         }else if(position >= comentarios.size()){
             return VIEW_TYPE_LOADING;
@@ -184,8 +194,12 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
 
     @Override
     public void addItem(Publicacion publicacion) {
-        comentarios.add((Comentario) publicacion);
-        Almacen.add((Comentario) publicacion);
-        notifyItemInserted(0);
+        Comentario comentario=(Comentario) publicacion;
+        boolean esta = StreamSupport.parallelStream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
+        if (!esta) {
+            comentarios.add(comentario);
+            Almacen.add(comentario);
+            notifyItemInserted(comentarios.size()-1);
+        }
     }
 }

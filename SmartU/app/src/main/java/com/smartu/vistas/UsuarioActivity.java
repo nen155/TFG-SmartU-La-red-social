@@ -37,9 +37,9 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
 
     private FloatingActionButton seguir,mensaje;
     private TextView seguirContador;
-    private static Usuario usuario;
+    private Usuario usuario = new Usuario();
     private Usuario usuarioSesion;
-    private static ArrayList<Proyecto> misProyectos=null;
+    private ArrayList<Proyecto> misProyectos=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,8 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
             //Cargo las preferencias del usuario si tuviese sesión
             cargarPreferenciasUsuario();
             //Establezco el contador con el número de seguidores del usuario actual
-            seguirContador.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
+            if(usuario.getMiStatus()!=null)
+                seguirContador.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
             //Le envio un mensaje al usuario
             mensaje.setOnClickListener(new View.OnClickListener() {
                 @Override

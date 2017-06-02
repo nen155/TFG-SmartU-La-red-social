@@ -26,7 +26,7 @@ public class Proyecto implements Parcelable,Serializable,Publicacion {
     private int idPropietario;
     private String propietarioUser;
     //Contenedores de los que es idPropietario
-    private ArrayList<BuenaIdea> buenaIdea;
+    private ArrayList<BuenaIdea> buenaIdea=null;
     private ArrayList<Area> misAreas=null;
     private ArrayList<Vacante> vacantesProyecto =null;
     private ArrayList<Multimedia> misArchivos=null;
@@ -34,6 +34,53 @@ public class Proyecto implements Parcelable,Serializable,Publicacion {
     private ArrayList<Hashtag> misHashtag=null;
     private ArrayList<Avance> misAvances=null;
     private ArrayList<Integer> integrantes=null;
+
+
+    public void clonar(Proyecto p){
+        setId(p.getId());
+        setNombre(p.getNombre());
+        setDescripcion(p.getDescripcion());
+        setFechaCreacion(p.getFechaCreacion());
+        setFechaFinalizacion(p.getFechaFinalizacion());
+        setImagenDestacada(p.getImagenDestacada());
+        setLocalizacion(p.getLocalizacion());
+        setCoordenadas(p.getCoordenadas());
+        setWeb(p.getWeb());
+        setIdPropietario(p.getIdPropietario());
+        setPropietarioUser(p.getPropietarioUser());
+        if(p.getBuenaIdea()!=null)
+            buenaIdea = new ArrayList<>(p.getBuenaIdea());
+        else
+            buenaIdea =new ArrayList<>();
+        if(p.getMisAreas()!=null)
+            misAreas = new ArrayList<>(p.getMisAreas());
+        else
+            misAreas =new ArrayList<>();
+        if(p.getVacantesProyecto()!=null)
+            vacantesProyecto = new ArrayList<>(p.getVacantesProyecto());
+        else
+            vacantesProyecto =new ArrayList<>();
+        if(p.getMisArchivos()!=null)
+            misArchivos = new ArrayList<>(p.getMisArchivos());
+        else
+            misArchivos =new ArrayList<>();
+        if(p.getMisRedesSociales()!=null)
+            misRedesSociales = new ArrayList<>(p.getMisRedesSociales());
+        else
+            misRedesSociales =new ArrayList<>();
+        if(p.getMisHashtag()!=null)
+            misHashtag = new ArrayList<>(p.getMisHashtag());
+        else
+            misHashtag =new ArrayList<>();
+        if(p.getMisAvances()!=null)
+            misAvances = new ArrayList<>(p.getMisAvances());
+        else
+            misAvances =new ArrayList<>();
+        if(p.getIntegrantes()!=null)
+            integrantes = new ArrayList<>(p.getIntegrantes());
+        else
+            integrantes =new ArrayList<>();
+    }
 
     public Proyecto(){
         misAreas =new ArrayList<>();

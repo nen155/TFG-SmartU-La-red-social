@@ -98,7 +98,7 @@ public class FragmentUsuarios extends Fragment {
      * @param offset
      */
     public void cargarMasUsuarios(int offset) {
-        HUsuarios hUsuarios = new HUsuarios(adapterUsuario,offset);
+        HUsuarios hUsuarios = new HUsuarios(adapterUsuario,offset,getContext());
         hUsuarios.sethUsuarios(hUsuarios);
         hUsuarios.execute();
     }

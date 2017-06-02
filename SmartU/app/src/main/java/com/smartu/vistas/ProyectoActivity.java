@@ -32,11 +32,11 @@ import java.util.Arrays;
 
 public class ProyectoActivity extends AppCompatActivity implements FragmentIntegrantes.OnIntegranteSelectedListener {
 
-    private static Proyecto proyecto;
+    private Proyecto proyecto=new Proyecto();
     private Usuario usuarioSesion;
     private FloatingActionButton buenaidea, comentarios;
     private TextView buenaidea_contador;
-    private static ArrayList<Usuario> integrantes;
+    private ArrayList<Usuario> integrantes = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +46,6 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         if (bundle != null) {
             int idProyecto = bundle.getInt("idProyecto");
             Almacen.buscar(idProyecto,proyecto,this);
-            Almacen.buscarUsuarios(proyecto.getIntegrantes(),integrantes,this);
         }
         //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
         SliderMenu sliderMenu = new SliderMenu(getBaseContext(), this);
