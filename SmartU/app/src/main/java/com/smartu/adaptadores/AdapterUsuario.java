@@ -138,9 +138,9 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
                 holder.seguidoresUsuario.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
                 holder.statusUsuario.setText(usuario.getMiStatus().getNombre());
             }
-            holder.imgUsuario.setOnClickListener(cargaUsuario());
-            holder.statusUsuario.setOnClickListener(cargaUsuario());
-            holder.nombreUsuario.setOnClickListener(cargaUsuario());
+            holder.imgUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
+            holder.statusUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
+            holder.nombreUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
 
 
             //Cargo las preferencias del usuario si tuviese sesión
@@ -211,11 +211,11 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     }
 
 
-    private View.OnClickListener cargaUsuario() {
+    private View.OnClickListener cargaUsuario(int id) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onUsuarioSelectedListener.onUsuarioSeleccionado(usuario.getId());
+                onUsuarioSelectedListener.onUsuarioSeleccionado(id);
             }
         };
     }

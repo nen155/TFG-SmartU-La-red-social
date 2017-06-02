@@ -138,11 +138,11 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 			holder.contadorBuenaIdea.setText(String.valueOf(proyecto.getBuenaIdea().size()));
 
 			//TODO Para cuando cargue usuarios
-			//holder.nombreUsuario.setTexto(proyecto.getIdPropietario().getNombre());
+			//holder.nombreUsuario.setTexto(proyecto.getUsuario());
 
-			holder.imgProyecto.setOnClickListener(cargaProyecto());
-			holder.descripcionProyecto.setOnClickListener(cargaProyecto());
-			holder.nombreProyecto.setOnClickListener(cargaProyecto());
+			holder.imgProyecto.setOnClickListener(cargaProyecto(proyecto.getId()));
+			holder.descripcionProyecto.setOnClickListener(cargaProyecto(proyecto.getId()));
+			holder.nombreProyecto.setOnClickListener(cargaProyecto(proyecto.getId()));
 
 			//Cargo las preferencias del usuario si tuviese sesión
 			cargarPreferenciasUsuario(holder.imgBuenaIdea);
@@ -215,11 +215,11 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 	}
 
 
-	private View.OnClickListener cargaProyecto(){
+	private View.OnClickListener cargaProyecto(int id){
 		return new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onProyectoSelectedListener.onProyectoSeleccionado(proyecto.getId());
+				onProyectoSelectedListener.onProyectoSeleccionado(id);
 			}
 		};
 	}

@@ -145,13 +145,13 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
             holder.descripcionComentario.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cargaProyecto();
+                    cargaProyecto(comentario.getIdProyecto());
                 }
             });
             holder.btnNombreProyecto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cargaProyecto();
+                    cargaProyecto(comentario.getIdProyecto());
                 }
             });
         }
@@ -186,9 +186,9 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
             return VIEW_TYPE_ACTIVITY;
     }
 
-    private void cargaProyecto() {
+    private void cargaProyecto(int id) {
         Intent intent = new Intent(context, ProyectoActivity.class);
-        intent.putExtra("idProyecto",  comentario.getIdProyecto());
+        intent.putExtra("idProyecto",  id);
         context.startActivity(intent);
     }
 

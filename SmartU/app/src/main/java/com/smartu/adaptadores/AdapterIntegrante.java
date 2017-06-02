@@ -162,9 +162,9 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
             //Compruebo que no sean los usuarios que he metido como vacantes
             if (usuario.getId() != -1) {
-                holder.imgUsuario.setOnClickListener(cargaUsuario());
-                holder.statusUsuario.setOnClickListener(cargaUsuario());
-                holder.nombreUsuario.setOnClickListener(cargaUsuario());
+                holder.imgUsuario.setOnClickListener(cargaUsuario( usuario.getId()));
+                holder.statusUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
+                holder.nombreUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
 
                 //Cargo las preferencias del usuario si tuviese sesión
                 cargarPreferenciasUsuario();
@@ -173,10 +173,10 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                 //Cargo las posibles solicitudes
                 cargarSolicitudesUnion();
                 //Todos llaman al mismo método que hace una solicitud de unión al proyecto
-                holder.imgUsuario.setOnClickListener(solicitarUnion());
-                holder.statusUsuario.setOnClickListener(solicitarUnion());
-                holder.nombreUsuario.setOnClickListener(solicitarUnion());
-                holder.seguirUsuario.setOnClickListener(solicitarUnion());
+                holder.imgUsuario.setOnClickListener(solicitarUnion(usuario));
+                holder.statusUsuario.setOnClickListener(solicitarUnion(usuario));
+                holder.nombreUsuario.setOnClickListener(solicitarUnion(usuario));
+                holder.seguirUsuario.setOnClickListener(solicitarUnion(usuario));
             }
         }
     }
@@ -291,11 +291,11 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
      * Abre la Activity del usuario al que se le ha hecho click
      * @return
      */
-    private View.OnClickListener cargaUsuario() {
+    private View.OnClickListener cargaUsuario(int id) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onIntegranteSelectedListener.onUsuarioSeleccionado(usuario.getId());
+                onIntegranteSelectedListener.onUsuarioSeleccionado(id);
             }
         };
     }
@@ -304,7 +304,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
      * Solicita la unión al proyecto si has iniciado sesión en el sistema
      * @return
      */
-    private View.OnClickListener solicitarUnion() {
+    private View.OnClickListener solicitarUnion(Usuario usuario) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
