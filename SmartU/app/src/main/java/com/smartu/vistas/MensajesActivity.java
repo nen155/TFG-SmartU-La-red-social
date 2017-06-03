@@ -1,16 +1,14 @@
 package com.smartu.vistas;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -24,7 +22,6 @@ import android.widget.TextView;
 import com.google.firebase.appindexing.Action;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.appindexing.FirebaseAppIndex;
 import com.google.firebase.appindexing.FirebaseUserActions;
 import com.google.firebase.appindexing.Indexable;
@@ -36,13 +33,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.smartu.R;
-import com.smartu.modelos.Mensaje;
+import com.smartu.modelos.chat.Mensaje;
 import com.smartu.modelos.Usuario;
+import com.smartu.servicios.FcmNotificationBuilder;
+import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.ConsultasBBDD;
+import com.smartu.utilidades.ControladorPreferencias;
 import com.smartu.utilidades.Sesion;
 import com.smartu.utilidades.SliderMenu;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -58,6 +59,7 @@ public class MensajesActivity extends AppCompatActivity {
     private static final String MESSAGE_SENT_EVENT = "message_sent";
     private static final String MESSAGE_URL = "https://smartu-40a26.firebaseio.com/";
     private static final String LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif";
+    private Context context;
 
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
@@ -95,7 +97,7 @@ public class MensajesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mensajes);
         Bundle bundle = getIntent().getExtras();
-
+        context =this;
         if(bundle!=null)
             usuarioChat = bundle.getParcelable("usuario");
 
@@ -116,11 +118,26 @@ public class MensajesActivity extends AppCompatActivity {
         mLinearLayoutManager.setStackFromEnd(true);
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<Mensaje, MessageViewHolder>(
-                Mensaje.class,
-                R.layout.item_message,
-                MessageViewHolder.class,
-                mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
+
+        String message = mMessageEditText.getText().toString();
+        String receiver = usuarioChat.getEmail();
+        String receiverUid = usuarioChat.getUid();
+        String sender = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        String senderUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String receiverFirebaseToken = usuarioChat.getFirebaseToken();
+
+        Mensaje mensaje = new Mensaje(message,sender,null,null);
+        mensaje.setReceiver(receiver);
+        mensaje.setReceiverUid(receiverUid);
+        mensaje.setSenderUid(senderUid);
+        mensaje.setTimestamp(System.currentTimeMillis());
+
+
+        final String room_type_1 = mensaje.getSenderUid() + "_" + mensaje.getReceiverUid();
+        final String room_type_2 = mensaje.getReceiverUid() + "_" + mensaje.getSenderUid();
+
+        //Recibo elementos....
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<Mensaje, MessageViewHolder>(Mensaje.class, R.layout.item_message, MessageViewHolder.class, mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS)) {
 
             @Override
             protected Mensaje parseSnapshot(DataSnapshot snapshot) {
@@ -132,29 +149,25 @@ public class MensajesActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void populateViewHolder(final MessageViewHolder viewHolder,
-                                              Mensaje friendlyMessage, int position) {
+            protected void populateViewHolder(final MessageViewHolder viewHolder, Mensaje friendlyMessage, int position) {
                 mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 //Muestra el texto si lo hubiese
-                if (friendlyMessage.getText() != null) {
-                    viewHolder.messageTextView.setText(friendlyMessage.getText());
+                if (friendlyMessage.getMessage() != null) {
+                    viewHolder.messageTextView.setText(friendlyMessage.getMessage());
                     viewHolder.messageTextView.setVisibility(TextView.VISIBLE);
                     viewHolder.messageImageView.setVisibility(ImageView.GONE);
                 } else {//Tenemos una imagen
                     String imageUrl = friendlyMessage.getImageUrl();
                     //Está subida en el StorageReference de Firebase
                     if (imageUrl.startsWith("gs://")) {
-                        StorageReference storageReference = FirebaseStorage.getInstance()
-                                .getReferenceFromUrl(imageUrl);
+                        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
                         storageReference.getDownloadUrl().addOnCompleteListener(
                                 new OnCompleteListener<Uri>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Uri> task) {
                                         if (task.isSuccessful()) {
                                             String downloadUrl = task.getResult().toString();
-                                            Picasso.with(viewHolder.messageImageView.getContext())
-                                                    .load(downloadUrl)
-                                                    .into(viewHolder.messageImageView);
+                                            Picasso.with(viewHolder.messageImageView.getContext()).load(downloadUrl).into(viewHolder.messageImageView);
                                         } else {
                                             Log.w("Descarga Imagen", "Getting download url was not successful.",
                                                     task.getException());
@@ -163,9 +176,7 @@ public class MensajesActivity extends AppCompatActivity {
                                 });
                         //Tengo que descargarla de donde esté
                     } else {
-                        Picasso.with(viewHolder.messageImageView.getContext())
-                                .load(friendlyMessage.getImageUrl())
-                                .into(viewHolder.messageImageView);
+                        Picasso.with(viewHolder.messageImageView.getContext()).load(friendlyMessage.getImageUrl()).into(viewHolder.messageImageView);
                     }
                     //Muestro la imágen y oculto el texto
                     viewHolder.messageImageView.setVisibility(ImageView.VISIBLE);
@@ -173,18 +184,15 @@ public class MensajesActivity extends AppCompatActivity {
                 }
 
                 //Muestro el que envia el mensaje
-                viewHolder.messengerTextView.setText(friendlyMessage.getName());
+                viewHolder.messengerTextView.setText(friendlyMessage.getSender());
                 //Cojo la URL de la foto del mensaje si la tuviese sino muestro una por defecto
                 if (friendlyMessage.getPhotoUrl() == null) {
-                    viewHolder.messengerImageView.setImageDrawable(ContextCompat.getDrawable(MensajesActivity.this,
-                            R.drawable.usuario_perfil));
+                    viewHolder.messengerImageView.setImageDrawable(ContextCompat.getDrawable(MensajesActivity.this, R.drawable.usuario_perfil));
                 } else {
-                    Picasso.with(MensajesActivity.this)
-                            .load(friendlyMessage.getPhotoUrl())
-                            .into(viewHolder.messengerImageView);
+                    Picasso.with(MensajesActivity.this).load(friendlyMessage.getPhotoUrl()).into(viewHolder.messengerImageView);
                 }
 
-                if (friendlyMessage.getText() != null) {
+                if (friendlyMessage.getMessage() != null) {
                     // write this message to the on-device index
                     FirebaseAppIndex.getInstance().update(getMessageIndexable(friendlyMessage));
                 }
@@ -248,24 +256,82 @@ public class MensajesActivity extends AppCompatActivity {
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Mensaje friendlyMessage = new Mensaje(mMessageEditText.getText().toString(), mUsername,
-                        mPhotoUrl, null,usuarioSesion.getUser()+usuarioChat.getUser());
-                mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
+                //Envio un mensaje con el texto de mMessageEditeText y con mi foto y nombre de usuario
+                Mensaje friendlyMessage = new Mensaje(mMessageEditText.getText().toString(), mUsername, mPhotoUrl, null);
+                friendlyMessage.setSenderUid(usuarioSesion.getUid());
+                friendlyMessage.setReceiverUid(usuarioChat.getUid());
+                friendlyMessage.setTimestamp(System.currentTimeMillis());
+                friendlyMessage.setReceiver(usuarioChat.getUser());
+
+                sendMessageToFirebaseUser(friendlyMessage,ControladorPreferencias.cargarToken(context));
                 mMessageEditText.setText("");
             }
         });
     }
+
+    /**
+     * Envío elementos
+     * @param mensaje
+     * @param receiverFirebaseToken
+     */
+    public void sendMessageToFirebaseUser(final Mensaje mensaje, final String receiverFirebaseToken) {
+        final String room_type_1 = mensaje.getSenderUid() + "_" + mensaje.getReceiverUid();
+        final String room_type_2 = mensaje.getReceiverUid() + "_" + mensaje.getSenderUid();
+
+        mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).getRef().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(room_type_1)) {
+                    Log.e("MENSAJES", "sendMessageToFirebaseUser: " + room_type_1 + " exists");
+                    mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).child(room_type_1).child(String.valueOf(mensaje.getTimestamp())).setValue(mensaje);
+                } else if (dataSnapshot.hasChild(room_type_2)) {
+                    Log.e("MENSAJES", "sendMessageToFirebaseUser: " + room_type_2 + " exists");
+                    mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).child(room_type_2).child(String.valueOf(mensaje.getTimestamp())).setValue(mensaje);
+                } else {
+                    Log.e("MENSAJES", "sendMessageToFirebaseUser: success");
+                    mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).child(room_type_1).child(String.valueOf(mensaje.getTimestamp())).setValue(mensaje);
+                }
+                // send push notification to the receiver
+                sendPushNotificationToReceiver(mensaje.getSender(), mensaje.getMessage(), mensaje.getSenderUid(), ControladorPreferencias.getTokenFCM(), receiverFirebaseToken);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("MENSAJES","Unable to send message: " + databaseError.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Enviar una Cloud Messaging a un token concreto en este caso al que le enviado el mensaje
+     *
+     * @param username
+     * @param message
+     * @param uid
+     * @param firebaseToken
+     * @param receiverFirebaseToken
+     */
+    private void sendPushNotificationToReceiver(String username, String message, String uid, String firebaseToken, String receiverFirebaseToken) {
+        FcmNotificationBuilder.initialize().title(username).message(message)
+                .username(username).uid(uid)
+                .firebaseToken(firebaseToken)
+                .receiverFirebaseToken(receiverFirebaseToken)
+                .send();
+    }
+
+
+
     private Action getMessageViewAction(Mensaje friendlyMessage) {
         return new Action.Builder(Action.Builder.VIEW_ACTION)
-                .setObject(friendlyMessage.getName(), MESSAGE_URL.concat(friendlyMessage.getId()))
+                .setObject(friendlyMessage.getSender(), MESSAGE_URL.concat(friendlyMessage.getId()))
                 .setMetadata(new Action.Metadata.Builder().setUpload(false))
                 .build();
     }
 
     private Indexable getMessageIndexable(Mensaje friendlyMessage) {
         PersonBuilder sender = Indexables.personBuilder()
-                .setIsSelf(mUsername.equals(friendlyMessage.getName()))
-                .setName(friendlyMessage.getName())
+                .setIsSelf(mUsername.equals(friendlyMessage.getSender()))
+                .setName(friendlyMessage.getSender())
                 .setUrl(MESSAGE_URL.concat(friendlyMessage.getId() + "/sender"));
 
         PersonBuilder recipient = Indexables.personBuilder()
@@ -273,7 +339,7 @@ public class MensajesActivity extends AppCompatActivity {
                 .setUrl(MESSAGE_URL.concat(friendlyMessage.getId() + "/recipient"));
 
         Indexable messageToIndex = Indexables.messageBuilder()
-                .setName(friendlyMessage.getText())
+                .setName(friendlyMessage.getMessage())
                 .setUrl(MESSAGE_URL.concat(friendlyMessage.getId()))
                 .setSender(sender)
                 .setRecipient(recipient)
@@ -281,6 +347,13 @@ public class MensajesActivity extends AppCompatActivity {
 
         return messageToIndex;
     }
+
+    /**
+     * Sirve para enviar imágenes
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -291,46 +364,44 @@ public class MensajesActivity extends AppCompatActivity {
                 if (data != null) {
                     final Uri uri = data.getData();
                     Log.d("Mensajes", "Uri: " + uri.toString());
+                    //Envio un mensaje con el texto de mMessageEditeText con foto
+                    Mensaje tempMessage = new Mensaje(null, mUsername, mPhotoUrl, LOADING_IMAGE_URL);
+                    tempMessage.setSenderUid(usuarioSesion.getUid());
+                    tempMessage.setReceiverUid(usuarioChat.getUid());
+                    tempMessage.setTimestamp(System.currentTimeMillis());
+                    tempMessage.setReceiver(usuarioChat.getUser());
 
-                    Mensaje tempMessage = new Mensaje(null, mUsername, mPhotoUrl,
-                            LOADING_IMAGE_URL);
-                    mFirebaseDatabaseReference.child(MESSAGES_CHILD).push()
-                            .setValue(tempMessage, new DatabaseReference.CompletionListener() {
+                    mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(tempMessage, new DatabaseReference.CompletionListener() {
                                 @Override
-                                public void onComplete(DatabaseError databaseError,
-                                                       DatabaseReference databaseReference) {
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError == null) {
                                         String key = databaseReference.getKey();
-                                        StorageReference storageReference =
-                                                FirebaseStorage.getInstance()
-                                                        .getReference(mFirebaseUser.getUid())
-                                                        .child(key)
-                                                        .child(uri.getLastPathSegment());
-
+                                        StorageReference storageReference = FirebaseStorage.getInstance().getReference(mFirebaseUser.getUid()).child(key).child(uri.getLastPathSegment());
                                         putImageInStorage(storageReference, uri, key);
                                     } else {
-                                        Log.w("Mensajes", "Unable to write message to database.",
-                                                databaseError.toException());
+                                        Log.w("Mensajes", "Unable to write message to database.", databaseError.toException());
                                     }
                                 }
-                            });
+                    });
                 }
             }
         }
     }
 
+    /**
+     * Guardo la imagen en la base de datos de FCM
+     * @param storageReference
+     * @param uri
+     * @param key
+     */
     private void putImageInStorage(StorageReference storageReference, Uri uri, final String key) {
         storageReference.putFile(uri).addOnCompleteListener(MensajesActivity.this,
                 new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if (task.isSuccessful()) {
-                            Mensaje friendlyMessage =
-                                    new Mensaje(null, mUsername, mPhotoUrl,
-                                            task.getResult().getDownloadUrl()
-                                                    .toString());
-                            mFirebaseDatabaseReference.child(MESSAGES_CHILD).child(key)
-                                    .setValue(friendlyMessage);
+                            Mensaje friendlyMessage = new Mensaje(null, mUsername, mPhotoUrl, task.getResult().getDownloadUrl().toString());
+                            mFirebaseDatabaseReference.child(MESSAGES_CHILD).child(key).setValue(friendlyMessage);
                         } else {
                             Log.w("Mensajes", "Image upload task was not successful.",
                                     task.getException());

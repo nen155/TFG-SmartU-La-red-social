@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 public class Usuario implements Parcelable,Serializable,Publicacion {
     private int id;
+    private String uid;
+    private String firebaseToken;
     private String nombre;
     private String apellidos;
     private String user;
@@ -37,6 +39,8 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
 
     public void clonar(Usuario u){
         id = u.getId();
+        uid =u.getUid();
+        firebaseToken=u.getFirebaseToken();
         nombre=u.getNombre();
         apellidos=u.getApellidos();
         user=u.getUser();
@@ -49,6 +53,7 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
         web=u.getWeb();
         imagenPerfil=u.getImagenPerfil();
         verificado=u.isVerificado();
+
         if(u.getMisProyectos()!=null)
             misProyectos = new ArrayList<>(u.getMisProyectos());
         else
@@ -125,6 +130,8 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
 
     protected Usuario(Parcel in) {
         id = in.readInt();
+        uid = in.readString();
+        firebaseToken=in.readString();
         nombre = in.readString();
         apellidos = in.readString();
         user = in.readString();
@@ -166,6 +173,22 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getFirebaseToken() {
+        return firebaseToken;
+    }
+
+    public void setFirebaseToken(String firebaseToken) {
+        this.firebaseToken = firebaseToken;
     }
 
     public String getNombre() {
@@ -330,6 +353,8 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
+        dest.writeString(uid);
+        dest.writeString(firebaseToken);
         dest.writeString(nombre);
         dest.writeString(apellidos);
         dest.writeString(user);

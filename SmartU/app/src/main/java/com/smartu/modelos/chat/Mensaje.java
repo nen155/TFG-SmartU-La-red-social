@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.smartu.modelos;
+package com.smartu.modelos.chat;
 
 public class Mensaje {
 
     private String id;
-    private String text;
-    private String name;
+    private String message;
+    private String sender;
+    private String receiver;
+    private long timestamp;
     private String photoUrl;
     private String imageUrl;
     private String senderUid;
     private String receiverUid;
+
     public Mensaje() {
     }
 
-    public Mensaje(String text, String name, String photoUrl, String imageUrl,String senderUid,String receiverUid) {
-        this.text = text;
-        this.name = name;
+    public Mensaje(String text, String sender, String photoUrl, String imageUrl) {
+        this.message = text;
+        this.sender = sender;
         this.photoUrl = photoUrl;
         this.imageUrl = imageUrl;
-        this.senderUid =senderUid;
-        this.receiverUid=receiverUid;
     }
 
     public String getSenderUid() {
@@ -60,20 +61,36 @@ public class Mensaje {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getMessage() {
+        return message;
     }
 
-    public void setText(String texto) {
-        this.text = texto;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public String getName() {
-        return name;
+    public String getSender() {
+        return sender;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getPhotoUrl() {
