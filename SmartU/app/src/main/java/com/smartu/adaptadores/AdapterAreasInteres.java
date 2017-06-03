@@ -1,17 +1,13 @@
 package com.smartu.adaptadores;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,22 +18,29 @@ import com.smartu.utilidades.ConsultasBBDD;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import java8.util.stream.StreamSupport;
 
 
 public class AdapterAreasInteres extends BaseAdapter {
 	private Context context;
-	private ArrayList<Area> areasInteres;
+	private ArrayList<Area> areasBack;
+	private ArrayList<Area> areasInicales;
+	private Set<Integer> posicionAreasInicial;
 	private LayoutInflater inflater;
 	private ArrayList<Area> areas;
+	private GridView gridView;
 
 
-	public AdapterAreasInteres(Bundle savedInstanceState, Context context, ArrayList<Area> items) {
+	public AdapterAreasInteres(Bundle savedInstanceState, Context context, Set<Integer> posicionAreasInicial, ArrayList<Area> areasBack, GridView gridView, ArrayList<Area> areasIniciales) {
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.context = context;
-		this.areasInteres = items;
 		this.areas = Almacen.getAreas();
+		this.areasBack = areasBack;
+		this.gridView=gridView;
+		this.areasInicales=areasIniciales;
+		this.posicionAreasInicial = posicionAreasInicial;
 	}
 
 	@Override
@@ -62,13 +65,17 @@ public class AdapterAreasInteres extends BaseAdapter {
 		if (rowView == null) {
 			rowView = inflater.inflate(R.layout.item_area_cuadrada, parent, false);
 		}
-
+		ImageView seleccionado = (ImageView) rowView.findViewById(R.id.elemento_area);
 		final Area area = this.areas.get(position);
-		boolean esta = StreamSupport.parallelStream(areasInteres).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
+		//Si esta en el arrayList la selecciono
+		boolean esta = StreamSupport.parallelStream(areasBack).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
+		if(esta)
+			seleccionado.setVisibility(View.VISIBLE);
+		//Esta comprobación la hago para que cuando areasBack sea modificado no modifique el SET inicial que es el que quiero mantener
+		boolean estaAreaInicial = StreamSupport.parallelStream(areasInicales).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
+		if(estaAreaInicial)
+			posicionAreasInicial.add(position);
 
-		if(esta){
-			rowView.findViewById(R.id.elemento_area).setBackgroundColor(ContextCompat.getColor(context, R.color.black_semi_transparent));
-		}
 
 		ImageView imgItem = (ImageView) rowView.findViewById(R.id.img_area);
 		TextView textBuscar = (TextView) rowView.findViewById(R.id.nombre_area);
@@ -80,10 +87,61 @@ public class AdapterAreasInteres extends BaseAdapter {
 		}else{
 			imgItem.setImageResource(R.drawable.areas);
 		}
+
+		imgItem.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//Compruebo si estaba para quitarlo y sino para añadirlo como seleccionado
+				boolean esta = StreamSupport.parallelStream(areasBack).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
+				if(esta)
+					uncheck(seleccionado,position);
+				else
+					check(seleccionado,position);
+			}
+		});
 		return rowView;
 	}
 
+	/**
+	 * Marca como seleccionado el item del Gridview
+	 * @param view
+	 * @param position
+	 */
+	private void check(View view,int position){
+		view.setVisibility(View.VISIBLE);
+		areasBack.add((Area) getItem(position));
+	}
 
+	public void unCheckAll(){
+		for(int i=0;i<areas.size();++i){
+			unCheckElement(i);
+		}
+	}
+	private void unCheckElement(int position){
+		View view =gridView.getChildAt(position);
+		ImageView seleccionado = (ImageView) view.findViewById(R.id.elemento_area);
+		seleccionado.setVisibility(View.GONE);
+		areasBack.remove((Area) getItem(position));
+	}
+	/**
+	 * Selecciona el elemento sólo por la posicion del mismo
+	 * @param position
+	 */
+	public void checkElement(int position){
+		View view =gridView.getChildAt(position);
+		ImageView seleccionado = (ImageView) view.findViewById(R.id.elemento_area);
+		seleccionado.setVisibility(View.VISIBLE);
+		areasBack.add((Area) getItem(position));
+	}
+	/**
+	 * Deselecciona el item del Gridview
+	 * @param view
+	 * @param position
+	 */
+	private void uncheck(View view,int position){
+		view.setVisibility(View.GONE);
+		areasBack.remove((Area) getItem(position));
+	}
 
 
 }

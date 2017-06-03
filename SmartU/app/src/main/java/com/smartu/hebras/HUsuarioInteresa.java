@@ -7,14 +7,17 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.smartu.adaptadores.AdapterAreasInteres;
+import com.smartu.modelos.Area;
 import com.smartu.modelos.Usuario;
-import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -26,17 +29,22 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
 
 
     private int idUsuario = 0;
-    private ArrayList<Integer> intereses;
+    private List<Integer> intereses;
     private Context context;
-
+    private  AdapterAreasInteres back;
     private HUsuarioInteresa hUsuarioInteresa;
     private SweetAlertDialog pDialog;
+    private Set<Integer> posicionAreasInicial;
+    private ArrayList<Area> areasBack;
 
-    public HUsuarioInteresa(int idUsuario,  ArrayList<Integer> intereses, Context context) {
+    public HUsuarioInteresa(int idUsuario, List<Integer> intereses, Context context, AdapterAreasInteres back, Set<Integer> posicionAreasInicial, ArrayList<Area> areasBack) {
 
         this.idUsuario = idUsuario;
         this.intereses = intereses;
         this.context = context;
+        this.back = back;
+        this.areasBack =areasBack;
+        this.posicionAreasInicial = posicionAreasInicial;
         pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("Cargando...");
@@ -69,8 +77,8 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
         //Construyo el JSON
         String interes = "\"intereses\":{\"idUsuario\":\"" + idUsuario + "\",\"idsAreas\":"+listaIntereses+"}";
 
-        resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaOEliminaInteres, interes, "POST");
-
+        //resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaOEliminaInteres, interes, "POST");
+        resultado="";
         return resultado;
     }
 
@@ -94,8 +102,13 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
                 if (res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok") != 0)
                     reestablecerEstado();
                 else {
-                    Usuario usuario = Sesion.getUsuario(context);
 
+                    Toast.makeText(context,"Has guardado tus nuevos intereses!",Toast.LENGTH_SHORT).show();
+                    //Cambio las areas que tenía previamente a el total de las que ha seleccionado
+                    Usuario usuario = Sesion.getUsuario(context);
+                    ArrayList<Area> areasInteresList = usuario.getMisAreasInteres();
+                    areasInteresList = new ArrayList<Area>(areasBack);
+                    usuario.setMisAreasInteres(areasInteresList);
                 }
 
             } catch (JSONException e) {
@@ -128,6 +141,11 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
      */
     private void reestablecerEstado() {
         Toast.makeText(context, "No se ha podido realizar la operacion, problemas de conexión?", Toast.LENGTH_SHORT).show();
-
+        //Deselecciono todos
+        back.unCheckAll();
+        //Selecciono sólo los que tenía seleccionados previamente
+        for(Integer p : posicionAreasInicial){
+            back.checkElement(p);
+        }
     }
 }

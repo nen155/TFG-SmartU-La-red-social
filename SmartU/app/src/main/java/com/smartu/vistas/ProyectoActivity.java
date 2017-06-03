@@ -75,6 +75,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
             }
         });
         comentarios = (FloatingActionButton) findViewById(R.id.comentar_proyecto_fab);
+        //Cargo los comentarios en el FragmentComentariosProyecto filtrados
         comentarios.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +86,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                 buenaidea_contador.setVisibility(View.GONE);
                 // que pertenezcan al proyecto en lugar de guardarlos
                 ArrayList<Comentario> comentariosProyecto=null;
+                //Filtro los comentarios por proyecto ID
                 if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
                     comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(Almacen.getComentarios().stream().filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
                 else
