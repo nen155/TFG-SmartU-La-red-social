@@ -1,14 +1,10 @@
 package com.smartu.vistas;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 
-import java8.util.stream.Collectors;
-import java8.util.stream.StreamSupport;
 import toan.android.floatingactionmenu.FloatingActionButton;
 import toan.android.floatingactionmenu.FloatingActionsMenu;
 
@@ -29,10 +25,9 @@ import com.smartu.utilidades.Sesion;
 import com.smartu.utilidades.SliderMenu;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 public class MainActivity extends AppCompatActivity implements FragmentProyectos.OnProyectoSelectedListener, FragmentUsuarios.OnUsuarioSelectedListener, FragmentMapa.OnProyectoSeleccionadoMapaListener {
+
 
 
     //Por defecto esta seleccionado el muro porque es lo primero que ve el usuario
@@ -199,7 +194,15 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
         }
 
     };
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
     @Override
     public void onProyectoSeleccionado(int idProyecto) {
         Intent intent = new Intent(getApplicationContext(), ProyectoActivity.class);

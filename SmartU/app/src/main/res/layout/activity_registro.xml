@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.smartu.vistas.LoginActivity">
+    tools:context="com.smartu.vistas.RegistroActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -29,13 +30,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp">
 
                 <EditText
-                    android:id="@+id/email"
+                    android:id="@+id/nombre_completo_registro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/nombre_y_apellidos"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:layout_marginTop="35dp"/>
+
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp">
+
+                <EditText
+                    android:id="@+id/user_registro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/nombre_de_usuario"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:layout_marginTop="35dp"/>
+
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp">
+
+                <EditText
+                    android:id="@+id/email_registro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
@@ -47,10 +78,11 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp">
 
                 <EditText
-                    android:id="@+id/password"
+                    android:id="@+id/password_registro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/login_password"
@@ -64,45 +96,14 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/btn_iniciar_sesion"
-                style="@style/ButtonLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="@string/btn_login"
-                android:textStyle="bold" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginTop="25dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:src="@drawable/divider"
-                    android:layout_gravity="center"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ó"
-                    android:textAlignment="center"
-                    android:layout_weight="0.1"/>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:src="@drawable/divider"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
-            <Button
                 android:id="@+id/btn_registro"
                 style="@style/ButtonLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="35dp"
                 android:text="@string/reg_strate"
                 android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
+

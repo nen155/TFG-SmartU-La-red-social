@@ -79,6 +79,7 @@ public class MensajesActivity extends AppCompatActivity {
     private String mUsername;
     private String mPhotoUrl;
     private Button mSendButton;
+    private String mChat;
     private RecyclerView mMessageRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private FirebaseRecyclerAdapter<Mensaje, MessageViewHolder> mFirebaseAdapter;
@@ -100,6 +101,7 @@ public class MensajesActivity extends AppCompatActivity {
 
         SliderMenu sliderMenu = new SliderMenu(getApplicationContext(),this);
         sliderMenu.inicializateToolbar(usuarioChat.getUser());
+        setTitle(usuarioChat.getUser());
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
@@ -107,14 +109,13 @@ public class MensajesActivity extends AppCompatActivity {
         mUsername = usuarioSesion.getUser();
         if(usuarioSesion.getImagenPerfil()!=null && usuarioSesion.getImagenPerfil().compareTo("")!=0)
             mPhotoUrl = ConsultasBBDD.server+usuarioSesion.getImagenPerfil();
-        /*if (mFirebaseUser.getPhotoUrl() != null) {
-            mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
-        }*/
+
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mMessageRecyclerView = (RecyclerView) findViewById(R.id.messageRecyclerView);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
         mFirebaseAdapter = new FirebaseRecyclerAdapter<Mensaje, MessageViewHolder>(
                 Mensaje.class,
                 R.layout.item_message,
@@ -134,12 +135,14 @@ public class MensajesActivity extends AppCompatActivity {
             protected void populateViewHolder(final MessageViewHolder viewHolder,
                                               Mensaje friendlyMessage, int position) {
                 mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                //Muestra el texto si lo hubiese
                 if (friendlyMessage.getText() != null) {
                     viewHolder.messageTextView.setText(friendlyMessage.getText());
                     viewHolder.messageTextView.setVisibility(TextView.VISIBLE);
                     viewHolder.messageImageView.setVisibility(ImageView.GONE);
-                } else {
+                } else {//Tenemos una imagen
                     String imageUrl = friendlyMessage.getImageUrl();
+                    //Está subida en el StorageReference de Firebase
                     if (imageUrl.startsWith("gs://")) {
                         StorageReference storageReference = FirebaseStorage.getInstance()
                                 .getReferenceFromUrl(imageUrl);
@@ -158,17 +161,20 @@ public class MensajesActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+                        //Tengo que descargarla de donde esté
                     } else {
                         Picasso.with(viewHolder.messageImageView.getContext())
                                 .load(friendlyMessage.getImageUrl())
                                 .into(viewHolder.messageImageView);
                     }
+                    //Muestro la imágen y oculto el texto
                     viewHolder.messageImageView.setVisibility(ImageView.VISIBLE);
                     viewHolder.messageTextView.setVisibility(TextView.GONE);
                 }
 
-
+                //Muestro el que envia el mensaje
                 viewHolder.messengerTextView.setText(friendlyMessage.getName());
+                //Cojo la URL de la foto del mensaje si la tuviese sino muestro una por defecto
                 if (friendlyMessage.getPhotoUrl() == null) {
                     viewHolder.messengerImageView.setImageDrawable(ContextCompat.getDrawable(MensajesActivity.this,
                             R.drawable.usuario_perfil));
@@ -243,7 +249,7 @@ public class MensajesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Mensaje friendlyMessage = new Mensaje(mMessageEditText.getText().toString(), mUsername,
-                        mPhotoUrl, null);
+                        mPhotoUrl, null,usuarioSesion.getUser()+usuarioChat.getUser());
                 mFirebaseDatabaseReference.child(MESSAGES_CHILD).push().setValue(friendlyMessage);
                 mMessageEditText.setText("");
             }

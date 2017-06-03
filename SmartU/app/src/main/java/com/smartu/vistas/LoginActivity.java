@@ -33,9 +33,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.smartu.R;
 import com.smartu.modelos.Usuario;
+import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.ConsultasBBDD;
+import com.smartu.utilidades.ControladorPreferencias;
 import com.smartu.utilidades.Sesion;
 
 import org.json.JSONException;
@@ -80,8 +83,16 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        Button mRegistro = (Button) findViewById(R.id.btn_registro);
         Button mEmailSignInButton = (Button) findViewById(R.id.btn_iniciar_sesion);
+
+        mRegistro.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -338,8 +349,7 @@ public class LoginActivity extends AppCompatActivity {
                     //Mapeo el usuario que me han pasado para mantener la sesión abierta
                     usuario = mapper.readValue(usuarioJSONServer.toString(), Usuario.class);
                     usuario.setPassword(password);
-                    //Serializo al usuario para que cuando se requiera esté inicializado
-                    Sesion.serializaUsuario(LoginActivity.this,usuario);
+
                 }
 
             } catch (JSONException e) {
@@ -376,16 +386,20 @@ public class LoginActivity extends AppCompatActivity {
                                     toast.show();
                                     //vamos al Main
                                     Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-
+                                    //Una vez iniciado sesión actualizo el token en FCM
+                                    updateFirebaseToken(task.getResult().getUser().getUid(),
+                                            ControladorPreferencias.cargarToken(getApplicationContext()));
                                     //TODO//////////////////////////////////////////////////////////////////////////////
 
                                     //////////////////////////PARA PROBAR LOS MENSAJES////////////////////////////
 
+                                    //Serializo al usuario para que cuando se requiera esté inicializado
                                     Sesion.serializaUsuario(LoginActivity.this,usuario);
 
                                     ////////////////////////////////////////////////////////////////////////////////
 
                                     startActivity(intent);
+                                    finish();
                                 }
                             }
                         });
@@ -401,6 +415,14 @@ public class LoginActivity extends AppCompatActivity {
             hLogin=null;
             //Dejo de mostrar el progreso
             muestraProgreso(false);
+        }
+        private void updateFirebaseToken(String uid, String token) {
+            FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child(Constantes.ARG_USERS)
+                    .child(uid)
+                    .child(Constantes.ARG_FIREBASE_TOKEN)
+                    .setValue(token);
         }
 
     }

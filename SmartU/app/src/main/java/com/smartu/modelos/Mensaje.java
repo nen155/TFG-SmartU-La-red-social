@@ -22,24 +22,34 @@ public class Mensaje {
     private String name;
     private String photoUrl;
     private String imageUrl;
-    private String chat;
-
+    private String senderUid;
+    private String receiverUid;
     public Mensaje() {
     }
 
-    public Mensaje(String text, String name, String photoUrl, String imageUrl) {
+    public Mensaje(String text, String name, String photoUrl, String imageUrl,String senderUid,String receiverUid) {
         this.text = text;
         this.name = name;
         this.photoUrl = photoUrl;
         this.imageUrl = imageUrl;
+        this.senderUid =senderUid;
+        this.receiverUid=receiverUid;
     }
 
-    public String getChat() {
-        return chat;
+    public String getSenderUid() {
+        return senderUid;
     }
 
-    public void setChat(String chat) {
-        this.chat = chat;
+    public void setSenderUid(String senderUid) {
+        this.senderUid = senderUid;
+    }
+
+    public String getReceiverUid() {
+        return receiverUid;
+    }
+
+    public void setReceiverUid(String receiverUid) {
+        this.receiverUid = receiverUid;
     }
 
     public String getId() {

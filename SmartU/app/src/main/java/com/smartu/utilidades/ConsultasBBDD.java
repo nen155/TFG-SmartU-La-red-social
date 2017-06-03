@@ -39,6 +39,7 @@ public class ConsultasBBDD {
     public static final String eliminarUnion ="union";
     public static final String insertaComentario ="comentario";
     public static final String insertaOEliminaInteres ="interes";
+    public static final String insertaUsuario ="usuario";
 
     public static String hacerConsulta(String urlREST, String parameters, String metodo) {
 

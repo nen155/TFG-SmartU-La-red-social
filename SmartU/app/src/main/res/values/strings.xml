@@ -65,5 +65,8 @@
     <string name="informacion">Información</string>
     <string name="elementos">Elementos</string>
     <string name="chat">Mensajería Instantánea</string>
+    <string name="reg_strate">Regístrate</string>
+    <string name="nombre_de_usuario">Nombre de usuario</string>
+    <string name="nombre_y_apellidos">Nombre y apellidos</string>
 
 </resources>
