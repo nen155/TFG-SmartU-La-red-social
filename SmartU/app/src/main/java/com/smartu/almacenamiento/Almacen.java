@@ -373,4 +373,21 @@ public class Almacen {
         else
             buscarUsuarios(usuarioSesion.getMisSeguidos(),usuariosFiltrados,context);
     }
+
+    /**
+     * Comprueba si un usuario está trabajando con otro en un proyecto
+     * @param usuarioSesion
+     * @param usuario
+     * @return
+     */
+    public static boolean esCompaniero(Usuario usuarioSesion,Usuario usuario){
+        boolean flag=false;
+
+        for(int i=0;i<usuarioSesion.getMisProyectos().size() && !flag;++i){
+            int idProyecto = usuarioSesion.getMisProyectos().get(i);
+            flag=StreamSupport.parallelStream(usuario.getMisProyectos()).filter(integer -> idProyecto==integer).findAny().isPresent();
+        }
+
+        return flag;
+    }
 }

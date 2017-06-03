@@ -77,7 +77,7 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
                     "\"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
                     "},\n" +
                     "{\"id\":\"3\",\"nombre\":\"German\",\"apellidos\":\"Zayas Cabrera\",\"verificado\":\"true\",\"user\":\"german\",\"email\":\"german@gmail.com\",\"nPuntos\":\"150\",\"localizacion\":\"C/Ceballos \",\"biografia\":\"Estudiante universitario de la UGR que vive en Granada, en Peligros con el Grado en Bellas Artes\", \"web\":\"http://german.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/j5xrbugqkkalex-avatar.png\",\n" +
-                    "\"misProyectos\":[\"1\"],\"misAreasInteres\":[{\"id\":\"2\",\"nombre\":\"Bellas artes\"}],\n" +
+                    "\"misProyectos\":[\"2\"],\"misAreasInteres\":[{\"id\":\"2\",\"nombre\":\"Bellas artes\"}],\n" +
                     "\"misEspecialidades\":[{\"id\":\"2\",\"nombre\":\"Diseño gráfico\"}], \n" +
                     "\"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"2\"},\n" +
                     "\"misRedesSociales\":[{\"id\":\"2\",\"nombre\":\"twitter\",\"url\":\"https://www.twitter.com/\"}]\n" +

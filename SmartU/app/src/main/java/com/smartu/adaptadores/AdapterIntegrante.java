@@ -79,16 +79,16 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
-            if(viewType==VIEW_TYPE_ACTIVITY) {
-            nombreUsuario = (TextView) itemView.findViewById(R.id.nombre_usuario);
-            statusUsuario = (TextView) itemView.findViewById(R.id.status_usuario);
-            seguidoresUsuario = (TextView) itemView.findViewById(R.id.seguidores_usuario);
-            especialidadUsuario = (TagCloudLinkView) itemView.findViewById(R.id.especialidad_usuario);
-            imgUsuario = (ImageView) itemView.findViewById(R.id.img_usuario);
-            seguirUsuario = (Button) itemView.findViewById(R.id.seguir_usuario);
-                tipoView=1;
-            }else{
-                tipoView=0;
+            if (viewType == VIEW_TYPE_ACTIVITY) {
+                nombreUsuario = (TextView) itemView.findViewById(R.id.nombre_usuario);
+                statusUsuario = (TextView) itemView.findViewById(R.id.status_usuario);
+                seguidoresUsuario = (TextView) itemView.findViewById(R.id.seguidores_usuario);
+                especialidadUsuario = (TagCloudLinkView) itemView.findViewById(R.id.especialidad_usuario);
+                imgUsuario = (ImageView) itemView.findViewById(R.id.img_usuario);
+                seguirUsuario = (Button) itemView.findViewById(R.id.seguir_usuario);
+                tipoView = 1;
+            } else {
+                tipoView = 0;
             }
         }
 
@@ -97,31 +97,30 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     @Override
     public AdapterIntegrante.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_LOADING) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress,parent,false);
-            ViewHolder vhBottom = new ViewHolder(v,viewType);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress, parent, false);
+            ViewHolder vhBottom = new ViewHolder(v, viewType);
 
             return vhBottom;
-        }else if(viewType ==VIEW_TYPE_FINAL){
+        } else if (viewType == VIEW_TYPE_FINAL) {
             // the ListView has reached the last row
             TextView tvLastRow = new TextView(context);
             tvLastRow.setHint("");
             tvLastRow.setGravity(Gravity.CENTER);
-            ViewHolder vhUltimo = new ViewHolder(tvLastRow,viewType);
+            ViewHolder vhUltimo = new ViewHolder(tvLastRow, viewType);
             return vhUltimo;
-        }else
-        {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_integrante_recyclerview, parent, false); //Inflating the layout
+        } else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_integrante_recyclerview, parent, false); //Inflating the layout
 
-        ViewHolder vhItem = new ViewHolder(v, viewType);
+            ViewHolder vhItem = new ViewHolder(v, viewType);
 
-        return vhItem;
+            return vhItem;
         }
     }
 
     @Override
     public void onBindViewHolder(final AdapterIntegrante.ViewHolder holder, int position) {
         //Sino es el último elemento ni es un progress bar pues muestro el elemento que me toca
-        if(holder.tipoView==1) {
+        if (holder.tipoView == 1) {
             usuario = (Usuario) this.usuarios.get(position);
             //Cargo la sesió del usuario si es que hubiese, para usarla en los demás metodos
             usuarioSesion = Sesion.getUsuario(context);
@@ -132,7 +131,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
             holder.nombreUsuario.setText(usuario.getNombre());
 
-            if(usuario.getMisEspecialidades()!=null) {
+            if (usuario.getMisEspecialidades() != null) {
                 int numEspecialidades = 3;
                 //Pongo de previsualización 3 especialidades como mucho
                 if (usuario.getMisEspecialidades().size() < 3)
@@ -150,19 +149,19 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
             //Si es un usuario del proyecto
             if (usuario.getId() != -1) {
-                if(usuario.getMiStatus()!=null)
+                if (usuario.getMiStatus() != null)
                     holder.seguidoresUsuario.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
                 holder.seguirUsuario.setText(context.getString(R.string.seguir));
             } else {//Si es una vacante
                 holder.seguidoresUsuario.setText("");
                 holder.seguirUsuario.setText(R.string.unirse);
             }
-            if(usuario.getMiStatus()!=null)
+            if (usuario.getMiStatus() != null)
                 holder.statusUsuario.setText(usuario.getMiStatus().getNombre());
 
             //Compruebo que no sean los usuarios que he metido como vacantes
             if (usuario.getId() != -1) {
-                holder.imgUsuario.setOnClickListener(cargaUsuario( usuario.getId()));
+                holder.imgUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
                 holder.statusUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
                 holder.nombreUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
 
@@ -186,37 +185,38 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
         return (getItemViewType(position) == VIEW_TYPE_ACTIVITY) ? usuarios.get(position).getId()
                 : -1;
     }
+
     /**
      * Devuelve el tipo de fila,
      * El ultimo elemento es el de loading
      */
     @Override
     public int getItemViewType(int position) {
-        if (position >= usuarios.size() && position>=totalElementosServer && totalElementosServer > 0){
+        if (position >= usuarios.size() && position >= totalElementosServer && totalElementosServer > 0) {
             return VIEW_TYPE_FINAL;
-        }else if(position >= usuarios.size()){
+        } else if (position >= usuarios.size()) {
             return VIEW_TYPE_LOADING;
-        }else
+        } else
             return VIEW_TYPE_ACTIVITY;
     }
 
     @Override
     public int getItemCount() {
-        return usuarios.size()+1;
+        return usuarios.size() + 1;
     }
 
     /**
      * Si ya ha solicitado anteriormente la unión a este proyecto el usuario actual
      * pone los botones deshabilitados
      */
-    private void cargarSolicitudesUnion(){
-        if (usuarioSesion != null && usuarioSesion.getMisSolicitudes()!=null) {
-            boolean solicitado=false;
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
-             solicitado = usuarioSesion.getMisSolicitudes().parallelStream().anyMatch(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId());
+    private void cargarSolicitudesUnion() {
+        if (usuarioSesion != null && usuarioSesion.getMisSolicitudes() != null) {
+            boolean solicitado = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                solicitado = usuarioSesion.getMisSolicitudes().parallelStream().anyMatch(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId());
             else
                 solicitado = StreamSupport.parallelStream(usuarioSesion.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findAny().isPresent();
-            if(solicitado){
+            if (solicitado) {
                 seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
                 seguidoresUsuarioEditable.setPressed(true);
                 seguidoresUsuarioEditable.setEnabled(false);
@@ -229,13 +229,13 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
      */
     private void cargarPreferenciasUsuario() {
         //Cargo las preferencias del usuario
-        if (usuarioSesion != null && usuarioSesion.getMisSeguidos()!=null) {
+        if (usuarioSesion != null && usuarioSesion.getMisSeguidos() != null) {
             //Compruebo si el usuario le ha dado antes a seguir a este usuario
-            boolean usuarioSigue=false;
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
-             usuarioSigue = usuarioSesion.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1 == usuario.getId());
+            boolean usuarioSigue = false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                usuarioSigue = usuarioSesion.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1 == usuario.getId());
             else
-                usuarioSigue =  StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
+                usuarioSigue = StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
             seguirUsuarioEditable.setPressed(usuarioSigue);
             if (usuarioSigue)
@@ -245,6 +245,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
     /**
      * Permite seguir al usuario si se ha iniciado sesión
+     *
      * @return
      */
     private View.OnClickListener seguirUsuario() {
@@ -264,7 +265,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                         seguidoresUsuarioEditable.setText(String.valueOf(cont));
                         Toast.makeText(context, "Genial!,sigues a este usuario!", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra con 0 pues voy a añadir una nueva idea
-                        hSeguir = new HSeguir(false,usuario,context,seguirUsuarioEditable,seguidoresUsuarioEditable);
+                        hSeguir = new HSeguir(false, usuario, context, seguirUsuarioEditable, seguidoresUsuarioEditable);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
                     } else {//Dejo de seguir al usuario
@@ -274,7 +275,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                         seguidoresUsuarioEditable.setText(String.valueOf(cont));
                         Toast.makeText(context, "¿Ya no te interesa el usuario?", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra con el id de la buena idea que encontré
-                        hSeguir = new HSeguir(true,usuario,context,seguirUsuarioEditable,seguidoresUsuarioEditable);
+                        hSeguir = new HSeguir(true, usuario, context, seguirUsuarioEditable, seguidoresUsuarioEditable);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
                     }
@@ -289,6 +290,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
     /**
      * Abre la Activity del usuario al que se le ha hecho click
+     *
      * @return
      */
     private View.OnClickListener cargaUsuario(int id) {
@@ -302,6 +304,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
     /**
      * Solicita la unión al proyecto si has iniciado sesión en el sistema
+     *
      * @return
      */
     private View.OnClickListener solicitarUnion(Usuario usuario) {
@@ -314,11 +317,10 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                     seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
                     seguirUsuarioEditable.setPressed(true);
                     seguirUsuarioEditable.setEnabled(false);
-                    hSolicitud = new HSolicitud(false,proyecto,usuarioSesion.getId(),usuario.getMisEspecialidades(),context,seguirUsuarioEditable);
+                    hSolicitud = new HSolicitud(false, proyecto, usuarioSesion.getId(), usuario.getMisEspecialidades(), context, seguirUsuarioEditable);
                     hSolicitud.sethSolicitud(hSolicitud);
                     hSolicitud.execute();
-                }
-                else {
+                } else {
                     Intent intent = new Intent(context, LoginActivity.class);
                     context.startActivity(intent);
                 }
@@ -326,16 +328,17 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
             }
         };
     }
+
     @Override
     public void addItem(Publicacion publicacion) {
-            Usuario u = (Usuario) publicacion;
-            boolean esta =StreamSupport.parallelStream(usuarios).filter(usuario1 -> usuario1.getId() == u.getId()).findAny().isPresent();
-            if(!esta) {
-                usuarios.add(u);
-                if(u.getId()!=-1)
-                    Almacen.add(u);
-                notifyItemInserted(usuarios.size()-1);
-            }
+        Usuario u = (Usuario) publicacion;
+        boolean esta = StreamSupport.parallelStream(usuarios).filter(usuario1 -> usuario1.getId() == u.getId()).findAny().isPresent();
+        if (!esta) {
+            usuarios.add(u);
+            if (u.getId() != -1)
+                Almacen.add(u);
+            notifyItemInserted(usuarios.size() - 1);
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.smartu.vistas;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -35,11 +36,12 @@ import java8.util.stream.StreamSupport;
 
 public class UsuarioActivity extends AppCompatActivity implements FragmentProyectos.OnProyectoSelectedListener {
 
-    private FloatingActionButton seguir,mensaje;
+    private FloatingActionButton seguir, mensaje;
     private TextView seguirContador;
     private Usuario usuario = new Usuario();
     private Usuario usuarioSesion;
-    private ArrayList<Proyecto> misProyectos=new ArrayList<>();
+    private ArrayList<Proyecto> misProyectos = new ArrayList<>();
+    private boolean companiero = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +53,12 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
 
         Bundle bundle = getIntent().getExtras();
         //Obtengo el usuario que me han pasado
-        if(bundle!=null) {
-            int idUsuario =bundle.getInt("idUsuario");
-             Almacen.buscar(idUsuario,usuario,this);
+        if (bundle != null) {
+            int idUsuario = bundle.getInt("idUsuario");
+            Almacen.buscar(idUsuario, usuario, this);
 
+            //Obtengo el usuario que ha iniciado sesión
+            usuarioSesion = Sesion.getUsuario(getApplicationContext());
             //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
             SliderMenu sliderMenu = new SliderMenu(getBaseContext(), this);
             sliderMenu.inicializateToolbar(usuario.getUser());
@@ -62,45 +66,59 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
 
             seguir = (FloatingActionButton) findViewById(R.id.seguir_usuario);
             mensaje = (FloatingActionButton) findViewById(R.id.enviar_mensaje_usuario);
+            companiero = false;
+            //Si tengo sesión
+            if (usuarioSesion != null) {
+                //Compruebo si son compañeros
+                companiero = Almacen.esCompaniero(usuarioSesion, usuario);
+                //Si no son compañeros sólo podrá enviarle un email, en lugar de un mensaje
+                if (!companiero)
+                    mensaje.setImageResource(R.drawable.email);
+            }
             seguirContador = (TextView) findViewById(R.id.seguir_contador_usuario);
             //Cargo la imagen de perfil del usuario
             CircleImageView imagenPerfil = (CircleImageView) findViewById(R.id.img_activity_usuario);
             Picasso.with(getApplicationContext()).load(ConsultasBBDD.server + usuario.getImagenPerfil()).into(imagenPerfil);
-            //Obtengo el usuario que ha iniciado sesión
-            usuarioSesion = Sesion.getUsuario(getApplicationContext());
+
 
             seguir.setOnClickListener(seguirUsuario());
             //Cargo las preferencias del usuario si tuviese sesión
             cargarPreferenciasUsuario();
             //Establezco el contador con el número de seguidores del usuario actual
-            if(usuario.getMiStatus()!=null)
+            if (usuario.getMiStatus() != null)
                 seguirContador.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
             //Le envio un mensaje al usuario
             mensaje.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(usuarioSesion!=null) {
+                    if (usuarioSesion != null && companiero) {
                         Intent intent = new Intent(UsuarioActivity.this, MensajesActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("usuario",(Parcelable) usuario);
+                        intent.putExtra("usuario", (Parcelable) usuario);
                         startActivity(intent);
-                    }else{
+                    } else if (!companiero && usuarioSesion != null) {
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("plain/text");
+                        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { usuario.getEmail() });
+                        if (intent.resolveActivity(getPackageManager()) != null)
+                            startActivity(intent);
+                    } else {
                         Intent intent = new Intent(UsuarioActivity.this, LoginActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
                 }
             });
-            if(misProyectos==null){
-                 Almacen.buscarProyectos(usuario.getMisProyectos(),misProyectos,this);
+            if (misProyectos == null) {
+                Almacen.buscarProyectos(usuario.getMisProyectos(), misProyectos, this);
             }
             //Cargo el perfil por defecto
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_usuario, FragmentUsuario.newInstance(usuario));
             transaction.commit();
         }
-            BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigationUsuario);
-            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigationUsuario);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
 
@@ -109,7 +127,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment swicthTo=null;
+            Fragment swicthTo = null;
             switch (item.getItemId()) {
                 case R.id.navigation_perfil:
                     swicthTo = FragmentUsuario.newInstance(usuario);
@@ -121,9 +139,9 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                     swicthTo = null;
                     return true;*/
             }
-            if(swicthTo!=null){
+            if (swicthTo != null) {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.content_usuario,swicthTo);
+                transaction.replace(R.id.content_usuario, swicthTo);
                 transaction.commit();
             }
             return true;
@@ -132,17 +150,16 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
     };
 
 
-
     /**
      * Comprueba si el usuario ha dado buena idea al proyecto
      */
     private void cargarPreferenciasUsuario() {
         //Cargo las preferencias del usuario
-        if (usuarioSesion != null && usuarioSesion.getMisSeguidos()!=null) {
+        if (usuarioSesion != null && usuarioSesion.getMisSeguidos() != null) {
             //Compruebo si el usuario le ha dado antes a seguir a este usuario
             boolean usuarioSigue = false;
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
-                usuarioSigue =usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == usuario.getId());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                usuarioSigue = usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == usuario.getId());
             else
                 usuarioSigue = StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
@@ -152,6 +169,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
 
     /**
      * Permite seguir al usuario si se ha iniciado sesión
+     *
      * @return
      */
     private View.OnClickListener seguirUsuario() {
@@ -170,7 +188,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                         seguirContador.setText(String.valueOf(cont));
                         Toast.makeText(getApplicationContext(), "Genial!,sigues a este usuario!", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra
-                        hSeguir = new HSeguir(false,usuario,getApplicationContext(),null,seguirContador);
+                        hSeguir = new HSeguir(false, usuario, getApplicationContext(), null, seguirContador);
                         hSeguir.setFabButton(seguir);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
@@ -180,7 +198,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                         seguirContador.setText(String.valueOf(cont));
                         Toast.makeText(getApplicationContext(), "¿Ya no te interesa el usuario?", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra
-                        hSeguir = new HSeguir(false,usuario,getApplicationContext(),null,seguirContador);
+                        hSeguir = new HSeguir(false, usuario, getApplicationContext(), null, seguirContador);
                         hSeguir.setFabButton(seguir);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
@@ -196,8 +214,8 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
 
     @Override
     public void onProyectoSeleccionado(int idProyecto) {
-        Intent intent = new Intent(getApplicationContext(),ProyectoActivity.class);
-        intent.putExtra(Constantes.ID_PROYECTO,idProyecto);
+        Intent intent = new Intent(getApplicationContext(), ProyectoActivity.class);
+        intent.putExtra(Constantes.ID_PROYECTO, idProyecto);
         startActivity(intent);
     }
 }
