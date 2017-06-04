@@ -38,6 +38,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Para cuando es llamado desde una notificacion
+        Bundle bundle = getIntent().getExtras();
         // Oculto la barra de título para que no se vea en el Splash
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //Establezco el contenido de la View al layout correspondiente
@@ -46,6 +48,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         ControladorPreferencias.cargarPreferencias(this);
         hPublicaciones = new HPublicaciones(this);
         hPublicaciones.sethPublicaciones(hPublicaciones);
+        //Esto es porque vengo de una notificacion
+        if(bundle!=null){
+            hPublicaciones.setNotificacion("notificacion");
+        }
         hPublicaciones.execute();
     }
 

@@ -126,6 +126,7 @@ public class MensajesActivity extends AppCompatActivity {
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         chatRecyclerAdapter = new ChatRecyclerAdapter(mensajes,context,mProgressBar);
 
+        //Le añado un observador para bajar el RecyclerView a la última posicion cuando llegue un mensaje, o al iniciar el chat
         chatRecyclerAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -141,9 +142,7 @@ public class MensajesActivity extends AppCompatActivity {
             }
         });
 
-
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-        //mMessageRecyclerView.setAdapter(mFirebaseAdapter);
         mMessageRecyclerView.setAdapter(chatRecyclerAdapter);
 
         mMessageEditText = (EditText) findViewById(R.id.messageEditText);
@@ -199,11 +198,16 @@ public class MensajesActivity extends AppCompatActivity {
             }
         });
 
-
         //Comienzo a recibir mensajes
         getMessageFromFirebaseUser(usuarioSesion.getUid(),usuarioChat.getUid(),null);
     }
 
+    /**
+     * Recibe mensajes de cualquier tipo y los añade al adaptador
+     * @param senderUid
+     * @param receiverUid
+     * @param messageViewHolder
+     */
     public void getMessageFromFirebaseUser(String senderUid, String receiverUid,MessageViewHolder messageViewHolder) {
         final String room_type_1 = senderUid + "_" + receiverUid;
         final String room_type_2 = receiverUid + "_" + senderUid;
@@ -264,12 +268,16 @@ public class MensajesActivity extends AppCompatActivity {
         mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).getRef().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //El mensaje lo envíe yo y partir de aquí se enviará en ese canal
                 if (dataSnapshot.hasChild(room_type_1)) {
                     mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).child(room_type_1).child(String.valueOf(mensaje.getTimestamp())).setValue(mensaje);
+                    //El primer mensaje me lo enviaron
                 } else if (dataSnapshot.hasChild(room_type_2)) {
                     mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).child(room_type_2).child(String.valueOf(mensaje.getTimestamp())).setValue(mensaje);
                 } else {
+                    //La primera vez que se envía un mensaje en este chat. Lo hago en mi room
                     mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).child(room_type_1).child(String.valueOf(mensaje.getTimestamp())).setValue(mensaje);
+                    //Como el primer getMessageFromFirebaseUser no obtiene nada porque esta es la primera vez que se usa este room tengo que volver a pedir mensajes
                     getMessageFromFirebaseUser(mensaje.getSenderUid(),mensaje.getReceiverUid(),null);
                 }
                 // send push notification to the receiver
@@ -316,29 +324,20 @@ public class MensajesActivity extends AppCompatActivity {
                 if (data != null) {
                     final Uri uri = data.getData();
                     Log.d("Mensajes", "Uri: " + uri.toString());
-                    //Envio un mensaje con el texto de mMessageEditeText con foto
-                    Mensaje tempMessage = new Mensaje(null, mUsername, mPhotoUrl, LOADING_IMAGE_URL);
-                    tempMessage.setSenderUid(usuarioSesion.getUid());
-                    tempMessage.setReceiverUid(usuarioChat.getUid());
-                    tempMessage.setTimestamp(System.currentTimeMillis());
-                    tempMessage.setReceiver(usuarioChat.getUser());
 
-
-                    final String room_type_1 = tempMessage.getSenderUid() + "_" + tempMessage.getReceiverUid();
-                    final String room_type_2 = tempMessage.getReceiverUid() + "_" + tempMessage.getSenderUid();
+                    final String room_type_1 = usuarioSesion.getUid() + "_" + usuarioChat.getUid();
+                    final String room_type_2 = usuarioChat.getUid() + "_" + usuarioSesion.getUid();
 
                     mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).getRef().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(room_type_1)) {
-                                crearMensajeEn(room_type_1,tempMessage,uri);
+                                crearMensajeEn(uri);
                             } else if (dataSnapshot.hasChild(room_type_2)) {
-                                crearMensajeEn(room_type_2,tempMessage,uri);
+                                crearMensajeEn(uri);
                             } else {
-                                crearMensajeEn(room_type_1,tempMessage,uri);
+                                crearMensajeEn(uri);
                             }
-                            // send push notification to the receiver
-                            sendPushNotificationToReceiver(tempMessage.getSender(), tempMessage.getMessage(), tempMessage.getSenderUid(), ControladorPreferencias.getTokenFCM(), usuarioChat.getFirebaseToken());
                         }
 
                         @Override
@@ -351,31 +350,25 @@ public class MensajesActivity extends AppCompatActivity {
         }
     }
 
-    public void crearMensajeEn(String chat_room,Mensaje mensaje,Uri uri){
-        mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).child(chat_room).child(String.valueOf(mensaje.getTimestamp())).push().setValue(mensaje, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError == null) {
-                    //Pone la imagen en el StorageReference en la ruta:
-                    //User UID -> KEY DE DONDE LO SUBE -> LA RUTA DE LA URI
-                    String key = databaseReference.getKey();
-                    StorageReference storageReference = FirebaseStorage.getInstance().getReference(mFirebaseUser.getUid()).child(key).child(uri.getLastPathSegment());
-                    //Esto crea el mensaje realmente
-                    putImageInStorage(storageReference, uri, key);
-                } else {
-                    Log.w("Mensajes", "Unable to write message to database.", databaseError.toException());
-                }
-            }
-        });
+    /**
+     * Establece la ruta donde va a subir el archivo
+     * @param uri
+     */
+    public void crearMensajeEn(Uri uri){
+        //Pone la imagen en el StorageReference en la ruta:
+        //User UID -> LA RUTA DE LA URI
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference(mFirebaseUser.getUid()).child(uri.getLastPathSegment());
+        //Esto crea el mensaje realmente
+        putImageInStorage(storageReference, uri);
+
     }
 
     /**
      * Guardo la imagen en la base de datos de FCM
      * @param storageReference
      * @param uri
-     * @param key
      */
-    private void putImageInStorage(StorageReference storageReference, Uri uri, final String key) {
+    private void putImageInStorage(StorageReference storageReference, Uri uri) {
         storageReference.putFile(uri).addOnCompleteListener(MensajesActivity.this,
                 new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")

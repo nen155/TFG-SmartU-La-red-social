@@ -70,7 +70,7 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else {//Tenemos una imagen
             String imageUrl = friendlyMessage.getImageUrl();
             //Está subida en el StorageReference de Firebase
-            if (imageUrl.startsWith("gs://")) {
+            if (imageUrl!=null && imageUrl.startsWith("gs://")) {
                 StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
                 storageReference.getDownloadUrl().addOnCompleteListener(
                         new OnCompleteListener<Uri>() {

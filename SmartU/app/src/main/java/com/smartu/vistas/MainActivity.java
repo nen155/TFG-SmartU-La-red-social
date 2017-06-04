@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.smartu.R;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
         SliderMenu sliderMenu = new SliderMenu(getApplicationContext(), this);
         sliderMenu.inicializateToolbar(getTitle().toString());
 
+        Bundle bundle = getIntent().getExtras();
+
         //Si ha iniciado sesión el usuario filtro los arrays para
         //poder mostrarlos en el fragment Intereses
         if (usuarioSesion != null) {
@@ -57,9 +60,20 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
                 comentariosFiltrados = Almacen.comentariosFiltrados(usuarioSesion,proyectosFiltrados);
                 Almacen.usuariosFiltrados(usuarioSesion,usuariosFiltrados,this);
         }
-        //Cargo el fragment por defecto
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(Almacen.getProyectos()));
+
+        //Vengo de una notificaión por lo que tengo que cargar el fragment de notificaciones
+        if(bundle!=null)
+        {
+            if (bundle.containsKey("notificacion"))
+                transaction.replace(R.id.content_frame, FragmentNotificaciones.newInstance(Almacen.getNotificaciones()));
+            else//Cargo el fragment por defecto
+                transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(Almacen.getProyectos()));
+        }
+        else//Cargo el fragment por defecto
+            transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(Almacen.getProyectos()));
+
+
         transaction.commit();
 
         //Asigno las acciones de filtros que tiene que tienen que realizar los botones flotantes

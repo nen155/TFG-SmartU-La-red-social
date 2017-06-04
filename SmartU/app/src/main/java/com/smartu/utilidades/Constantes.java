@@ -14,7 +14,7 @@ public class Constantes {
     public static final String ID_USUARIO="idUsuario";
     public static final String ID_NOTIFICACION="idNotificacion";
 
-    public static final String ARG_USERS = "usuarios";
+    public static final String ARG_USERS = "users";
     public static final String ARG_RECEIVER = "receptor";
     public static final String ARG_RECEIVER_UID = "receptor_uid";
     public static final String ARG_CHAT_ROOMS = "chat_rooms";

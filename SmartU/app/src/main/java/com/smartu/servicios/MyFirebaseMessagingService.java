@@ -30,7 +30,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "¡Mensaje recibido!");
         //Si es un mensaje del chat de un usuario
-        if(remoteMessage.getData().containsKey("fcm_token")) {
+        if(remoteMessage.getData()!=null && remoteMessage.getData().containsKey("fcm_token")) {
                 String title = remoteMessage.getData().get("title");
                 String message = remoteMessage.getData().get("text");
                 String username = remoteMessage.getData().get("username");
@@ -48,11 +48,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     /**
      * Create and show a simple notification containing the received FCM message.
      */
-    private void sendNotification(String title,
-                                  String message,
-                                  String receiver,
-                                  String receiverUid,
-                                  String firebaseToken) {
+    private void sendNotification(String title, String message, String receiver, String receiverUid, String firebaseToken) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(Constantes.ARG_RECEIVER, receiver);
         intent.putExtra(Constantes.ARG_RECEIVER_UID, receiverUid);
@@ -90,8 +86,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra("idproyecto", remoteMessage.getData().get("idproyecto"));
         intent.putExtra("usuario", remoteMessage.getData().get("usuario"));
         intent.putExtra("proyecto", remoteMessage.getData().get("proyecto"));
-        LocalBroadcastManager.getInstance(getApplicationContext())
-                .sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     /**
@@ -101,9 +96,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
     private void displayNotification(RemoteMessage.Notification notification, Map<String, String> data) {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("notificacion","notificacion");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -111,6 +106,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText(notification.getBody())
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
+                .setSmallIcon(R.mipmap.ic_launch)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentIntent(pendingIntent);
 

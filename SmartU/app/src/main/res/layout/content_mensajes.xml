@@ -31,7 +31,7 @@
             android:id="@+id/addMessageImageView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@android:drawable/ic_input_add"/>
+            android:src="@drawable/adjuntar"/>
 
         <EditText
             android:layout_width="0dp"
@@ -41,9 +41,9 @@
             android:layout_weight="1"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SEND"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/enviar"
             android:enabled="false"
             android:id="@+id/sendButton"
             android:layout_gravity="bottom"/>

@@ -50,6 +50,7 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
     private ArrayList<Publicacion> publicaciones =null;
     private int tipo=-1;
     private SweetAlertDialog pDialog;
+    private String notificacion=null;
 
     public HPublicaciones(Context context) {
 
@@ -69,6 +70,10 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
         this.idsPublicaciones = idsPublicaciones;
         //Lo inicializo aquí pues se que voy a necesitarlo sino lo dejo como null
         this.publicaciones = new ArrayList<>();
+    }
+
+    public void setNotificacion(String notificacion) {
+        this.notificacion = notificacion;
     }
 
     public void sethPublicaciones(HPublicaciones hPublicaciones) {
@@ -231,6 +236,10 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                     }else {
                         //Sino me voy al Main
                         intent = new Intent(context, MainActivity.class);
+                        //Significa que me han llamado desde una notificación y tengo que abrir el fragment correspondiente
+                        if(notificacion!=null){
+                            intent.putExtra("notificacion","notificacion");
+                        }
                     }
                     //Establezo que se elimine esta pantalla de la pila y añado los arrays al extra
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

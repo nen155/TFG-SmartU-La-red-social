@@ -43,8 +43,41 @@ public class FragmentNotificaciones extends Fragment {
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_NOTIFICACIONES = "notificaciones";
     private RecyclerView recyclerViewNotificacion;
+    //Creo el BroadcastReceiver en su método añado al ArrayList del Adapter
+    //una nueva novedad
     //Necesario para recibir el Intent del servicio de FCM
-    private BroadcastReceiver mNotificationsReceiver;
+    private BroadcastReceiver mNotificationsReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String nombre = intent.getStringExtra("nombre");
+            String description = intent.getStringExtra("descripcion");
+            String fecha = intent.getStringExtra("fecha");
+            String idusuario = intent.getStringExtra("idusuario");
+            String idproyecto = intent.getStringExtra("idproyecto");
+            String usuario = intent.getStringExtra("usuario");
+            String proyecto = intent.getStringExtra("proyecto");
+
+
+            Notificacion notificacion = new Notificacion();
+            notificacion.setNombre(nombre);
+            notificacion.setDescripcion(description);
+            if(idusuario!=null && idusuario.compareTo("0")!=0) {
+                notificacion.setIdUsuario(Integer.parseInt(idusuario));
+                notificacion.setUsuario(usuario);
+            }
+            if(idproyecto!=null && idproyecto.compareTo("0")!=0) {
+                notificacion.setIdProyecto(Integer.parseInt(idproyecto));
+                notificacion.setProyecto(proyecto);
+            }
+
+            try {
+                notificacion.setFecha(SimpleDateFormat.getInstance().parse(fecha));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            guardaNotificacion(notificacion);
+        }
+    };
     //El adaptador de notificaciones para el RecyclerView
     private AdapterNotificacion adapterNotificacion;
     //Muestra el mensaje de que no hay notificaciones
@@ -80,40 +113,6 @@ public class FragmentNotificaciones extends Fragment {
         if (getArguments() != null) {
             notificaciones = getArguments().getParcelableArrayList(ARG_NOTIFICACIONES);
         }
-        //Creo el BroadcastReceiver en su método añado al ArrayList del Adapter
-        //una nueva novedad
-        mNotificationsReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String nombre = intent.getStringExtra("nombre");
-                String description = intent.getStringExtra("descripcion");
-                String fecha = intent.getStringExtra("fecha");
-                String idusuario = intent.getStringExtra("idusuario");
-                String idproyecto = intent.getStringExtra("idproyecto");
-                String usuario = intent.getStringExtra("usuario");
-                String proyecto = intent.getStringExtra("proyecto");
-
-
-                Notificacion notificacion = new Notificacion();
-                notificacion.setNombre(nombre);
-                notificacion.setDescripcion(description);
-                if(idusuario.compareTo("0")!=0) {
-                    notificacion.setIdUsuario(Integer.parseInt(idusuario));
-                    notificacion.setUsuario(usuario);
-                }
-                if(idproyecto.compareTo("0")!=0) {
-                    notificacion.setIdProyecto(Integer.parseInt(idproyecto));
-                    notificacion.setProyecto(proyecto);
-                }
-
-                try {
-                    notificacion.setFecha(SimpleDateFormat.getInstance().parse(fecha));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                guardaNotificacion(notificacion);
-            }
-        };
     }
 
     @Override
@@ -164,19 +163,17 @@ public class FragmentNotificaciones extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        //Escucho los Intents que me llegan con el filtro novedad
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mNotificationsReceiver, new IntentFilter(ACTION_NOTIFY_NEW_NOTIFICACION));
         //Me subscribo y cargo las notificaciones si las hubiese
         start();
-        //Escucho los Intents que me llegan con el filtro novedad
-        LocalBroadcastManager.getInstance(getActivity())
-                .registerReceiver(mNotificationsReceiver, new IntentFilter(ACTION_NOTIFY_NEW_NOTIFICACION));
     }
 
     @Override
     public void onPause() {
         super.onPause();
         //Dejo de escuchar los Intents
-        LocalBroadcastManager.getInstance(getActivity())
-                .unregisterReceiver(mNotificationsReceiver);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mNotificationsReceiver);
     }
 
     /**
