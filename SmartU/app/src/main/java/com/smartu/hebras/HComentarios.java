@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.adaptadores.AdapterComentario;
 import com.smartu.adaptadores.AdapterComentarioProyecto;
 import com.smartu.modelos.Comentario;
+import com.smartu.utilidades.ConsultasBBDD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,18 +64,19 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
-        String resultado="{\"comentarios\":{" +
+        //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
+        /*String resultado="{\"comentarios\":{" +
                 "\"comentarios\":[" +
 
                 "],"
                 + "\"totalserver\":\"15\"" +
-                "}";
-        //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        //String resultado ="";
-        //if(adapterComentarioProyecto==null)
-        //  resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentarios,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
-        //else
-        //  resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentariosProyecto,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
+                "}";*/
+
+        String resultado ="";
+        if(adapterComentarioProyecto==null)
+          resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentarios,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
+        else
+          resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentariosProyecto,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
         JSONObject res =null;
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
         try {

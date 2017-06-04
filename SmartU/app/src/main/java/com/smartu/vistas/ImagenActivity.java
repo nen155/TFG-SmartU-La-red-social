@@ -19,7 +19,7 @@ public class ImagenActivity extends AppCompatActivity {
         if(bundle!=null && bundle.containsKey("multimedia")) {
             Multimedia multimedia = bundle.getParcelable("multimedia");
             ImageView imagen = (ImageView) findViewById(R.id.img_multimedia);
-            Picasso.with(getApplicationContext()).load(ConsultasBBDD.server+multimedia.getUrl()).into(imagen);
+            Picasso.with(getApplicationContext()).load(ConsultasBBDD.server+ ConsultasBBDD.imagenes + multimedia.getUrl()).into(imagen);
         }
     }
 }

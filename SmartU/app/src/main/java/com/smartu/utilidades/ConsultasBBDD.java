@@ -17,29 +17,32 @@ import java.net.URL;
 public class ConsultasBBDD {
 
 
-    public static String server ="http://smartu.coloredmoon.com/";
+    public static String server ="http://smartu.coloredmoon.com/api/public/";
 
-
+    public static final String imagenes = "imagenes/";
     //Consultas
-    public static final String consultaLogin = "api/content_type/";
-    public static final String consultaPublicaciones ="api/content/type";
-    public static final String consultaProyectos ="api/content/type";
-    public static final String consultaUsuarios ="api/content/type";
-    public static final String consultaIntegrantes ="api/content/type";
-    public static final String consultaMultimedia ="api/content/type";
-    public static final String consultaNotificaciones ="api/content/type";
-    public static final String consultaComentarios ="api/content/type";
-    public static final String consultaComentariosProyecto ="api/content/type";
+    public static final String consultaLogin = "login";
+    public static final String consultaPublicaciones ="publicaciones/";
+    public static final String consultaProyectos ="proyectos/";
+    public static final String consultaUsuarios ="usuarios/";
+    public static final String consultaIntegrantes ="integrantes/";
+    public static final String consultaMultimedia ="multimedia/";
+    public static final String consultaNotificaciones ="notificaciones/";
+    public static final String consultaComentarios ="comentarios/";
+    public static final String consultaComentariosProyecto ="comentarios/";
+    public static final String consultaPublicacion ="publicacion/";
+
     //Inserciones y eliminaciones
-    public static final String insertaSeguidor ="seguidor";
-    public static final String eliminarSeguidor ="seguidor";
-    public static final String insertaBuenaIdea ="buenaIdea";
-    public static final String eliminarBuenaIdea ="buenaIdea";
-    public static final String insertaUnion ="union";
-    public static final String eliminarUnion ="union";
-    public static final String insertaComentario ="comentario";
-    public static final String insertaOEliminaInteres ="interes";
-    public static final String insertaUsuario ="usuario";
+    public static final String insertaSeguidor ="seguidor/";
+    public static final String eliminarSeguidor ="seguidor/";
+    public static final String insertaBuenaIdea ="buenaIdea/";
+    public static final String eliminarBuenaIdea ="buenaIdea/";
+    public static final String insertaUnion ="union/";
+    public static final String eliminarUnion ="union/";
+    public static final String insertaComentario ="comentario/";
+    public static final String insertaOEliminaInteres ="interes/";
+    public static final String insertaUsuario ="usuario/";
+
 
     public static String hacerConsulta(String urlREST, String parameters, String metodo) {
 

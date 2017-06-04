@@ -103,7 +103,7 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
         if(holder.tipoView==1) {
             multimedia = (Multimedia) this.multimediaList.get(position);
             if (multimedia.getUrlPreview() != null && multimedia.getUrlPreview().compareTo("") != 0)
-                Picasso.with(context).load(ConsultasBBDD.server + multimedia.getUrlPreview()).into(holder.imgPreviewMultimedia);
+                Picasso.with(context).load(ConsultasBBDD.server + ConsultasBBDD.imagenes +  multimedia.getUrlPreview()).into(holder.imgPreviewMultimedia);
             else {
                 switch (multimedia.getTipo()) {
                     case "video":

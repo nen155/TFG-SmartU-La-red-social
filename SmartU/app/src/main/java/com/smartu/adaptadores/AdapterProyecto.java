@@ -126,7 +126,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 		//Sino es el último elemento ni es un progress bar pues muestro el elemento que me toca
 		if(holder.tipoView==1) {
 			proyecto = (Proyecto) this.proyectos.get(position);
-			Picasso.with(context).load(ConsultasBBDD.server + proyecto.getImagenDestacada()).into(holder.imgProyecto);
+			Picasso.with(context).load(ConsultasBBDD.server + ConsultasBBDD.imagenes +  proyecto.getImagenDestacada()).into(holder.imgProyecto);
 			holder.nombreProyecto.setText(proyecto.getNombre());
 			if (proyecto.getDescripcion().length() > 150) {
 				holder.descripcionProyecto.setText(proyecto.getDescripcion().substring(0, 150) + "...");

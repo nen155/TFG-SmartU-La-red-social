@@ -117,7 +117,7 @@ public class MensajesActivity extends AppCompatActivity {
         usuarioSesion = Sesion.getUsuario(this);
         mUsername = usuarioSesion.getUser();
         if(usuarioSesion.getImagenPerfil()!=null && usuarioSesion.getImagenPerfil().compareTo("")!=0)
-            mPhotoUrl = ConsultasBBDD.server+usuarioSesion.getImagenPerfil();
+            mPhotoUrl = ConsultasBBDD.server+ ConsultasBBDD.imagenes + usuarioSesion.getImagenPerfil();
 
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mMessageRecyclerView = (RecyclerView) findViewById(R.id.messageRecyclerView);

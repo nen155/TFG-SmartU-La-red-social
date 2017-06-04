@@ -83,7 +83,7 @@ public class AdapterAreasInteres extends BaseAdapter {
 		textBuscar.setText(area.getNombre());
 		if(area.getUrlImg()!=null &&area.getUrlImg().compareTo("")!=0) {
 			Uri imagen = Uri.parse(area.getUrlImg());
-			Picasso.with(context).load(ConsultasBBDD.server + imagen).into(imgItem);
+			Picasso.with(context).load(ConsultasBBDD.server+ ConsultasBBDD.imagenes + imagen).into(imgItem);
 		}else{
 			imgItem.setImageResource(R.drawable.areas);
 		}

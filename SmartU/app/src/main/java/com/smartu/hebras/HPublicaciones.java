@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.view.View;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,7 @@ import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.Constantes;
+import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.ControladorPreferencias;
 import com.smartu.vistas.InstruccionesMainActivity;
 import com.smartu.vistas.MainActivity;
@@ -89,7 +91,7 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
         start = System.currentTimeMillis();
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
         //Recojo el resultado en un String
-        String resultado="{\"publicaciones\":{\n" +
+        /*String resultado="{\"publicaciones\":{\n" +
                 "  \"proyectos\":[\n" +
                 "    {\n" +
                 "      \"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"La idea general de este proyecto es mediante el uso de herramientas, metodologías y técnicas provenientes de todas las disciplinas integrantes del proyecto se obtenga como resultado un producto final, el cual conecte la Universidad con la ciudad mediante un espacio de coworking de ideas y servicios.\",\"fechaCreacion\":\"2017-01-12\",\"fechaFinalizacion\":\"2018-03-29\",\"imagenDestacada\":\"wp-content/uploads/2017/05/logo_web.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"web\":\"http://coloredmoon.com\",\"idPropietario\":\"1\",\n" +
@@ -122,23 +124,23 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                 "    }],\n" +
                 "\"areas\":[{\"id\":\"1\",\"nombre\":\"Informática\"},{\"id\":\"2\",\"nombre\":\"Diseño gráfico\"},{\"id\":\"3\",\"nombre\":\"Edificación\"},{\"id\":\"4\",\"nombre\":\"Empresariales\"},{\"id\":\"5\",\"nombre\":\"Audio visuales\"},{\"id\":\"6\",\"nombre\":\"Comunicación\"}]"+
                 "}\n" +
-                "}";
+                "}";*/
 
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        /*String resultado="";
+        String resultado="";
         if(tipo==-1)
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\"0\"}","POST");
         else{
+            String idsPubli="[]";
             try {
-                String idsPubli = mapper.writeValueAsString(idsPublicaciones);
+                 idsPubli = mapper.writeValueAsString(idsPublicaciones);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+            //Esta consulta coge un Array de IDs para que se traiga esas publicaciones que faltan, NO SE TRAE ASOCIADOS
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\"0\", \"publicaciones\":"+idsPubli+", \"tipo\":\""+tipo+"\"}","POST");
-        }*/
-        //Voy a mantener arrays distintos para los elementos del muro
-        //para que a la hora de actualizar con FCM actualice el array
-        //que necesite
+        }
+
         JSONObject res =null;
 
         try {

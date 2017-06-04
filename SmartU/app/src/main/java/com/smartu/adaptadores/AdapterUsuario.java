@@ -120,7 +120,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
         //Sino es el último elemento ni es un progress bar pues muestro el elemento que me toca
         if (holder.tipoView == 1) {
             usuario = (Usuario) this.usuarios.get(position);
-            Picasso.with(context).load(ConsultasBBDD.server + usuario.getImagenPerfil()).into(holder.imgUsuario);
+            Picasso.with(context).load(ConsultasBBDD.server + ConsultasBBDD.imagenes +  usuario.getImagenPerfil()).into(holder.imgUsuario);
             holder.nombreUsuario.setText(usuario.getNombre());
 
             if(usuario.getMisEspecialidades()!=null) {

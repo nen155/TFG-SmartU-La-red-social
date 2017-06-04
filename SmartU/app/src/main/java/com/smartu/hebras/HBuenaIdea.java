@@ -88,10 +88,13 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
         this.hBuenaIdea = null;
         //Obtengo el objeto JSON con el resultado
         JSONObject res=null;
-        try {
-            res = new JSONObject(resultado);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(resultado!=null) {
+            try {
+                res = new JSONObject(resultado);
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+            }
         }
         //Si tengo objeto compruebo el resultado y si es ok cambio el texto al botón
         //Sino muestro mensaje por pantalla

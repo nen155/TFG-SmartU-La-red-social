@@ -122,7 +122,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
         TextView email = (TextView)navigationView.getHeaderView(0).findViewById(R.id.email_usuario_perfil);
         if(usuarioSesion!=null) {
 
-            Picasso.with(context).load(ConsultasBBDD.server+usuarioSesion.getImagenPerfil()).into(imagenPerfil);
+            Picasso.with(context).load(ConsultasBBDD.server+ ConsultasBBDD.imagenes + usuarioSesion.getImagenPerfil()).into(imagenPerfil);
             usuario.setText(usuarioSesion.getUser());
             email.setText(usuarioSesion.getEmail());
             navigationView.getMenu().setGroupVisible(R.id.autentificado, true);

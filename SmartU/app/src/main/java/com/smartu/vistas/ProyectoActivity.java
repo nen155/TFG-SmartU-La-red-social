@@ -60,7 +60,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
 
         //Cargo la imágen destacada del proyecto en la parte superior
         ImageView imgDestadada = (ImageView) findViewById(R.id.img_activity_proyecto);
-        Picasso.with(getApplicationContext()).load(ConsultasBBDD.server+proyecto.getImagenDestacada()).into(imgDestadada);
+        Picasso.with(getApplicationContext()).load(ConsultasBBDD.server+ ConsultasBBDD.imagenes + proyecto.getImagenDestacada()).into(imgDestadada);
 
         //Obtengo el usuario que ha iniciado sesión
         usuarioSesion = Sesion.getUsuario(getApplicationContext());

@@ -138,7 +138,7 @@ public class FragmentComentariosProyecto extends Fragment {
         recyclerViewComentarios.setAdapter(adapterComentarioProyecto);
         //Si he iniciado sesión cargo la imagen
         if(usuarioSesion !=null)
-            Picasso.with(getContext()).load(ConsultasBBDD.server+ usuarioSesion.getImagenPerfil()).into(circleImageView);
+            Picasso.with(getContext()).load(ConsultasBBDD.server+ ConsultasBBDD.imagenes +  usuarioSesion.getImagenPerfil()).into(circleImageView);
 
         enviarComentario.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,10 +224,12 @@ public class FragmentComentariosProyecto extends Fragment {
             hComentar = null;
             //Obtengo el objeto JSON con el resultado
             JSONObject res=null;
-            try {
-                res = new JSONObject(resultado);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if(resultado!=null) {
+                try {
+                    res = new JSONObject(resultado);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             //Si tengo objeto compruebo el resultado y si es ok cambio el texto al botón
             //Sino muestro mensaje por pantalla

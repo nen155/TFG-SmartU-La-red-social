@@ -13,6 +13,7 @@ import com.smartu.adaptadores.AdapterIntegrante;
 import com.smartu.adaptadores.AdapterUsuario;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Usuario;
+import com.smartu.utilidades.ConsultasBBDD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +65,7 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
-            String resultado="{\"usuarios\":{\"usuarios\":[{\"id\":\"1\",\"nombre\":\"Emilio\",\"apellidos\":\"Chica Jiménez\",\"verificado\":\"true\",\"user\":\"emiliocj\",\"email\":\"emiliocj@correo.ugr.es\",\"nPuntos\":\"100\",\"localizacion\":\"C/Poeta Manuel\",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada y es Graduado en Ingeniería Informática\", \"web\":\"http://coloremoon.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/foto-buena.jpg\",\"misProyectos\":[\"1\"],\"misAreasInteres\":[{\"id\":\"1\",\"nombre\":\"Informática\"}],\n" +
+            /*String resultado="{\"usuarios\":{\"usuarios\":[{\"id\":\"1\",\"nombre\":\"Emilio\",\"apellidos\":\"Chica Jiménez\",\"verificado\":\"true\",\"user\":\"emiliocj\",\"email\":\"emiliocj@correo.ugr.es\",\"nPuntos\":\"100\",\"localizacion\":\"C/Poeta Manuel\",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada y es Graduado en Ingeniería Informática\", \"web\":\"http://coloremoon.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/foto-buena.jpg\",\"misProyectos\":[\"1\"],\"misAreasInteres\":[{\"id\":\"1\",\"nombre\":\"Informática\"}],\n" +
                     "\"misEspecialidades\":[{\"id\":\"1\",\"nombre\":\"Informática\"}], \n" +
                     "\"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
                     "\"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
@@ -89,13 +90,13 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
                     "\n" +
                     "]                      \n" +
                     " \n" +
-                    "},\"totalserver\":\"3\"}";
+                    "},\"totalserver\":\"3\"}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        //String resultado="";
-        //if(adapterIntegrante==null)
-        // resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaIntegrantes,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idPoryecto+"\"}","POST");
-        //else
-        // resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaUsuarios,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\}","POST");
+        String resultado="";
+        if(adapterIntegrante==null)
+         resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaIntegrantes,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
+        else
+         resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaUsuarios,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
         JSONObject res =null;
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
         try {

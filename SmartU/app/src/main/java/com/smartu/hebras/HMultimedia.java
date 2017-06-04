@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.adaptadores.AdapterMultimedia;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Multimedia;
+import com.smartu.utilidades.ConsultasBBDD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,14 +55,14 @@ public class HMultimedia extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
-        String resultado="{\"multimedia\":{" +
+       /* String resultado="{\"multimedia\":{" +
                 "\"multimedia\":[" +
 
                 "],"
                 + "\"totalserver\":\"15\"" +
-                "}";
+                "}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        //String resultado =resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaMultimedia,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
+        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaMultimedia,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
 
         JSONObject res =null;
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);

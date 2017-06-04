@@ -81,7 +81,7 @@ public class FragmentNotificaciones extends Fragment {
             guardaNotificacion(notificacion);
         }
     };
-    
+
 
     //El adaptador de notificaciones para el RecyclerView
     private AdapterNotificacion adapterNotificacion;

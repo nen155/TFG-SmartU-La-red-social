@@ -57,7 +57,7 @@ public class VideoActivity extends AppCompatActivity {
             player = ExoPlayerFactory.newSimpleInstance(getApplicationContext(), trackSelector, loadControl);
 
             //Obtengo la URL completa del archivo de video
-            Uri uri = Uri.parse(ConsultasBBDD.server + multimedia.getUrl());
+            Uri uri = Uri.parse(ConsultasBBDD.server + ConsultasBBDD.imagenes +  multimedia.getUrl());
 
             //A la vista le establezco el reproductor que va a usar
             videoView.setPlayer(player);
@@ -71,7 +71,7 @@ public class VideoActivity extends AppCompatActivity {
             // If has subtitles load video with subtitles
             if (multimedia.getUrlSubtitulos() != null && multimedia.getUrlSubtitulos().compareTo("") != 0) {
                 //Obtengo la URL completa para los subtitulos del video
-                Uri subtitulosUri = Uri.parse(ConsultasBBDD.server + multimedia.getUrlSubtitulos());
+                Uri subtitulosUri = Uri.parse(ConsultasBBDD.server + ConsultasBBDD.imagenes +  multimedia.getUrlSubtitulos());
                 //Asigno el formato de los subtitulos
                 Format textFormat = Format.createTextSampleFormat(null, MimeTypes.TEXT_VTT,
                         null, Format.NO_VALUE, Format.NO_VALUE, Locale.getDefault().getLanguage(), null);

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.adaptadores.AdapterProyecto;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
+import com.smartu.utilidades.ConsultasBBDD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,15 +55,15 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
-        String resultado="{\"proyectos\":{" +
+        /*String resultado="{\"proyectos\":{" +
                 "\"proyectos\":[" +
 
                 "],"
                 + "\"totalserver\":\"1\"" +
                 "}"+
-                "}";
+                "}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        //String resultado =resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaProyectos,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
+        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaProyectos,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
 
         JSONObject res =null;
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);

@@ -285,8 +285,8 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             // Hacer llamada al servidor
-           // String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaLogin,usuarioJSON,"POST");
-            String resultado="";
+             String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaLogin,usuarioJSON,"POST");
+            /*String resultado="";
             if(usuario.getEmail().compareTo("emiliocj@correo.ugr.es")==0) {
                 resultado = "{\"usuario\":{\"id\":\"1\",\"nombre\":\"Emilio\",\"apellidos\":\"Chica Jiménez\",\"verificado\":\"true\",\"user\":\"emiliocj\",\"email\":\"emiliocj@correo.ugr.es\",\"nPuntos\":\"100\",\"localizacion\":\"C/Poeta Manuel\",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada y es Graduado en Ingeniería Informática\", \"web\":\"http://coloremoon.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/foto-buena.jpg\",\n" +
                         "          \"misProyectos\":[\n" +"\"1\"],\n" +
@@ -326,42 +326,48 @@ public class LoginActivity extends AppCompatActivity {
                         "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.twitter.com/\"}]\n" +
                         "    }\n" +
                         "}";
-            }
+            }*/
+            JSONObject res=null;
+            if(resultado!=null) {
+                try {
+                    //Convierto el resultado a JSON
+                    res = new JSONObject(resultado);
 
-            try {
-                //Convierto el resultado a JSON
-                JSONObject res = new JSONObject(resultado);
+                    //TODO//////////////////////////////////////////////////////////////////////////////
 
-                //TODO//////////////////////////////////////////////////////////////////////////////
-
-                //////////////////////////PARA PROBAR LOS MENSAJES////////////////////////////
-
-
-                ////////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////PARA PROBAR LOS MENSAJES////////////////////////////
 
 
-                //Si el resultado es null signfica que no coincide usuario y contraseña
-                if(res.isNull("usuario"))
-                    return false;
-                else {
-                    JSONObject usuarioJSONServer = res.getJSONObject("usuario");
-                    String password = usuario.getPassword();
-                    //Mapeo el usuario que me han pasado para mantener la sesión abierta
-                    usuario = mapper.readValue(usuarioJSONServer.toString(), Usuario.class);
-                    usuario.setPassword(password);
+                    ////////////////////////////////////////////////////////////////////////////////
 
+
+                    //Si el resultado es null signfica que no coincide usuario y contraseña
+                    if (res != null) {
+                        if (res.isNull("usuario"))
+                            return false;
+                        else {
+                            JSONObject usuarioJSONServer = res.getJSONObject("usuario");
+                            String password = usuario.getPassword();
+                            //Mapeo el usuario que me han pasado para mantener la sesión abierta
+                            usuario = mapper.readValue(usuarioJSONServer.toString(), Usuario.class);
+                            usuario.setPassword(password);
+
+                        }
+                    } else
+                        return false;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }catch (JsonProcessingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-
-            return true;
+                return true;
+            }else
+                return false;
         }
 
         @Override

@@ -78,7 +78,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
             seguirContador = (TextView) findViewById(R.id.seguir_contador_usuario);
             //Cargo la imagen de perfil del usuario
             CircleImageView imagenPerfil = (CircleImageView) findViewById(R.id.img_activity_usuario);
-            Picasso.with(getApplicationContext()).load(ConsultasBBDD.server + usuario.getImagenPerfil()).into(imagenPerfil);
+            Picasso.with(getApplicationContext()).load(ConsultasBBDD.server + ConsultasBBDD.imagenes +  usuario.getImagenPerfil()).into(imagenPerfil);
 
 
             seguir.setOnClickListener(seguirUsuario());

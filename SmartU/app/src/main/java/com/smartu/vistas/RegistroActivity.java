@@ -126,7 +126,12 @@ public class RegistroActivity extends AppCompatActivity {
                 });
     }
 
-
+    /////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * HERBA REGISTRO
+     * Esta hebra va a quedarse en esta clase porque es intrínseca a ella y sólo se llama aquí
+     */
+    //////////////////////////////////////////////////////////////////////////////////////////
     protected class HRegistro extends AsyncTask<Void, Void, String> {
 
 
@@ -170,10 +175,12 @@ public class RegistroActivity extends AppCompatActivity {
             hRegistro = null;
             //Obtengo el objeto JSON con el resultado
             JSONObject res=null;
-            try {
-                res = new JSONObject(resultado);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if(resultado!=null) {
+                try {
+                    res = new JSONObject(resultado);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             //Si tengo objeto compruebo el resultado y si es ok cambio el texto al botón
             //Sino muestro mensaje por pantalla

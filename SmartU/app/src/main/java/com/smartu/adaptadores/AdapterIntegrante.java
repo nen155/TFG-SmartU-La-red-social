@@ -127,7 +127,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
             //Compruebo que no sean los usuarios que he metido como vacantes
             //para dejar la imagen por defecto.
             if (usuario.getId() != -1)
-                Picasso.with(context).load(ConsultasBBDD.server + usuario.getImagenPerfil()).into(holder.imgUsuario);
+                Picasso.with(context).load(ConsultasBBDD.server + ConsultasBBDD.imagenes + usuario.getImagenPerfil()).into(holder.imgUsuario);
 
             holder.nombreUsuario.setText(usuario.getNombre());
 

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.adaptadores.AdapterAreasInteres;
 import com.smartu.modelos.Area;
 import com.smartu.modelos.Usuario;
+import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
 
 import org.json.JSONException;
@@ -77,8 +78,8 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
         //Construyo el JSON
         String interes = "\"intereses\":{\"idUsuario\":\"" + idUsuario + "\",\"idsAreas\":"+listaIntereses+"}";
 
-        //resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaOEliminaInteres, interes, "POST");
-        resultado="";
+        resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaOEliminaInteres, interes, "POST");
+        //resultado="";
         return resultado;
     }
 
@@ -90,10 +91,13 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
         hUsuarioInteresa = null;
         //Obtengo el objeto JSON con el resultado
         JSONObject res = null;
-        try {
-            res = new JSONObject(resultado);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(resultado!=null) {
+            try {
+                res = new JSONObject(resultado);
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+            }
         }
         //Si tengo objeto compruebo el resultado y si es ok cambio el texto al botón
         //Sino muestro mensaje por pantalla
