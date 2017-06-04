@@ -39,6 +39,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.smartu.R;
+import com.smartu.adaptadores.ChatRecyclerAdapter;
 import com.smartu.modelos.chat.Mensaje;
 import com.smartu.modelos.Usuario;
 import com.smartu.servicios.FcmNotificationBuilder;
@@ -49,6 +50,9 @@ import com.smartu.utilidades.Sesion;
 import com.smartu.utilidades.SliderMenu;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -61,6 +65,7 @@ public class MensajesActivity extends AppCompatActivity {
     private static final String MESSAGE_URL = "https://smartu-40a26.firebaseio.com/";
     private static final String LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif";
     private Context context;
+    private List<Mensaje> mensajes = new ArrayList<>();
 
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
@@ -91,6 +96,7 @@ public class MensajesActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private Usuario usuarioSesion=null,usuarioChat=null;
+    private ChatRecyclerAdapter chatRecyclerAdapter;
 
 
     @Override
@@ -118,32 +124,13 @@ public class MensajesActivity extends AppCompatActivity {
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        chatRecyclerAdapter = new ChatRecyclerAdapter(mensajes,context,mProgressBar);
 
-
-        //Recibo elementos....
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<Mensaje, MessageViewHolder>(Mensaje.class, R.layout.item_message, MessageViewHolder.class, mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS)) {
-
-            @Override
-            protected Mensaje parseSnapshot(DataSnapshot snapshot) {
-                Mensaje friendlyMessage = super.parseSnapshot(snapshot);
-                if (friendlyMessage != null) {
-                    friendlyMessage.setId(snapshot.getKey());
-                }
-                return friendlyMessage;
-            }
-
-            @Override
-            protected void populateViewHolder(final MessageViewHolder viewHolder, Mensaje friendlyMessage, int position) {
-                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                getMessageFromFirebaseUser(friendlyMessage.getSenderUid(),friendlyMessage.getReceiverUid(),viewHolder);
-            }
-        };
-
-        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        chatRecyclerAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
-                int friendlyMessageCount = mFirebaseAdapter.getItemCount();
+                int friendlyMessageCount = chatRecyclerAdapter.getItemCount();
                 int lastVisiblePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
                 // If the recycler view is initially being loaded or the user is at the bottom of the list, scroll
                 // to the bottom of the list to show the newly added message.
@@ -154,8 +141,10 @@ public class MensajesActivity extends AppCompatActivity {
             }
         });
 
+
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+        //mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+        mMessageRecyclerView.setAdapter(chatRecyclerAdapter);
 
         mMessageEditText = (EditText) findViewById(R.id.messageEditText);
         mMessageEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(DEFAULT_MSG_LENGTH_LIMIT)});
@@ -209,53 +198,10 @@ public class MensajesActivity extends AppCompatActivity {
                 mMessageEditText.setText("");
             }
         });
-    }
 
-    /**
-     * Obtener un mensaje
-     * @param friendlyMessage
-     * @param viewHolder
-     */
-    public void getOneMessage(Mensaje friendlyMessage,MessageViewHolder viewHolder){
-        //Muestra el texto si lo hubiese
-        if (friendlyMessage.getMessage() != null) {
-            viewHolder.messageTextView.setText(friendlyMessage.getMessage());
-            viewHolder.messageTextView.setVisibility(TextView.VISIBLE);
-            viewHolder.messageImageView.setVisibility(ImageView.GONE);
-        } else {//Tenemos una imagen
-            String imageUrl = friendlyMessage.getImageUrl();
-            //Está subida en el StorageReference de Firebase
-            if (imageUrl.startsWith("gs://")) {
-                StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
-                storageReference.getDownloadUrl().addOnCompleteListener(
-                        new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    String downloadUrl = task.getResult().toString();
-                                    Picasso.with(viewHolder.messageImageView.getContext()).load(downloadUrl).into(viewHolder.messageImageView);
-                                } else {
-                                    Log.w("Descarga Imagen", "Getting download url was not successful.", task.getException());
-                                }
-                            }
-                        });
-                //Tengo que descargarla de donde esté
-            } else {
-                Picasso.with(viewHolder.messageImageView.getContext()).load(friendlyMessage.getImageUrl()).into(viewHolder.messageImageView);
-            }
-            //Muestro la imágen y oculto el texto
-            viewHolder.messageImageView.setVisibility(ImageView.VISIBLE);
-            viewHolder.messageTextView.setVisibility(TextView.GONE);
-        }
 
-        //Muestro el que envia el mensaje
-        viewHolder.messengerTextView.setText(friendlyMessage.getSender());
-        //Cojo la URL de la foto del mensaje si la tuviese sino muestro una por defecto
-        if (friendlyMessage.getPhotoUrl() == null) {
-            viewHolder.messengerImageView.setImageDrawable(ContextCompat.getDrawable(MensajesActivity.this, R.drawable.usuario_perfil));
-        } else {
-            Picasso.with(MensajesActivity.this).load(friendlyMessage.getPhotoUrl()).into(viewHolder.messengerImageView);
-        }
+        //Comienzo a recibir mensajes
+        getMessageFromFirebaseUser(usuarioSesion.getUid(),usuarioChat.getUid(),null);
     }
 
     public void getMessageFromFirebaseUser(String senderUid, String receiverUid,MessageViewHolder messageViewHolder) {
@@ -272,7 +218,7 @@ public class MensajesActivity extends AppCompatActivity {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             Mensaje mensaje = dataSnapshot.getValue(Mensaje.class);
-                            getOneMessage(mensaje,messageViewHolder);
+                            chatRecyclerAdapter.add(mensaje);
                         }
                         @Override
                         public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
@@ -288,7 +234,7 @@ public class MensajesActivity extends AppCompatActivity {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             Mensaje mensaje = dataSnapshot.getValue(Mensaje.class);
-                            getOneMessage(mensaje,messageViewHolder);
+                            chatRecyclerAdapter.add(mensaje);
                         }
                         @Override
                         public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
@@ -324,6 +270,7 @@ public class MensajesActivity extends AppCompatActivity {
                     mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).child(room_type_2).child(String.valueOf(mensaje.getTimestamp())).setValue(mensaje);
                 } else {
                     mFirebaseDatabaseReference.child(Constantes.ARG_CHAT_ROOMS).child(room_type_1).child(String.valueOf(mensaje.getTimestamp())).setValue(mensaje);
+                    getMessageFromFirebaseUser(mensaje.getSenderUid(),mensaje.getReceiverUid(),null);
                 }
                 // send push notification to the receiver
                 sendPushNotificationToReceiver(mensaje.getSender(), mensaje.getMessage(), mensaje.getSenderUid(), ControladorPreferencias.getTokenFCM(), receiverFirebaseToken);

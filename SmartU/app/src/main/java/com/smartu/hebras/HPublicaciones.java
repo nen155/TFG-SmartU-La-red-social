@@ -111,7 +111,9 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                 "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
                 "              ],\n" +
                 "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
-                "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
+                "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}],\n" +
+                "\"uid\":\"i7OptZwlUQVVQ5w7bHtrgkD5tW43\","+
+                "\"firebaseToken\":\"f-R46MZAWX4:APA91bHpMWEfmjmcJQXgtEvDrvacEDReiLhO0ErEvjldGFobof0xbn8LJqqECIPqGzsvtVjkrx6Ew2Koky-u_YX41mBvIThe4glvT-x70s89o2dXvzptsPrMXych6ugQYHGRQ2LtxJ7L\""+
                 "    }],\n" +
                 "\"areas\":[{\"id\":\"1\",\"nombre\":\"Informática\"},{\"id\":\"2\",\"nombre\":\"Diseño gráfico\"},{\"id\":\"3\",\"nombre\":\"Edificación\"},{\"id\":\"4\",\"nombre\":\"Empresariales\"},{\"id\":\"5\",\"nombre\":\"Audio visuales\"},{\"id\":\"6\",\"nombre\":\"Comunicación\"}]"+
                 "}\n" +

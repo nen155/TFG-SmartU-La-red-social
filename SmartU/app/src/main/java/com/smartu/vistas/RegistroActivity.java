@@ -78,13 +78,53 @@ public class RegistroActivity extends AppCompatActivity {
                 //Cifro el password aquí para que el POST sea completamente seguro y llevar la clave encriptada
                 usuario.setPassword(Encripta.encriptar(password.getText().toString()));
                 usuario.setUser(user.getText().toString());
+                //Hago primero el registro en Firebase para obtener los campos de uid y tokenFirebase
+                performFirebaseRegistration(usuario.getEmail(),password.getText().toString());
 
-                hRegistro = new HRegistro();
-                hRegistro.execute();
             }
         });
     }
+    protected void performFirebaseRegistration(final String email, String password) {
+        FirebaseAuth.getInstance()
+                .createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener((Activity) (context), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(context,task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                        } else {
+                            FirebaseUser userFB = task.getResult().getUser();
+                            // Add the user to users table.
+                            DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                            //Me creo un usuario de FCM para simplificar el modelo
+                            User user = new User(userFB.getUid(), userFB.getEmail(), ControladorPreferencias.cargarToken(context));
+                            //Lo añado a la BD de Firebase
+                            database.child(Constantes.ARG_USERS)
+                                    .child(userFB.getUid())
+                                    .setValue(user)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                //Obtengo los valores que necesitaba el UID y Token y se lo asigno al usuario antes de registralo en mi BD
+                                                usuario.setUid(userFB.getUid());
+                                                usuario.setFirebaseToken(ControladorPreferencias.cargarToken(context));
+                                                //Ahora que tengo todos los datos hago el registro en mi BD
+                                                hRegistro = new HRegistro();
+                                                hRegistro.execute();
+                                            } else {
+                                                Toast.makeText(context,"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
 
 
     protected class HRegistro extends AsyncTask<Void, Void, String> {
@@ -142,8 +182,9 @@ public class RegistroActivity extends AppCompatActivity {
                     if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")!=0){
                         Toast.makeText(context,"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
                     }else{
-                        //Me registro en Firebase, no encripto el password porque se encripta en el FCM y la conexión es https
-                        performFirebaseRegistration(usuario.getEmail(),password.getText().toString());
+                        Toast.makeText(context,"Has sido registrado correctamente!",Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(context,LoginActivity.class));
+                        finish();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -169,44 +210,6 @@ public class RegistroActivity extends AppCompatActivity {
             hRegistro = null;
         }
 
-        protected void performFirebaseRegistration(final String email, String password) {
-            FirebaseAuth.getInstance()
-                    .createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener((Activity) (context), new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
 
-                            // If sign in fails, display a message to the user. If sign in succeeds
-                            // the auth state listener will be notified and logic to handle the
-                            // signed in user can be handled in the listener.
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(context,task.getException().getMessage(),Toast.LENGTH_SHORT).show();
-                            } else {
-                                FirebaseUser userFB = task.getResult().getUser();
-                                // Add the user to users table.
-                                DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                                User user = new User(userFB.getUid(),
-                                        userFB.getEmail(),
-                                        ControladorPreferencias.cargarToken(context));
-
-                                database.child(Constantes.ARG_USERS)
-                                        .child(userFB.getUid())
-                                        .setValue(user)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Toast.makeText(context,"Has sido registrado correctamente!",Toast.LENGTH_SHORT).show();
-                                                    startActivity(new Intent(context,LoginActivity.class));
-                                                    finish();
-                                                } else {
-                                                    Toast.makeText(context,"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                }
-                    }
-                    });
-        }
     }
 }

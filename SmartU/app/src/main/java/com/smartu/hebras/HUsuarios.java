@@ -80,7 +80,9 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
                     "\"misProyectos\":[\"1\"],\"misAreasInteres\":[{\"id\":\"2\",\"nombre\":\"Bellas artes\"}],\n" +
                     "\"misEspecialidades\":[{\"id\":\"2\",\"nombre\":\"Diseño gráfico\"}], \n" +
                     "\"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"2\"},\n" +
-                    "\"misRedesSociales\":[{\"id\":\"2\",\"nombre\":\"twitter\",\"url\":\"https://www.twitter.com/\"}]\n" +
+                    "\"misRedesSociales\":[{\"id\":\"2\",\"nombre\":\"twitter\",\"url\":\"https://www.twitter.com/\"}],\n" +
+                    "\"uid\":\"KEKtOZy4mbd42LygAUgOp2ZVr3M2\","+
+                    "\"firebaseToken\":\"f-R46MZAWX4:APA91bHpMWEfmjmcJQXgtEvDrvacEDReiLhO0ErEvjldGFobof0xbn8LJqqECIPqGzsvtVjkrx6Ew2Koky-u_YX41mBvIThe4glvT-x70s89o2dXvzptsPrMXych6ugQYHGRQ2LtxJ7L\""+
                     "}\n" +
                     "\n" +
                     "]                      \n" +
