@@ -31,6 +31,7 @@ import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.ControladorPreferencias;
 import com.smartu.utilidades.Encripta;
+import com.smartu.utilidades.Sesion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -187,6 +188,7 @@ public class RegistroActivity extends AppCompatActivity {
                                 User user = new User(userFB.getUid(),
                                         userFB.getEmail(),
                                         ControladorPreferencias.cargarToken(context));
+
                                 database.child(Constantes.ARG_USERS)
                                         .child(userFB.getUid())
                                         .setValue(user)

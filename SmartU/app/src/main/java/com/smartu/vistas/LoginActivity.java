@@ -387,8 +387,10 @@ public class LoginActivity extends AppCompatActivity {
                                     //vamos al Main
                                     Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                                     //Una vez iniciado sesión actualizo el token en FCM
-                                    updateFirebaseToken(task.getResult().getUser().getUid(),
-                                            ControladorPreferencias.cargarToken(getApplicationContext()));
+                                    updateFirebaseToken(task.getResult().getUser().getUid(), ControladorPreferencias.cargarToken(getApplicationContext()));
+                                    //Guardo el FCM token en el usuario y el UID para que el usuario se quede con ellos para serializar
+                                    usuario.setFirebaseToken(ControladorPreferencias.cargarToken(getApplicationContext()));
+                                    usuario.setUid(task.getResult().getUser().getUid());
                                     //TODO//////////////////////////////////////////////////////////////////////////////
 
                                     //////////////////////////PARA PROBAR LOS MENSAJES////////////////////////////
