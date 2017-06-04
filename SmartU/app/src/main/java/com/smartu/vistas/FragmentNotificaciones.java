@@ -43,9 +43,12 @@ public class FragmentNotificaciones extends Fragment {
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_NOTIFICACIONES = "notificaciones";
     private RecyclerView recyclerViewNotificacion;
-    //Creo el BroadcastReceiver en su método añado al ArrayList del Adapter
-    //una nueva novedad
-    //Necesario para recibir el Intent del servicio de FCM
+
+    /**NO VA A SER NECESARIO PUES COGERÉ LOS DATOS DE LA BASE DE DATOS,
+    *PERO PUEDE PENSARSE SI ES ÚTIL
+    *Creo el BroadcastReceiver en su método añado al ArrayList del Adapter
+    *una nueva novedad
+    *Necesario para recibir el Intent del servicio de FCM*/
     private BroadcastReceiver mNotificationsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -78,6 +81,8 @@ public class FragmentNotificaciones extends Fragment {
             guardaNotificacion(notificacion);
         }
     };
+    
+
     //El adaptador de notificaciones para el RecyclerView
     private AdapterNotificacion adapterNotificacion;
     //Muestra el mensaje de que no hay notificaciones
@@ -163,17 +168,21 @@ public class FragmentNotificaciones extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //Escucho los Intents que me llegan con el filtro novedad
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mNotificationsReceiver, new IntentFilter(ACTION_NOTIFY_NEW_NOTIFICACION));
         //Me subscribo y cargo las notificaciones si las hubiese
         start();
+        //NO VA A SER NECESARIO PUES COGERÉ LOS DATOS DE LA BASE DE DATOS,
+        //PERO PUEDE PENSARSE SI ES ÚTIL
+        //Escucho los Intents que me llegan con el filtro novedad
+        //LocalBroadcastManager.getInstance(getContext()).registerReceiver(mNotificationsReceiver, new IntentFilter(ACTION_NOTIFY_NEW_NOTIFICACION));
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        //NO VA A SER NECESARIO PUES COGERÉ LOS DATOS DE LA BASE DE DATOS,
+        //PERO PUEDE PENSARSE SI ES ÚTIL
         //Dejo de escuchar los Intents
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mNotificationsReceiver);
+        //LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mNotificationsReceiver);
     }
 
     /**

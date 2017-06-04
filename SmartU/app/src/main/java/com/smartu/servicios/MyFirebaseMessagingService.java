@@ -41,8 +41,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }else {
             //Es una nueva notificación de que alguien ha creado algo
             displayNotification(remoteMessage.getNotification(), remoteMessage.getData());
+            //NO VA A SER NECESARIO PUES COGERÉ LOS DATOS DE LA BASE DE DATOS,
+            //PERO PUEDE PENSARSE SI ES ÚTIL
             //Envío los datos al RecyclerCiew correspondiente para que se actualice
-            sendNewPromoBroadcast(remoteMessage);
+            //sendNewPromoBroadcast(remoteMessage);
         }
     }
     /**
