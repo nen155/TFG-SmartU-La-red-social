@@ -20,32 +20,37 @@ public class ConsultasBBDD {
     public static String server ="http://smartu.coloredmoon.com/api/public/";
 
     public static final String imagenes = "imagenes/";
+
+    public static final String grupoUsuarios="user/";
+    public static final String grupoProyectos="project/";
+    public static final String grupoComentarios="comment/";
+    public static final String grupoNotificaciones="notification/";
+    public static final String grupoPublicaciones="publish/";
+
     //Consultas
-    //HECHAS
-    public static final String consultaUsuarios ="usuarios/";
-    public static final String consultaIntegrantes ="integrantes/";
+    public static final String consultaUsuarios =grupoUsuarios+"usuarios";
+    public static final String consultaIntegrantes =grupoUsuarios+"integrantes";
+    public static final String consultaLogin = grupoUsuarios+"login";
+    public static final String consultaProyectos =grupoProyectos+"proyectos";
+    public static final String consultaMultimedia =grupoProyectos+"multimedia";
+    public static final String consultaComentarios =grupoComentarios+"comentarios";
+    public static final String consultaComentariosProyecto =grupoComentarios+"comentariosproyecto";
+    public static final String consultaNotificaciones =grupoNotificaciones+"notificaciones";
 
-    public static final String consultaLogin = "login";
-    public static final String consultaPublicaciones ="publicaciones/";
-    public static final String consultaProyectos ="proyectos/";
+    public static final String consultaPublicaciones =grupoPublicaciones+"publicaciones";
+    public static final String consultaPublicacion =grupoPublicaciones+"publicacion";
 
-    public static final String consultaMultimedia ="multimedia/";
-    public static final String consultaNotificaciones ="notificaciones/";
-    public static final String consultaComentarios ="comentarios/";
-    public static final String consultaComentariosProyecto ="comentarios/";
-    public static final String consultaPublicacion ="publicacion/";
 
     //Inserciones y eliminaciones
-    public static final String insertaSeguidor ="seguidor/";
-    public static final String eliminarSeguidor ="seguidor/";
-    public static final String insertaBuenaIdea ="buenaIdea/";
-    public static final String eliminarBuenaIdea ="buenaIdea/";
-    public static final String insertaUnion ="union/";
-    public static final String eliminarUnion ="union/";
-    public static final String insertaComentario ="comentario/";
-    public static final String insertaOEliminaInteres ="interes/";
-    public static final String insertaUsuario ="usuario/";
-
+    public static final String insertaUsuario =grupoUsuarios+"guardausuario";
+    public static final String insertaSeguidor =grupoUsuarios+"seguir";
+    public static final String eliminarSeguidor =grupoUsuarios+"dejarseguir";
+    public static final String insertaBuenaIdea =grupoUsuarios+"buenaidea";
+    public static final String eliminarBuenaIdea =grupoUsuarios+"noesbuenaidea";
+    public static final String insertaUnion =grupoUsuarios+"solicitudunion";
+    public static final String eliminarUnion =grupoUsuarios+"eliminasolicitudunion";
+    public static final String insertaOEliminaInteres =grupoUsuarios+"interes";
+    public static final String insertaComentario =grupoComentarios+"guardar";
 
     public static String hacerConsulta(String urlREST, String parameters, String metodo) {
 

@@ -96,48 +96,37 @@ public class HPublicacion extends AsyncTask<Void,Void,Void> {
                 "}\n" +
                 "}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        //Se trae también publicaciones asociadas a la misma por lo que será parecido a /publicaciones pero con un ID y un tipo
-        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicacion,"{\"limit\":\"10\",\"offset\":\"0\", \"idPublicacion\":"+id+", \"tipo\":\""+tipo+"\"}","POST");
+        //Trae publicaciones de un tipo /publicaciones pero con un ID y un tipo
+        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicacion,"{\"idPublicacion\":"+id+", \"tipo\":\""+tipo+"\"}","POST");
 
         JSONObject res =null;
         try {
             if(resultado !=null) {
                 res = new JSONObject(resultado);
-                if (!res.isNull("publicaciones")) {
-                    JSONObject muroJSON = res.getJSONObject("publicaciones");
-                    //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
-                    JSONObject proJSON = muroJSON.getJSONObject("proyectos");
-                    JSONArray proyectosJSON = proJSON.getJSONArray("proyectos");
-                    for(int i=0;i<proyectosJSON.length();++i)
+                if (!res.isNull("publicacion")) {
+                    JSONObject muroJSON = res.getJSONObject("publicacion");
+
+                    if(muroJSON.has("proyecto"))
                     {
-                        JSONObject proyecto = proyectosJSON.getJSONObject(i);
+                        JSONObject proyecto = muroJSON.getJSONObject("proyecto");
                         Proyecto p = mapper.readValue(proyecto.toString(), Proyecto.class);
                         Almacen.add(p);
                     }
-                    //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
-                    JSONObject comeJSON = muroJSON.getJSONObject("comentarios");
-                    JSONArray comentariosJSON = comeJSON.getJSONArray("comentarios");
-                    for(int i=0;i<comentariosJSON.length();++i)
+                    if(muroJSON.has("comentario"))
                     {
-                        JSONObject comentario = comentariosJSON.getJSONObject(i);
+                        JSONObject comentario = muroJSON.getJSONObject("comentario");
                         Comentario c = mapper.readValue(comentario.toString(), Comentario.class);
                         Almacen.add(c);
                     }
-                    //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
-                    JSONObject notiJSON = muroJSON.getJSONObject("notificaciones");
-                    JSONArray notificacionesJSON = notiJSON.getJSONArray("notificaciones");
-                    for(int i=0;i<notificacionesJSON.length();++i)
+                    if(muroJSON.has("notificacion"))
                     {
-                        JSONObject notificacion = notificacionesJSON.getJSONObject(i);
+                        JSONObject notificacion = muroJSON.getJSONObject("notificacion");
                         Notificacion n = mapper.readValue(notificacion.toString(), Notificacion.class);
                         Almacen.add(n);
                     }
-                    //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
-                    JSONObject usuJSON = muroJSON.getJSONObject("usuarios");
-                    JSONArray usuariosJSON = usuJSON.getJSONArray("usuarios");
-                    for(int i=0;i<usuariosJSON.length();++i)
+                    if(muroJSON.has("usuario"))
                     {
-                        JSONObject usuario = usuariosJSON.getJSONObject(i);
+                        JSONObject usuario = muroJSON.getJSONObject("usuario");
                         Usuario u = mapper.readValue(usuario.toString(), Usuario.class);
                         Almacen.add(u);
                     }
