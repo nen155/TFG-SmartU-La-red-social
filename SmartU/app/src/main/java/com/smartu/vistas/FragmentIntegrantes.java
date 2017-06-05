@@ -113,7 +113,7 @@ public class FragmentIntegrantes extends Fragment {
      * @param offset
      */
     public void cargarMasUsuarios(int offset) {
-        HUsuarios hUsuarios = new HUsuarios(adapterIntegrante,offset,getContext());
+        HUsuarios hUsuarios = new HUsuarios(adapterIntegrante,offset,getActivity());
         hUsuarios.sethUsuarios(hUsuarios);
         hUsuarios.setIdProyecto(proyecto.getId());
         hUsuarios.execute();
@@ -121,7 +121,7 @@ public class FragmentIntegrantes extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapterIntegrante = new AdapterIntegrante(getContext(), mezclaIntegrantesConVacantes(),mListener,proyecto);
+        adapterIntegrante = new AdapterIntegrante(getActivity(), mezclaIntegrantesConVacantes(),mListener,proyecto);
         recyclerViewUsuarios.setAdapter(adapterIntegrante);
         // Adds the scroll listener to RecyclerView
         recyclerViewUsuarios.addOnScrollListener(scrollListener);

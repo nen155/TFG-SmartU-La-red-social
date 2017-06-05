@@ -56,7 +56,7 @@ public class AreasActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 List<Integer> idsIntereses = StreamSupport.stream(areasBack).map(Area::getId).collect(Collectors.toList());
-                HUsuarioInteresa hUsuarioInteresa = new HUsuarioInteresa(usuarioSesion.getId(),idsIntereses,context,adapterAreasInteres, posicionAreasInicial,areasBack);
+                HUsuarioInteresa hUsuarioInteresa = new HUsuarioInteresa(usuarioSesion.getId(),idsIntereses,AreasActivity.this,adapterAreasInteres, posicionAreasInicial,areasBack);
                 hUsuarioInteresa.sethUsuarioInteresa(hUsuarioInteresa);
                 hUsuarioInteresa.execute();
 

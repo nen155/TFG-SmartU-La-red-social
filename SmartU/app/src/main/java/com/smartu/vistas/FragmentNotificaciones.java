@@ -150,7 +150,7 @@ public class FragmentNotificaciones extends Fragment {
      * @param offset
      */
     public void cargarMasNotificaciones(int offset) {
-        HNotificaciones hNotificaciones = new HNotificaciones(adapterNotificacion,offset,getContext());
+        HNotificaciones hNotificaciones = new HNotificaciones(adapterNotificacion,offset,getActivity());
         hNotificaciones.sethNotificaciones(hNotificaciones);
         hNotificaciones.execute();
     }

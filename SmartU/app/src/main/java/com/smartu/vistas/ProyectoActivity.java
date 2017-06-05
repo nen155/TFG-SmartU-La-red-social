@@ -48,7 +48,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         //Obtengo el proyecto que me han pasado
         if (bundle != null) {
             int idProyecto = bundle.getInt("idProyecto");
-            Almacen.buscar(idProyecto,proyecto,this);
+            Almacen.buscar(idProyecto,proyecto,ProyectoActivity.this);
         }
         //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
         SliderMenu sliderMenu = new SliderMenu(getBaseContext(), this);
@@ -122,9 +122,9 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                 //Añado al contador 1 para decir que es buena idea
                 int cont = Integer.parseInt(buenaidea_contador.getText().toString()) + 1;
                 buenaidea_contador.setText(String.valueOf(cont));
-                Toast.makeText(getApplicationContext(), "Genial!, este proyecto te parece buena idea!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProyectoActivity.this, "Genial!, este proyecto te parece buena idea!", Toast.LENGTH_SHORT).show();
                 //Inicializo la hebra con false pues voy a añadir una nueva idea
-                hBuenaIdea = new HBuenaIdea(false, getApplicationContext(), proyecto, buenaidea, buenaidea_contador);
+                hBuenaIdea = new HBuenaIdea(false, ProyectoActivity.this, proyecto, buenaidea, buenaidea_contador);
                 //Para poder poner la referencia a null cuando termine la hebra
                 hBuenaIdea.sethBuenaIdea(hBuenaIdea);
             } else {//Elimino buena idea
@@ -132,9 +132,9 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                 //Elimino de buena idea 1 usuario.
                 int cont = Integer.parseInt(buenaidea_contador.getText().toString()) - 1;
                 buenaidea_contador.setText(String.valueOf(cont));
-                Toast.makeText(getApplicationContext(), "¿Ya no te parece buena idea?", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProyectoActivity.this, "¿Ya no te parece buena idea?", Toast.LENGTH_SHORT).show();
                 //Inicializo la hebra con true para eliminarla
-                hBuenaIdea = new HBuenaIdea(true, getApplicationContext(), proyecto, buenaidea, buenaidea_contador);
+                hBuenaIdea = new HBuenaIdea(true, ProyectoActivity.this, proyecto, buenaidea, buenaidea_contador);
                 //Para poder poner la referencia a null cuando termine la hebra
                 hBuenaIdea.sethBuenaIdea(hBuenaIdea);
             }

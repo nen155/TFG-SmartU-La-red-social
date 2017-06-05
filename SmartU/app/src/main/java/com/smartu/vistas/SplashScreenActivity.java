@@ -46,7 +46,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         //Cargo las preferencias guardadas por el usuario, tipo de sesión, sesion y si es la primera vez
         ControladorPreferencias.cargarPreferencias(this);
-        hPublicaciones = new HPublicaciones(this);
+        hPublicaciones = new HPublicaciones(SplashScreenActivity.this);
         hPublicaciones.sethPublicaciones(hPublicaciones);
         //Esto es porque vengo de una notificacion
         if(bundle!=null){

@@ -96,7 +96,7 @@ public class FragmentMultimedia extends Fragment {
      * @param offset
      */
     public void cargarMasMultimedia(int offset) {
-        HMultimedia hMultimedia = new HMultimedia(adapterMultimedia,offset,idProyecto,getContext());
+        HMultimedia hMultimedia = new HMultimedia(adapterMultimedia,offset,idProyecto,getActivity());
         hMultimedia.sethMultimedia(hMultimedia);
         hMultimedia.execute();
     }

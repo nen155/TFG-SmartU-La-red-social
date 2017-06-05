@@ -94,14 +94,14 @@ public class FragmentProyectos extends Fragment {
      * @param offset
      */
     public void cargarMasProyectos(int offset) {
-        HProyectos hProyectos = new HProyectos(adapterProyecto,offset,getContext());
+        HProyectos hProyectos = new HProyectos(adapterProyecto,offset,getActivity());
         hProyectos.sethProyectos(hProyectos);
         hProyectos.execute();
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapterProyecto = new AdapterProyecto(getContext(), proyectos,mListener);
+        adapterProyecto = new AdapterProyecto(getActivity(), proyectos,mListener);
         recyclerViewProyectos.setAdapter(adapterProyecto);
         // Adds the scroll listener to RecyclerView
         recyclerViewProyectos.addOnScrollListener(scrollListener);

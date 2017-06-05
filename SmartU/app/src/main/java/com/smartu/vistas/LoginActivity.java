@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
@@ -43,6 +44,8 @@ import com.smartu.utilidades.Sesion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * A login screen that offers login via email/password.
@@ -266,9 +269,18 @@ public class LoginActivity extends AppCompatActivity {
     private class HLogin  extends AsyncTask<Void, Void, Boolean> {
 
         private Usuario usuario;
+        private SweetAlertDialog pDialog;
 
         HLogin(Usuario usuario) {
             this.usuario =usuario;
+            pDialog = new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            pDialog.setTitleText("Cargando...");
+            pDialog.setCancelable(false);
+        }
+        @Override
+        protected void onPreExecute() {
+            pDialog.show();
         }
 
         @Override
@@ -371,6 +383,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            pDialog.dismissWithAnimation();
             //Libero memoria quitando la instancia de la hebra
             hLogin=null;
             //Dejo de mostrar el progreso
@@ -419,6 +432,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onCancelled() {
+            pDialog.dismissWithAnimation();
             //Libero memoria quitando la instancia de la hebra
             hLogin=null;
             //Dejo de mostrar el progreso

@@ -86,7 +86,7 @@ public class FragmentComentarios extends Fragment {
         return fragmen;
     }
     public void cargarMasComentarios(int offset) {
-        HComentarios hComentarios = new HComentarios(adapterComentario,offset,getContext());
+        HComentarios hComentarios = new HComentarios(adapterComentario,offset,getActivity());
         hComentarios.sethComentarios(hComentarios);
         hComentarios.execute();
     }

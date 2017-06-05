@@ -138,7 +138,7 @@ public class RegistroActivity extends AppCompatActivity {
         private SweetAlertDialog pDialog;
 
         protected HRegistro() {
-            pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog = new SweetAlertDialog(RegistroActivity.this, SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
             pDialog.setTitleText("Cargando...");
             pDialog.setCancelable(false);

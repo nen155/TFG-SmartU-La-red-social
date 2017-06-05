@@ -55,7 +55,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
         //Obtengo el usuario que me han pasado
         if (bundle != null) {
             int idUsuario = bundle.getInt("idUsuario");
-            Almacen.buscar(idUsuario, usuario, this);
+            Almacen.buscar(idUsuario, usuario, UsuarioActivity.this);
 
             //Obtengo el usuario que ha iniciado sesión
             usuarioSesion = Sesion.getUsuario(getApplicationContext());
@@ -110,7 +110,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                 }
             });
 
-            Almacen.buscarProyectos(usuario.getMisProyectos(), misProyectos, this);
+            Almacen.buscarProyectos(usuario.getMisProyectos(), misProyectos, UsuarioActivity.this);
 
             //Cargo el perfil por defecto
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -188,7 +188,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                         seguirContador.setText(String.valueOf(cont));
                         Toast.makeText(getApplicationContext(), "Genial!,sigues a este usuario!", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra
-                        hSeguir = new HSeguir(false, usuario, getApplicationContext(), null, seguirContador);
+                        hSeguir = new HSeguir(false, usuario, UsuarioActivity.this, null, seguirContador);
                         hSeguir.setFabButton(seguir);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
@@ -198,7 +198,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                         seguirContador.setText(String.valueOf(cont));
                         Toast.makeText(getApplicationContext(), "¿Ya no te interesa el usuario?", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra
-                        hSeguir = new HSeguir(false, usuario, getApplicationContext(), null, seguirContador);
+                        hSeguir = new HSeguir(false, usuario, UsuarioActivity.this, null, seguirContador);
                         hSeguir.setFabButton(seguir);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);
