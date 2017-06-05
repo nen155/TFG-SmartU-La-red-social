@@ -100,7 +100,7 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
         //Sino muestro mensaje por pantalla
         if (res!=null) {
             try {
-                if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")!=0){
+                if(res.getString("resultado").compareToIgnoreCase("ok")!=0){
                     reestablecerEstado();
                 }else{
                     //Inserto una buena idea en el proyecto

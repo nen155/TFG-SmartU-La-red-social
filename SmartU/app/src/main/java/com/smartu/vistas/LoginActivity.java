@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-       /* mAuthListener = new FirebaseAuth.AuthStateListener() {
+       /*mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -245,15 +245,15 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        mFirebaseAuth.addAuthStateListener(mAuthListener);
+        //mFirebaseAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
+        /*if (mAuthListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthListener);
-        }
+        }*/
     }
 
 
@@ -391,6 +391,7 @@ public class LoginActivity extends AppCompatActivity {
                                     toast.show();
                                     //vamos al Main
                                     Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     //Una vez iniciado sesión actualizo el token en FCM
                                     updateFirebaseToken(task.getResult().getUser().getUid(), ControladorPreferencias.cargarToken(getApplicationContext()));
                                     //Guardo el FCM token en el usuario y el UID para que el usuario se quede con ellos para serializar

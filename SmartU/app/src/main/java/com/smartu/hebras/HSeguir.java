@@ -100,7 +100,7 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
         //Sino muestro mensaje por pantalla
         if (res!=null) {
             try {
-                if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")!=0)
+                if(res.getString("resultado").compareToIgnoreCase("ok")!=0)
                     reestablecerEstado();
                 else{
                    if(eleminar)

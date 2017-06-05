@@ -90,7 +90,10 @@ public class FragmentUsuario extends Fragment {
         redesSociales.setAdapter(new AdapterRedesSociales(getContext(),usuario.getMisRedesSociales()));
 
         //Relleno los campos del usuario
-        nombreCompleto.setText(usuario.getNombre()+" "+usuario.getApellidos());
+        if(usuario.getApellidos()!=null)
+            nombreCompleto.setText(usuario.getNombre()+" "+usuario.getApellidos());
+        else
+            nombreCompleto.setText(usuario.getNombre());
         status.setText(usuario.getMiStatus().getNombre());
 
         if(usuario.isVerificado())

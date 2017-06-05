@@ -186,11 +186,13 @@ public class RegistroActivity extends AppCompatActivity {
             //Sino muestro mensaje por pantalla
             if (res!=null) {
                 try {
-                    if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")!=0){
+                    if(res.getString("resultado").compareToIgnoreCase("ok")!=0){
                         Toast.makeText(context,"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(context,"Has sido registrado correctamente!",Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(context,LoginActivity.class));
+                        Intent intent = new Intent(context,LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                         finish();
                     }
                 } catch (JSONException e) {

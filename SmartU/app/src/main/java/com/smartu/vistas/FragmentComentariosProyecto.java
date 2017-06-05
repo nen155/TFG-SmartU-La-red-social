@@ -235,7 +235,7 @@ public class FragmentComentariosProyecto extends Fragment {
             //Sino muestro mensaje por pantalla
             if (res!=null) {
                 try {
-                    if(res.has("resultado") && res.getString("resutlado").compareToIgnoreCase("ok")!=0)
+                    if(res.getString("resultado").compareToIgnoreCase("ok")!=0)
                         Toast.makeText(getContext(),"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
                     else //Añado el comentario al top del adapter y lo actualizo
                         adapterComentarioProyecto.addItemTop(comentario);
