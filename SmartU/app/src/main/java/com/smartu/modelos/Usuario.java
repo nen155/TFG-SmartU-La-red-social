@@ -3,8 +3,19 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.smartu.contratos.Publicacion;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -27,6 +38,9 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
     private String biografia;
     private String web;
     private String imagenPerfil;
+    @JsonProperty
+    @JsonSerialize(using=NumericBooleanSerializer.class)
+    @JsonDeserialize(using=NumericBooleanDeserializer.class)
     private boolean verificado;
     //Contenedores para los elementos de los que es propietario el usuario
     private ArrayList<Integer> misProyectos;
@@ -36,6 +50,26 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
     private ArrayList<RedSocial> misRedesSociales;
     private ArrayList<SolicitudUnion> misSolicitudes;
     private Status miStatus;
+
+    /**
+     * Sirven para serializar y deserializar un objeto de tipo boolean que viene como int
+     * Son custom serializadores y deserializadores
+     */
+    public static class NumericBooleanSerializer extends JsonSerializer<Boolean> {
+
+        @Override
+        public void serialize(Boolean bool, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
+            generator.writeString(bool ? "1" : "0");
+        }
+    }
+
+    public static class NumericBooleanDeserializer extends JsonDeserializer<Boolean> {
+
+        @Override
+        public Boolean deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
+            return !"0".equals(parser.getText());
+        }
+    }
 
     public void clonar(Usuario u){
         id = u.getId();

@@ -13,10 +13,10 @@ public class Especialidad implements Parcelable,Serializable {
     private int id;
     private String nombre;
     private String descripcion;
-    private int experiencia;
+    private String experiencia;
 
     public Especialidad(){}
-    public Especialidad(int id, String nombre, String descripcion,int experiencia) {
+    public Especialidad(int id, String nombre, String descripcion, String experiencia) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -47,11 +47,11 @@ public class Especialidad implements Parcelable,Serializable {
         this.descripcion = descripcion;
     }
 
-    public int getExperiencia() {
+    public String getExperiencia() {
         return experiencia;
     }
 
-    public void setExperiencia(int experiencia) {
+    public void setExperiencia(String experiencia) {
         this.experiencia = experiencia;
     }
 
@@ -59,7 +59,7 @@ public class Especialidad implements Parcelable,Serializable {
         id = in.readInt();
         nombre = in.readString();
         descripcion = in.readString();
-        experiencia = in.readInt();
+        experiencia = in.readString();
     }
 
     public static final Parcelable.Creator<Especialidad> CREATOR = new Parcelable.Creator<Especialidad>() {
@@ -84,7 +84,7 @@ public class Especialidad implements Parcelable,Serializable {
         dest.writeInt(id);
         dest.writeString(nombre);
         dest.writeString(descripcion);
-        dest.writeInt(experiencia);
+        dest.writeString(experiencia);
     }
 
 }
