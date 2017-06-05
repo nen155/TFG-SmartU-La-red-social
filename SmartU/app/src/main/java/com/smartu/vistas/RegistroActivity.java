@@ -73,7 +73,7 @@ public class RegistroActivity extends AppCompatActivity {
                         usuario.setApellidos(nom[1]);
                 }else
                     usuario.setNombre(nombreC);
-
+                usuario.setId(-1);
                 usuario.setEmail(email.getText().toString());
                 //Cifro el password aquí para que el POST sea completamente seguro y llevar la clave encriptada
                 usuario.setPassword(Encripta.encriptar(password.getText().toString()));

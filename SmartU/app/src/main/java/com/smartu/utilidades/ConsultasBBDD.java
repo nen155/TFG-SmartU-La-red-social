@@ -21,11 +21,14 @@ public class ConsultasBBDD {
 
     public static final String imagenes = "imagenes/";
     //Consultas
+    //HECHAS
+    public static final String consultaUsuarios ="usuarios/";
+    public static final String consultaIntegrantes ="integrantes/";
+
     public static final String consultaLogin = "login";
     public static final String consultaPublicaciones ="publicaciones/";
     public static final String consultaProyectos ="proyectos/";
-    public static final String consultaUsuarios ="usuarios/";
-    public static final String consultaIntegrantes ="integrantes/";
+
     public static final String consultaMultimedia ="multimedia/";
     public static final String consultaNotificaciones ="notificaciones/";
     public static final String consultaComentarios ="comentarios/";
