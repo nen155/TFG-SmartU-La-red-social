@@ -69,7 +69,7 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
 
         String resultado = null;
         //Construyo el JSON
-        String seguir = "\"seguir\":{\"idUsuario\":\"" + seguidor.getId() + "\",\"idUsuarioSeguido\":\"" + seguido.getId() + "\"}";
+        String seguir = "{\"idUsuario\":\"" + seguidor.getId() + "\",\"idUsuarioSeguido\":\"" + seguido.getId() + "\"}";
         //Cojo el resultado en un String
         if(eleminar)
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarSeguidor, seguir, "POST");

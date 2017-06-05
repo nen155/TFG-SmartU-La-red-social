@@ -77,9 +77,9 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
         //Construyo el JSON
         String unirse = "";
         if (eliminar)
-            unirse = "\"solicitudunion\":{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + proyecto.getId() + "\"}";
+            unirse = "{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + proyecto.getId() + "\"}";
         else
-            unirse = "\"solicitudunion\":{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + proyecto.getId() + "\",\"fecha\":\"" + fechaActual + "\"" +
+            unirse = "{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + proyecto.getId() + "\",\"fecha\":\"" + fechaActual + "\"" +
                     ",\"descripcion\":\"" + descripcion + "\"}";
 
         if (eliminar)

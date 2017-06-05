@@ -76,7 +76,7 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
         }
         String resultado = null;
         //Construyo el JSON
-        String interes = "\"intereses\":{\"idUsuario\":\"" + idUsuario + "\",\"idsAreas\":"+listaIntereses+"}";
+        String interes = "{\"idUsuario\":\"" + idUsuario + "\",\"idsAreas\":"+listaIntereses+"}";
 
         resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaOEliminaInteres, interes, "POST");
         //resultado="";

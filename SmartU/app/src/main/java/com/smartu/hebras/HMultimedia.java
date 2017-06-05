@@ -62,7 +62,7 @@ public class HMultimedia extends AsyncTask<Void,Void,Void> {
                 + "\"totalserver\":\"15\"" +
                 "}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaMultimedia,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
+        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaMultimedia,"{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
 
         JSONObject res =null;
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
@@ -83,7 +83,7 @@ public class HMultimedia extends AsyncTask<Void,Void,Void> {
                             }
                         });
                     }
-                    adapterMultimedia.setTotalElementosServer(multiJSON.getInt("totalserver"));
+                    adapterMultimedia.setTotalElementosServer(res.getInt("totalserver"));
                 }
             }
         } catch (JSONException e) {

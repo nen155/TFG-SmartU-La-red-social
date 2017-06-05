@@ -74,9 +74,9 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
 
         String resultado ="";
         if(adapterComentarioProyecto==null)
-          resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentarios,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
+          resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentarios,"{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
         else
-          resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentariosProyecto,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
+          resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaComentariosProyecto,"{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
         JSONObject res =null;
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
         try {
@@ -96,9 +96,9 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
                     }
                     //Digo a los adapter cual es el total de comentarios que tienen
                     if(adapterComentarioProyecto==null)
-                        adapterComentario.setTotalElementosServer(comentJSON.getInt("totalserver"));
+                        adapterComentario.setTotalElementosServer(res.getInt("totalserver"));
                     else
-                        adapterComentario.setTotalElementosServer(comentJSON.getInt("totalserver"));
+                        adapterComentario.setTotalElementosServer(res.getInt("totalserver"));
                 }
             }
         } catch (JSONException e) {

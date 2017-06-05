@@ -69,7 +69,7 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
         usuarioSesion= Sesion.getUsuario(context);
         String resultado = null;
         //Construyo el JSON
-        String  buenaidea = "\"buenaidea\":{\"idUsuario\":\"" + usuarioSesion.getId() + "\",\"idProyecto\":\"" + proyecto.getId() + "\"}";
+        String  buenaidea = "{\"idUsuario\":\"" + usuarioSesion.getId() + "\",\"idProyecto\":\"" + proyecto.getId() + "\"}";
         if(eliminar) {
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarBuenaIdea, buenaidea, "POST");
         }else {

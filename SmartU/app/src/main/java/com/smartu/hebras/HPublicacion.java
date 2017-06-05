@@ -97,7 +97,7 @@ public class HPublicacion extends AsyncTask<Void,Void,Void> {
                 "}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
         //Se trae también publicaciones asociadas a la misma por lo que será parecido a /publicaciones pero con un ID y un tipo
-        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicacion,"{\"cantidad\":{\"limit\":\"10\",\"offset\":\"0\", \"idPublicacion\":"+id+", \"tipo\":\""+tipo+"\"}","POST");
+        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicacion,"{\"limit\":\"10\",\"offset\":\"0\", \"idPublicacion\":"+id+", \"tipo\":\""+tipo+"\"}","POST");
 
         JSONObject res =null;
         try {
@@ -105,34 +105,43 @@ public class HPublicacion extends AsyncTask<Void,Void,Void> {
                 res = new JSONObject(resultado);
                 if (!res.isNull("publicaciones")) {
                     JSONObject muroJSON = res.getJSONObject("publicaciones");
-                    JSONArray proyectosJSON = muroJSON.getJSONArray("proyectos");
+                    //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
+                    JSONObject proJSON = muroJSON.getJSONObject("proyectos");
+                    JSONArray proyectosJSON = proJSON.getJSONArray("proyectos");
                     for(int i=0;i<proyectosJSON.length();++i)
                     {
                         JSONObject proyecto = proyectosJSON.getJSONObject(i);
                         Proyecto p = mapper.readValue(proyecto.toString(), Proyecto.class);
                         Almacen.add(p);
                     }
-                    JSONArray comentariosJSON = muroJSON.getJSONArray("comentarios");
+                    //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
+                    JSONObject comeJSON = muroJSON.getJSONObject("comentarios");
+                    JSONArray comentariosJSON = comeJSON.getJSONArray("comentarios");
                     for(int i=0;i<comentariosJSON.length();++i)
                     {
                         JSONObject comentario = comentariosJSON.getJSONObject(i);
                         Comentario c = mapper.readValue(comentario.toString(), Comentario.class);
                         Almacen.add(c);
                     }
-                    JSONArray notificacionesJSON = muroJSON.getJSONArray("notificaciones");
+                    //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
+                    JSONObject notiJSON = muroJSON.getJSONObject("notificaciones");
+                    JSONArray notificacionesJSON = notiJSON.getJSONArray("notificaciones");
                     for(int i=0;i<notificacionesJSON.length();++i)
                     {
                         JSONObject notificacion = notificacionesJSON.getJSONObject(i);
                         Notificacion n = mapper.readValue(notificacion.toString(), Notificacion.class);
                         Almacen.add(n);
                     }
-                    JSONArray usuariosJSON = muroJSON.getJSONArray("usuarios");
+                    //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
+                    JSONObject usuJSON = muroJSON.getJSONObject("usuarios");
+                    JSONArray usuariosJSON = usuJSON.getJSONArray("usuarios");
                     for(int i=0;i<usuariosJSON.length();++i)
                     {
                         JSONObject usuario = usuariosJSON.getJSONObject(i);
                         Usuario u = mapper.readValue(usuario.toString(), Usuario.class);
                         Almacen.add(u);
                     }
+                    //No me traigo las Areas por que se traen TODAS al principio y se mantienen en memoria durante la ejecución
                 }
             }
         } catch (JSONException e) {
