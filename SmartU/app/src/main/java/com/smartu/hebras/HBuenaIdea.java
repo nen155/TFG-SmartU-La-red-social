@@ -109,6 +109,7 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
                     }else{//Elimino las buenas ideas del proyecto
                         proyecto.getBuenaIdea().remove(new BuenaIdea(usuarioSesion.getId()));
                     }
+                    buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -136,20 +137,22 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
     private void reestablecerEstado(){
         Toast.makeText(context,"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
         Integer integer = (Integer) buenaidea.getTag();
-        if(R.drawable.buenaidea==integer)
+        if(R.drawable.buenaidea==integer) {
             buenaidea.setImageResource(R.drawable.idea);
-        else
+            buenaidea.setTag(R.drawable.idea);
+        }
+        else {
             buenaidea.setImageResource(R.drawable.buenaidea);
-
-        if(eliminar) {
+            buenaidea.setTag(R.drawable.buenaidea);
+        }
+        buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
+        /*if(eliminar) {
             //Si quería eliminar la buena idea significa que le he restado uno al contador previamente
-            int cont = Integer.parseInt(buenaidea_contador.getText().toString())+1;
-            buenaidea_contador.setText(String.valueOf(cont));
+            buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
         }else
         {
             //Si quería añadirlo como buena idea significa que le he sumando 1 al contador previamente
-            int cont = Integer.parseInt(buenaidea_contador.getText().toString())-1;
-            buenaidea_contador.setText(String.valueOf(cont));
-        }
+            buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
+        }*/
     }
 }

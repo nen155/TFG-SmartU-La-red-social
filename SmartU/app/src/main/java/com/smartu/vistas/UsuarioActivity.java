@@ -65,6 +65,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
             setTitle(usuario.getUser());
 
             seguir = (FloatingActionButton) findViewById(R.id.seguir_usuario);
+            seguir.setTag(R.drawable.seguir);
             mensaje = (FloatingActionButton) findViewById(R.id.enviar_mensaje_usuario);
             companiero = false;
             //Si tengo sesión
@@ -163,10 +164,14 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
             else
                 usuarioSigue = StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
-            if(usuarioSigue)
+            if(usuarioSigue) {
                 seguir.setImageResource(R.drawable.dejarseguir);
-            else
+                seguir.setTag(R.drawable.dejarseguir);
+            }
+            else {
                 seguir.setImageResource(R.drawable.seguir);
+                seguir.setTag(R.drawable.seguir);
+            }
         }
     }
 
@@ -184,10 +189,14 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                     HSeguir hSeguir;
                     //Actualizo el botón
                     Integer integer = (Integer) seguir.getTag();
-                    if(R.drawable.seguir==integer)
+                    if(R.drawable.seguir==integer) {
                         seguir.setImageResource(R.drawable.dejarseguir);
-                    else
+                        seguir.setTag(R.drawable.dejarseguir);
+                    }
+                    else {
                         seguir.setImageResource(R.drawable.seguir);
+                        seguir.setTag(R.drawable.seguir);
+                    }
                     //Compruebo como ha quedado su estado después de hacer click
                     if (R.drawable.seguir==integer) {
                         //Añado al contador 1 para decir que eres idProyecto

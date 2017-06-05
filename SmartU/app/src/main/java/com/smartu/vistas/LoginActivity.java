@@ -40,6 +40,7 @@ import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.ControladorPreferencias;
+import com.smartu.utilidades.Encripta;
 import com.smartu.utilidades.Sesion;
 
 import org.json.JSONException;
@@ -66,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,20 +115,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-       /*mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    // El usuario no está logueado
-                }
-            }
-        };*/
+
 
     }
 
@@ -157,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Guardo los valores
         String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -191,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
             //Muestro el progreso
             muestraProgreso(true);
             //Creo un usuario para el inicio de sesión
-            Usuario usuario = new Usuario(email,password);
+            Usuario usuario = new Usuario(email, Encripta.encriptar(password));
             //Creo la hebra para hacer el inicio de sesión
             hLogin = new HLogin(usuario);
             hLogin.execute((Void) null);
@@ -297,61 +286,12 @@ public class LoginActivity extends AppCompatActivity {
             }
             // Hacer llamada al servidor
              String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaLogin,usuarioJSON,"POST");
-            /*String resultado="";
-            if(usuario.getEmail().compareTo("emiliocj@correo.ugr.es")==0) {
-                resultado = "{\"usuario\":{\"id\":\"1\",\"nombre\":\"Emilio\",\"apellidos\":\"Chica Jiménez\",\"verificado\":\"true\",\"user\":\"emiliocj\",\"email\":\"emiliocj@correo.ugr.es\",\"nPuntos\":\"100\",\"localizacion\":\"C/Poeta Manuel\",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada y es Graduado en Ingeniería Informática\", \"web\":\"http://coloremoon.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/foto-buena.jpg\",\n" +
-                        "          \"misProyectos\":[\n" +"\"1\"],\n" +
-                        "            \"misAreasInteres\":[\n" +
-                        "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
-                        "              ],\n" +
-                        "              \"misEspecialidades\":[\n" +
-                        "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
-                        "              ],\n" +
-                        "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
-                        "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
-                        "    }\n" +
-                        "}";
-            }else if(usuario.getEmail().compareTo("juanji@gmail.com")==0){
-                resultado = "{\"usuario\":{\"id\":\"2\",\"nombre\":\"Juanjo\",\"apellidos\":\"Jiménez\",\"verificado\":\"true\",\"user\":\"juanjo\",\"email\":\"juanji@gmail.com\",\"nPuntos\":\"150\",\"localizacion\":\"C/Armilla \",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada, en Armilla y es Graduado en Ingeniería Informática\", \"web\":\"http://juanjo.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/AtBE7.png\",\n" +
-                        "          \"misProyectos\":[\n" +"\"1\"],\n" +
-                        "            \"misAreasInteres\":[\n" +
-                        "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
-                        "              ],\n" +
-                        "              \"misEspecialidades\":[\n" +
-                        "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
-                        "              ],\n" +
-                        "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"2\"},\n" +
-                        "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
-                        "    }\n" +
-                        "}";
-            }else if(usuario.getEmail().compareTo("german@gmail.com")==0){
-                resultado = "{\"usuario\":{\"id\":\"3\",\"nombre\":\"German\",\"apellidos\":\"Zayas Cabrera\",\"verificado\":\"true\",\"user\":\"german\",\"email\":\"german@gmail.com\",\"nPuntos\":\"150\",\"localizacion\":\"C/Ceballos \",\"biografia\":\"Estudiante universitario de la UGR que vive en Granada, en Peligros con el Grado en Bellas Artes\", \"web\":\"http://german.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/j5xrbugqkkalex-avatar.png\",\n" +
-                        "          \"misProyectos\":[\n" +"\"1\"],\n" +
-                        "            \"misAreasInteres\":[\n" +
-                        "              {\"id\":\"2\",\"nombre\":\"Bellas artes\"}\n" +
-                        "              ],\n" +
-                        "              \"misEspecialidades\":[\n" +
-                        "              {\"id\":\"2\",\"nombre\":\"Diseño gráfico\"}\n" +
-                        "              ],\n" +
-                        "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"2\"},\n" +
-                        "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.twitter.com/\"}]\n" +
-                        "    }\n" +
-                        "}";
-            }*/
+
             JSONObject res=null;
             if(resultado!=null) {
                 try {
                     //Convierto el resultado a JSON
                     res = new JSONObject(resultado);
-
-                    //TODO//////////////////////////////////////////////////////////////////////////////
-
-                    //////////////////////////PARA PROBAR LOS MENSAJES////////////////////////////
-
-
-                    ////////////////////////////////////////////////////////////////////////////////
-
-
                     //Si el resultado es null signfica que no coincide usuario y contraseña
                     if (res != null) {
                         if (res.isNull("usuario"))
@@ -391,7 +331,7 @@ public class LoginActivity extends AppCompatActivity {
             //He conseguido hacer login en mi server
             if (success) {
                 //Si he conseguido iniciar sesion voy a iniciar sesión en Firebase
-                mFirebaseAuth.signInWithEmailAndPassword(usuario.getEmail(),usuario.getPassword())
+                mFirebaseAuth.signInWithEmailAndPassword(usuario.getEmail(),password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -410,14 +350,8 @@ public class LoginActivity extends AppCompatActivity {
                                     //Guardo el FCM token en el usuario y el UID para que el usuario se quede con ellos para serializar
                                     usuario.setFirebaseToken(ControladorPreferencias.cargarToken(getApplicationContext()));
                                     usuario.setUid(task.getResult().getUser().getUid());
-                                    //TODO//////////////////////////////////////////////////////////////////////////////
-
-                                    //////////////////////////PARA PROBAR LOS MENSAJES////////////////////////////
-
                                     //Serializo al usuario para que cuando se requiera esté inicializado
                                     Sesion.serializaUsuario(LoginActivity.this,usuario);
-
-                                    ////////////////////////////////////////////////////////////////////////////////
 
                                     startActivity(intent);
                                     finish();

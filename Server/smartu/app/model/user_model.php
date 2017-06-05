@@ -231,12 +231,12 @@ class UserModel
 		{
 			$result = array();
 
-			$stm = $this->db->prepare("SELECT id,nombre,apellidos,verificado,user,email,nPuntos,biografia,web,imagenPerfil,uid,firebaseToken FROM $this->table WHERE email = ? AND password= ?");
+			$stm = $this->db->prepare("SELECT id,nombre,apellidos,verificado,user,email,nPuntos,biografia,web,imagenPerfil,uid,firebaseToken FROM " .$this->table ." WHERE email=? AND password=?");
 			$stm->execute(array($email,$password));
 
 			$this->response->setResponse(true);
-			if($stm->rowCount>0)
-				$this->response->result = $stm->fetch();
+			if($stm->rowCount()>0)
+				$this->response->result = array("usuario"=>$stm->fetch());
 			else
 				$this->response->result = null;
             

@@ -144,10 +144,14 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
         }
         else {
             Integer integer = (Integer) seguirFlotante.getTag();
-            if(R.drawable.seguir==integer)
+            if(R.drawable.seguir==integer) {
                 seguirFlotante.setImageResource(R.drawable.dejarseguir);
-            else
+                seguirFlotante.setTag(R.drawable.dejarseguir);
+            }
+            else {
                 seguirFlotante.setImageResource(R.drawable.seguir);
+                seguirFlotante.setTag(R.drawable.seguir);
+            }
         }
         if(eleminar) {
             //Si quería eliminar la buena idea significa que le he restado uno al contador previamente
