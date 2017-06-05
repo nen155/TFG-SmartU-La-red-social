@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<title>Anexsoft</title>
+	</head>
+    <body>
+        <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                // Delete
+//                $.post('user/delete/1', function(r){
+//                    console.log(r);
+//                }, 'json')
+                
+                // Get
+                $.get('user/get/1', function(r){
+                    console.log(r);
+                }, 'json')
+                
+                // GetAll
+                $.get('user/getAll', function(r){
+                    console.log(r);
+                }, 'json')
+                
+                // Insert
+//                $.post('user/save', {
+//                    id: 1479,
+//                    Correo: 'test@hotmail.com',
+//                    Nombre: 'Eduardo 2',
+//                    Apellido: 'Rodríguez',
+//                    Sexo: 1,
+//                    Sueldo: 15000,
+//                    Profesion_id: 1, // Dejamos por defecto este valor
+//                    FechaNacimiento: '1989-02-11'
+//                },function(r){
+//                    console.log(r);
+//                }, 'json')
+                
+                // Update
+//                $.post('user/save', {
+//                    Correo: 'test@hotmail.com',
+//                    Nombre: 'Eduardo 2',
+//                    Apellido: 'Rodríguez',
+//                    Sexo: 1,
+//                    Sueldo: 15000,
+//                    Profesion_id: 1, // Dejamos por defecto este valor
+//                    FechaNacimiento: '1989-02-11'
+//                },function(r){
+//                    console.log(r);
+//                }, 'json')
+            })
+        </script>
+	</body>
+</html>
