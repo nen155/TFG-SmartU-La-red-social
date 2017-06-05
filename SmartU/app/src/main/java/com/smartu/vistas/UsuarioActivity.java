@@ -163,7 +163,10 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
             else
                 usuarioSigue = StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
-            seguir.setPressed(usuarioSigue);
+            if(usuarioSigue)
+                seguir.setImageResource(R.drawable.dejarseguir);
+            else
+                seguir.setImageResource(R.drawable.seguir);
         }
     }
 
@@ -180,9 +183,13 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                 if (usuarioSesion != null) {
                     HSeguir hSeguir;
                     //Actualizo el botón
-                    seguir.setPressed(!seguir.isPressed());
+                    Integer integer = (Integer) seguir.getTag();
+                    if(R.drawable.seguir==integer)
+                        seguir.setImageResource(R.drawable.dejarseguir);
+                    else
+                        seguir.setImageResource(R.drawable.seguir);
                     //Compruebo como ha quedado su estado después de hacer click
-                    if (seguir.isPressed()) {
+                    if (R.drawable.seguir==integer) {
                         //Añado al contador 1 para decir que eres idProyecto
                         int cont = Integer.parseInt(seguirContador.getText().toString()) + 1;
                         seguirContador.setText(String.valueOf(cont));

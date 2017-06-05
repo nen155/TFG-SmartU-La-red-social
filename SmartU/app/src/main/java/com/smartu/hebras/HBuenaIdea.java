@@ -135,11 +135,12 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
     }
     private void reestablecerEstado(){
         Toast.makeText(context,"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
-        buenaidea.setPressed(!buenaidea.isPressed());
-        if(buenaidea.isPressed())
-            buenaidea.setImageResource(R.drawable.buenaidea);
-        else
+        Integer integer = (Integer) buenaidea.getTag();
+        if(R.drawable.buenaidea==integer)
             buenaidea.setImageResource(R.drawable.idea);
+        else
+            buenaidea.setImageResource(R.drawable.buenaidea);
+
         if(eliminar) {
             //Si quería eliminar la buena idea significa que le he restado uno al contador previamente
             int cont = Integer.parseInt(buenaidea_contador.getText().toString())+1;

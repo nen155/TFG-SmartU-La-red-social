@@ -117,8 +117,13 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
             //Compruebo como ha quedado su estado después de hacer click
             HBuenaIdea hBuenaIdea;
             //Añado buena idea
-            if (buenaidea.isPressed()) {
+            Integer integer = (Integer) buenaidea.getTag();
+            if(R.drawable.buenaidea==integer)
+                buenaidea.setImageResource(R.drawable.idea);
+            else
                 buenaidea.setImageResource(R.drawable.buenaidea);
+
+            if (R.drawable.buenaidea==integer) {
                 //Añado al contador 1 para decir que es buena idea
                 int cont = Integer.parseInt(buenaidea_contador.getText().toString()) + 1;
                 buenaidea_contador.setText(String.valueOf(cont));
@@ -128,7 +133,6 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                 //Para poder poner la referencia a null cuando termine la hebra
                 hBuenaIdea.sethBuenaIdea(hBuenaIdea);
             } else {//Elimino buena idea
-                buenaidea.setImageResource(R.drawable.idea);
                 //Elimino de buena idea 1 usuario.
                 int cont = Integer.parseInt(buenaidea_contador.getText().toString()) - 1;
                 buenaidea_contador.setText(String.valueOf(cont));
@@ -160,10 +164,12 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                 usuarioBuenaidea= StreamSupport.parallelStream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();
             //Si es así lo dejo presionado y le cambio la imagen
             buenaidea.setPressed(usuarioBuenaidea);
-            if (usuarioBuenaidea) {
+            if (usuarioBuenaidea)
                 buenaidea.setImageResource(R.drawable.buenaidea);
+            else
+                buenaidea.setImageResource(R.drawable.idea);
 
-            }
+
         }
     }
 
