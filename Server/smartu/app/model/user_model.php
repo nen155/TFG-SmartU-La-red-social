@@ -124,7 +124,33 @@ class UserModel
 		}
     }
 	
-	
+	public function GetbyIds($ids)
+    {
+		
+		$this->response->setResponse(true);
+		//Recojo el total de usuarios del server
+		$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
+		$stm->execute();
+		$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
+		//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
+        $usuarios=array("usuarios"=>array("usuarios"=>array()),"totalserver"=>$totalserver["totalserver"]);
+		
+		for($i=0;$i<count($ids);++$i){
+			$usuario =$this->Get($ids[$i]);
+			array_push($usuarios["usuarios"]["usuarios"],$usuario["usuario"]);
+		}
+		
+		$this->response->result = $usuarios;
+			
+            
+            return $this->response->result;
+		}
+		catch(Exception $e)
+		{
+			$this->response->setResponse(false, $e->getMessage());
+            return $this->response;
+		}
+    }
 	
 	 public function Get($id)
     {

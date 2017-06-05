@@ -63,7 +63,33 @@ class ComentarioModel
 		}
     }
 	
-	
+	public function GetbyIds($ids)
+    {
+		
+		$this->response->setResponse(true);
+		//Recojo el total de comentarios del server
+		$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
+		$stm->execute();
+		$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
+		//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
+        $comentarios=array("comentarios"=>array("comentarios"=>array()),"totalserver"=>$totalserver["totalserver"]);
+		
+		for($i=0;$i<count($ids);++$i){
+			$comentario =$this->Get($ids[$i]);
+			array_push($comentarios["comentarios"]["comentarios"],$comentario["comentario"]);
+		}
+		
+		$this->response->result = $comentarios;
+			
+            
+            return $this->response->result;
+		}
+		catch(Exception $e)
+		{
+			$this->response->setResponse(false, $e->getMessage());
+            return $this->response;
+		}
+    }
 	 public function Get($id)
     {
 		try

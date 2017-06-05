@@ -38,6 +38,7 @@ public class ConsultasBBDD {
     public static final String consultaNotificaciones =grupoNotificaciones+"notificaciones";
 
     public static final String consultaPublicaciones =grupoPublicaciones+"publicaciones";
+    public static final String consultaPublicacionesById =grupoPublicaciones+"publicacionesById";
     public static final String consultaPublicacion =grupoPublicaciones+"publicacion";
 
 

@@ -38,19 +38,6 @@ class ProyectoModel
 			while ($fila =$stm->fetch(\PDO::FETCH_ASSOC)){
 				$proyecto = new Proyecto();
 				$proyecto->set($fila);
-				//Recojo los campos del proyecto
-				/*$proyecto->id=$fila["id"] ;
-				$proyecto->nombre=$fila["nombre"] ;
-				$proyecto->apellidos=$fila["apellidos"] ;
-				$proyecto->verificado=$fila["verificado"] ;
-				$proyecto->user=$fila["user"] ;
-				$proyecto->email=$fila["email"] ;
-				$proyecto->nPuntos=$fila["nPuntos"] ;
-				$proyecto->biografia=$fila["biografia"] ;
-				$proyecto->web=$fila["web"] ;
-				$proyecto->imagenPerfil=$fila["imagenPerfil"] ;
-				$proyecto->uid=$fila["uid"] ;
-				$proyecto->firebaseToken=$fila["firebaseToken"] ;*/
 				
 				//Recojo buenaIdea
 				$stm = $this->db->prepare("SELECT idUsuario FROM buenaIdea WHERE idProyecto= ?");
@@ -121,14 +108,39 @@ class ProyectoModel
             return $this->response;
 		}
     }
-	
+	public function GetbyIds($ids)
+    {
+		
+		$this->response->setResponse(true);
+		//Recojo el total de usuarios del server
+		$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
+		$stm->execute();
+		$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
+		//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
+        $proyectos=array("proyectos"=>array("proyectos"=>array()),"totalserver"=>$totalserver["totalserver"]);
+		
+		for($i=0;$i<count($ids);++$i){
+			$proyecto =$this->Get($ids[$i]);
+			array_push($proyectos["proyectos"]["proyectos"],$proyecto["proyecto"]);
+		}
+		
+		$this->response->result = $proyectos;
+			
+            
+            return $this->response->result;
+		}
+		catch(Exception $e)
+		{
+			$this->response->setResponse(false, $e->getMessage());
+            return $this->response;
+		}
+    }
 	
 	public function Get($id)
     {
 		try
 		{	
 
-			$result = array();
 			$stm = $this->db->prepare("SELECT p.id,p.nombre,p.descripcion,p.fechaCreacion,p.fechaFinalizacion,m.url as imagenDestacada,p.localizacion,p.coordenadas,p.web,p.idPropietario,u.nombre as propietarioUser".
 			" FROM ". $this->table ." as p INNER JOIN usuario as u ON p.idPropietario=u.id LEFT JOIN multimedia as m ON m.id=p.idImagenDestacada WHERE p.id= ?");
 			$stm->execute(array($id));

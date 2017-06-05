@@ -64,4 +64,32 @@ $app->group('/publish/', function () {
         );
     });
 	
+	$this->post('publicacionesById', function ($req, $res) {
+		$data= $req->getParsedBody();
+		$tipo = $data["tipo"];
+		switch($tipo){
+			case 0:
+			$pub = new ProyectoModel();
+			break;
+			case 1:
+			$pub = new UserModel();
+			break;
+			case 2:
+			$pub = new NotificacionModel();
+			break;
+			case 3:
+			$pub = new ComentarioModel();
+			break;
+		}
+
+        return $res
+           ->withHeader('Content-type', 'application/json')
+           ->getBody()
+           ->write(
+            json_encode(
+               array("publicacion"=> $pub->GetbyIds($data["publicaciones"]))
+            )
+        );
+    });
+	
 });

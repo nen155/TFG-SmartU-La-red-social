@@ -138,7 +138,7 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                 e.printStackTrace();
             }
             //Esta consulta coge un Array de IDs para que se traiga esas publicaciones que faltan, NO SE TRAE ASOCIADOS
-            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"{\"limit\":\"10\",\"offset\":\"0\", \"publicaciones\":"+idsPubli+", \"tipo\":\""+tipo+"\"}","POST");
+            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicacionesById,"{\"limit\":\"10\",\"offset\":\"0\", \"publicaciones\":"+idsPubli+", \"tipo\":\""+tipo+"\"}","POST");
         }
 
         JSONObject res =null;
