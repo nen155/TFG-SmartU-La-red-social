@@ -197,7 +197,7 @@ public class RegistroActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }else {
-
+                Toast.makeText(context,"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
             }
         }
 

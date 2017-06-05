@@ -283,7 +283,8 @@ class UserModel
             }
             
 			$this->response->setResponse(true);
-			$this->response->result="{\"resultado\":\"ok\"}";
+			
+			$this->response->result= array("resultado" =>"ok" );
             return $this->response->result;
 		}catch (Exception $e) 
 		{
@@ -309,7 +310,7 @@ class UserModel
             
             
 			$this->response->setResponse(true);
-			$this->response->result="{\"resultado\":\"ok\"}";
+			$this->response->result=array("resultado" =>"ok" );
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -335,7 +336,7 @@ class UserModel
             
             
 			$this->response->setResponse(true);
-			$this->response->result="{\"resultado\":\"ok\"}";
+			$this->response->result=array("resultado" =>"ok" );
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -362,7 +363,7 @@ class UserModel
             
             
 			$this->response->setResponse(true);
-			$this->response->result="{\"resultado\":\"ok\"}";
+			$this->response->result=array("resultado" =>"ok" );
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -388,7 +389,7 @@ class UserModel
             
             
 			$this->response->setResponse(true);
-			$this->response->result="{\"resultado\":\"ok\"}";
+			$this->response->result=array("resultado" =>"ok" );
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -418,7 +419,7 @@ class UserModel
             
             
 			$this->response->setResponse(true);
-			$this->response->result="{\"resultado\":\"ok\"}";
+			$this->response->result=array("resultado" =>"ok" );
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -444,7 +445,7 @@ class UserModel
             
             
 			$this->response->setResponse(true);
-			$this->response->result="{\"resultado\":\"ok\"}";
+			$this->response->result=array("resultado" =>"ok" );
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -473,7 +474,7 @@ class UserModel
             }
             
 			$this->response->setResponse(true);
-			$this->response->result="{\"resultado\":\"ok\"}";
+			$this->response->result=array("resultado" =>"ok" );
 			
             return $this->response->result;
 		}catch (Exception $e) 

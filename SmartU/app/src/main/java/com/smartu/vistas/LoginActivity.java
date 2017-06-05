@@ -104,14 +104,13 @@ public class LoginActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         //Si el usuario está ya autentificado lo mando al Main
-        if (mFirebaseUser != null) {
+        if (Sesion.getUsuario(getApplicationContext()) != null) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
-            return;
         }
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+       /* mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -124,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                     // El usuario no está logueado
                 }
             }
-        };
+        };*/
 
     }
 
