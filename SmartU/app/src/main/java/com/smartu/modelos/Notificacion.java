@@ -7,6 +7,7 @@ import com.smartu.contratos.Publicacion;
 
 import java.io.Serializable;
 import java.security.PublicKey;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Date;
 
 public class Notificacion implements Parcelable,Serializable,Publicacion {
     private int id;
-    private Date fecha;
+    private Timestamp fecha;
     private String nombre;
     private String descripcion;
     private int idUsuario;
@@ -36,7 +37,7 @@ public class Notificacion implements Parcelable,Serializable,Publicacion {
     public Notificacion() {
     }
 
-    public Notificacion(int id, Date fecha, String nombre, String descripcion, int idUsuario, int idProyecto,String proyecto,String usuario) {
+    public Notificacion(int id, Timestamp fecha, String nombre, String descripcion, int idUsuario, int idProyecto, String proyecto, String usuario) {
         this.id = id;
         this.fecha = fecha;
         this.nombre = nombre;
@@ -53,7 +54,7 @@ public class Notificacion implements Parcelable,Serializable,Publicacion {
         descripcion = in.readString();
         idUsuario = in.readInt();
         idProyecto = in.readInt();
-        fecha = new Date(in.readLong());
+        fecha = new Timestamp(in.readLong());
         usuario = in.readString();
         proyecto = in.readString();
     }
@@ -78,11 +79,11 @@ public class Notificacion implements Parcelable,Serializable,Publicacion {
         this.id = id;
     }
 
-    public Date getFecha() {
+    public Timestamp getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(Timestamp fecha) {
         this.fecha = fecha;
     }
 

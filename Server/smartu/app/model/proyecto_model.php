@@ -3,7 +3,6 @@ namespace App\Model;
 
 use App\Lib\Database;
 use App\Lib\Response;
-include_once "class.proyecto.php";
 
 class ProyectoModel
 {
@@ -26,7 +25,7 @@ class ProyectoModel
 			$stm->execute();
 			$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
 			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
-            $proyectos=array("proyectos"=>array("proyectos"=>array()),"totalserver"=>$totalserver["totalserver"]);
+            $proyectos=array("proyectos"=>array(),"totalserver"=>$totalserver["totalserver"]);
 			
 			$result = array();
 			$stm = $this->db->prepare("SELECT p.id,p.nombre,p.descripcion,p.fechaCreacion,p.fechaFinalizacion,m.url as imagenDestacada,p.localizacion,p.coordenadas,p.web,p.idUsuario as idPropietario,u.nombre as propietarioUser".
@@ -36,65 +35,71 @@ class ProyectoModel
 			$this->response->setResponse(true);
 			
 			while ($fila =$stm->fetch(\PDO::FETCH_ASSOC)){
-				$proyecto = new Proyecto();
+				$proyecto = new \Proyecto();
 				$proyecto->set($fila);
 				
 				//Recojo buenaIdea
-				$stm = $this->db->prepare("SELECT idUsuario FROM buenaIdea WHERE idProyecto= ?");
-				$stm->execute(array($proyecto->id));
-				$proyecto->buenaIdea=$stm->fetchAll();
+				$stmSub = $this->db->prepare("SELECT idUsuario FROM buenaIdea WHERE idProyecto= ?");
+				$stmSub->execute(array($proyecto->id));
+				$proyecto->buenaIdea=$stmSub->fetchAll(\PDO::FETCH_COLUMN, 0);
 				
 				//Recojo misAreasInteres
-				$stm = $this->db->prepare("SELECT a.id,a.nombre,a.descripcion,m.url as urlImg FROM areaProyecto as u".
+				$stmSub = $this->db->prepare("SELECT a.id,a.nombre,a.descripcion,m.url as urlImg FROM areaProyecto as u".
 				" INNER JOIN area as a ON u.idArea=a.id LEFT JOIN multimedia as m ON a.idImagenDestacada=m.id WHERE u.idProyecto= ?");
-				$stm->execute(array($proyecto->id));
-				while ($filaA =$stm->fetch(\PDO::FETCH_ASSOC))
+				$stmSub->execute(array($proyecto->id));
+				$proyecto->misAreas=array();
+				while ($filaA =$stmSub->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misAreas,$filaA);
 				
 				//Recojo vacantesProyecto
-				$stm = $this->db->prepare("SELECT e.id,e.nombre,e.descripcion,v.experienciaNecesaria FROM vacanteProyecto as vp".
+				$stmSub = $this->db->prepare("SELECT e.id,e.nombre,e.descripcion,v.experienciaNecesaria FROM vacanteProyecto as vp".
 				" INNER JOIN vacante as v ON v.idVacante=vp.id INNER JOIN especialidad as e ON v.idEspecialidad=e.id WHERE vp.idProyecto= ?");
-				$stm->execute(array($proyecto->id));
+				$stmSub->execute(array($proyecto->id));
 				// array(array()) resultado vacantesProyecto:[{..},{..},..]
-				while ($filaE =$stm->fetch(\PDO::FETCH_ASSOC))
+				$proyecto->vacantesProyecto=array();
+				while ($filaE =$stmSub->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->vacantesProyecto,$filaE);
 				
 				//Recojo misArchivos TODO COMPROBAR QUE EL OFFSET Y EL LIMIT SON CORRECTOS!!!
-				$stm = $this->db->prepare("SELECT id,nombre,url,urlPreview,tipo,urlSubtitulos FROM multimedia as m WHERE m.idProyecto= ? LIMIT ".$offset.",".$limit);
-				$stm->execute(array($proyecto->id));
+				$stmSub = $this->db->prepare("SELECT id,nombre,url,urlPreview,tipo,urlSubtitulos FROM multimedia as m WHERE m.idProyecto= ? LIMIT ".$offset.",".$limit);
+				$stmSub->execute(array($proyecto->id));
 				// array(array()) resultado misArchivos:[{..},{..},..]
-				while ($filaAR =$stm->fetch(\PDO::FETCH_ASSOC))
+				$proyecto->misArchivos=array();
+				while ($filaAR =$stmSub->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misArchivos,$filaAR);
 				
 				//Recojo misRedesSociales
-				$stm = $this->db->prepare("SELECT r.id,r.nombre,r.url FROM redSocial as r WHERE r.idProyecto= ?");
-				$stm->execute(array($proyecto->id));
+				$stmSub = $this->db->prepare("SELECT r.id,r.nombre,r.url FROM redSocial as r WHERE r.idProyecto= ?");
+				$stmSub->execute(array($proyecto->id));
 				// array(array()) resultado misRedesSociales:[{..},{..},..]
-				while ($filaR =$stm->fetch(\PDO::FETCH_ASSOC))
+				$proyecto->misRedesSociales=array();
+				while ($filaR =$stmSub->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misRedesSociales,$filaR);
 				
 				//Recojo misHashtag
-				$stm = $this->db->prepare("SELECT h.nombre FROM proyectoHashtag as p INNER JOIN hashtag as h ON p.idHashtag=h.id WHERE p.idProyecto= ?");
-				$stm->execute(array($proyecto->id));
+				$stmSub = $this->db->prepare("SELECT h.nombre FROM proyectoHashtag as p INNER JOIN hashtag as h ON p.idHashtag=h.id WHERE p.idProyecto= ?");
+				$stmSub->execute(array($proyecto->id));
 				// array(array()) resultado misHashtag:[{..},{..},..]
-				while ($filaS =$stm->fetch(\PDO::FETCH_ASSOC))
+				$proyecto->misHashtag=array();
+				while ($filaS =$stmSub->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misHashtag,$filaS);
 
 				//Recojo misAvances
-				$stm = $this->db->prepare("SELECT a.id,a.fecha,a.nombre,a.descripcion,a.idUsuario,u.nombre as nombreUsuario, m.url as imagenDestacada".
+				$stmSub = $this->db->prepare("SELECT a.id,a.fecha,a.nombre,a.descripcion,a.idUsuario,u.nombre as nombreUsuario, m.url as imagenDestacada".
 				" FROM avance as a INNER JOIN usuario as u ON a.idUsuario=u.id LEFT JOIN multimedia as m ON m.id=a.idImagenDestacada  WHERE a.idProyecto= ?");
-				$stm->execute(array($proyecto->id));
+				$stmSub->execute(array($proyecto->id));
 				// array(array()) resultado misAvances:[{..},{..},..]
-				while ($filaAv =$stm->fetch(\PDO::FETCH_ASSOC))
+				$proyecto->misAvances=array();
+				while ($filaAv =$stmSub->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misAvances,$filaAv);
 				
 				//Recojo misIntegrantes
-				$stm = $this->db->prepare("SELECT idUsuario FROM usuarioColaboradorProyecto WHERE idProyecto= ?");
-				$stm->execute(array($proyecto->id));
-				$proyecto->integrantes=$stm->fetchAll();
+				$stmSub = $this->db->prepare("SELECT idUsuario FROM usuarioColaboradorProyecto WHERE idProyecto= ?");
+				$stmSub->execute(array($proyecto->id));
+				$proyecto->integrantes=$stmSub->fetchAll(\PDO::FETCH_COLUMN, 0);
 
 				
-				array_push($proyectos["proyectos"]["proyectos"],$proyecto);
+				array_push($proyectos["proyectos"],$proyecto);
 			}
 			
             $this->response->result = $proyectos;
@@ -110,21 +115,21 @@ class ProyectoModel
     }
 	public function GetbyIds($ids)
     {
-		
-		$this->response->setResponse(true);
-		//Recojo el total de usuarios del server
-		$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
-		$stm->execute();
-		$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
-		//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
-        $proyectos=array("proyectos"=>array("proyectos"=>array()),"totalserver"=>$totalserver["totalserver"]);
-		
-		for($i=0;$i<count($ids);++$i){
-			$proyecto =$this->Get($ids[$i]);
-			array_push($proyectos["proyectos"]["proyectos"],$proyecto["proyecto"]);
-		}
-		
-		$this->response->result = $proyectos;
+		try{
+			$this->response->setResponse(true);
+			//Recojo el total de usuarios del server
+			$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
+			$stm->execute();
+			$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
+			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
+			$proyectos=array("proyectos"=>array(),"totalserver"=>$totalserver["totalserver"]);
+			
+			for($i=0;$i<count($ids);++$i){
+				$proyecto =$this->Get($ids[$i]);
+				array_push($proyectos["proyectos"],$proyecto["proyecto"]);
+			}
+			
+			$this->response->result = $proyectos;
 			
             
             return $this->response->result;
@@ -148,18 +153,19 @@ class ProyectoModel
 			$this->response->setResponse(true);
 			
 			$fila =$stm->fetch(\PDO::FETCH_ASSOC);
-				$proyecto = new Proyecto();
+				$proyecto = new \Proyecto();
 				$proyecto->set($fila);
 
 				//Recojo buenaIdea
 				$stm = $this->db->prepare("SELECT idUsuario FROM buenaIdea WHERE idProyecto= ?");
 				$stm->execute(array($proyecto->id));
-				$proyecto->buenaIdea=$stm->fetchAll();
+				$proyecto->buenaIdea=$stm->fetchAll(\PDO::FETCH_COLUMN, 0);
 				
 				//Recojo misAreasInteres
 				$stm = $this->db->prepare("SELECT a.id,a.nombre,a.descripcion,m.url FROM areaProyecto as u".
 				" INNER JOIN area as a ON u.idArea=a.id LEFT JOIN multimedia as m ON a.idImagenDestacada=m.id WHERE u.idProyecto= ?");
 				$stm->execute(array($proyecto->id));
+				$proyecto->misAreas=array();
 				while ($filaA =$stm->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misAreas,$filaA);
 				
@@ -168,6 +174,7 @@ class ProyectoModel
 				" INNER JOIN vacante as v ON v.idVacante=vp.id INNER JOIN especialidad as e ON v.idEspecialidad=e.id WHERE vp.idProyecto= ?");
 				$stm->execute(array($proyecto->id));
 				// array(array()) resultado vacantesProyecto:[{..},{..},..]
+				$proyecto->vacantesProyecto=array();
 				while ($filaE =$stm->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->vacantesProyecto,$filaE);
 				
@@ -175,6 +182,7 @@ class ProyectoModel
 				$stm = $this->db->prepare("SELECT id,nombre,url,urlPreview,tipo,urlSubtitulos FROM multimedia as m WHERE m.idProyecto= ? LIMIT ".$offset.",".$limit);
 				$stm->execute(array($proyecto->id));
 				// array(array()) resultado misArchivos:[{..},{..},..]
+				$proyecto->misArchivos=array();
 				while ($filaAR =$stm->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misArchivos,$filaAR);
 				
@@ -182,6 +190,7 @@ class ProyectoModel
 				$stm = $this->db->prepare("SELECT r.id,r.nombre,r.url FROM redSocial as r WHERE r.idProyecto= ?");
 				$stm->execute(array($proyecto->id));
 				// array(array()) resultado misRedesSociales:[{..},{..},..]
+				$proyecto->misRedesSociales=array();
 				while ($filaR =$stm->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misRedesSociales,$filaR);
 				
@@ -189,6 +198,7 @@ class ProyectoModel
 				$stm = $this->db->prepare("SELECT h.nombre FROM proyectoHashtag as p INNER JOIN hashtag as h ON p.idHashtag=h.id WHERE p.idProyecto= ?");
 				$stm->execute(array($proyecto->id));
 				// array(array()) resultado misHashtag:[{..},{..},..]
+				$proyecto->misHashtag=array();
 				while ($filaS =$stm->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misHashtag,$filaS);
 
@@ -197,13 +207,14 @@ class ProyectoModel
 				" FROM avance as a INNER JOIN usuario as u ON a.idUsuario=u.id LEFT JOIN multimedia as m ON m.id=a.idImagenDestacada  WHERE a.idProyecto= ?");
 				$stm->execute(array($proyecto->id));
 				// array(array()) resultado misAvances:[{..},{..},..]
+				$proyecto->misAvances=array();
 				while ($filaAv =$stm->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->misAvances,$filaAv);
 				
 				//Recojo misIntegrantes
 				$stm = $this->db->prepare("SELECT idUsuario FROM usuarioColaboradorProyecto WHERE idProyecto= ?");
 				$stm->execute(array($proyecto->id));
-				$proyecto->integrantes=$stm->fetchAll();
+				$proyecto->integrantes=$stm->fetchAll(\PDO::FETCH_COLUMN, 0);
 
 				
 			

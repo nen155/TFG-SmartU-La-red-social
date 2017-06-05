@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by NeN on 25/05/2017.
+ * Created by Emilio Chica Jiménez on 25/05/2017.
  */
 
 public class Vacante implements Parcelable,Serializable {

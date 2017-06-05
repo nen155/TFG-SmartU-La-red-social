@@ -21,6 +21,10 @@ public class BuenaIdea implements Parcelable,Serializable {
     public BuenaIdea(){
 
     }
+
+    public BuenaIdea(String idUsuario){
+        this.idUsuario=Integer.valueOf(idUsuario);
+    }
     public int getIdUsuario() {
         return idUsuario;
     }

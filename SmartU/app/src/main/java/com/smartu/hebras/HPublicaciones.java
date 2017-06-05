@@ -149,49 +149,54 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
                 if (!res.isNull("publicaciones")) {
                     JSONObject muroJSON = res.getJSONObject("publicaciones");
                     //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
-                    JSONObject proJSON = muroJSON.getJSONObject("proyectos");
-                    JSONArray proyectosJSON = proJSON.getJSONArray("proyectos");
-                    for(int i=0;i<proyectosJSON.length();++i)
-                    {
-                        JSONObject proyecto = proyectosJSON.getJSONObject(i);
-                        Proyecto p = mapper.readValue(proyecto.toString(), Proyecto.class);
-                        Almacen.add(p);
+                    if(muroJSON.has("proyectos")) {
+                        JSONObject proJSON = muroJSON.getJSONObject("proyectos");
+                        JSONArray proyectosJSON = proJSON.getJSONArray("proyectos");
+                        for (int i = 0; i < proyectosJSON.length(); ++i) {
+                            JSONObject proyecto = proyectosJSON.getJSONObject(i);
+                            Proyecto p = mapper.readValue(proyecto.toString(), Proyecto.class);
+                            Almacen.add(p);
+                        }
                     }
                     //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
-                    JSONObject comeJSON = muroJSON.getJSONObject("comentarios");
-                    JSONArray comentariosJSON = comeJSON.getJSONArray("comentarios");
-                    for(int i=0;i<comentariosJSON.length();++i)
-                    {
-                        JSONObject comentario = comentariosJSON.getJSONObject(i);
-                        Comentario c = mapper.readValue(comentario.toString(), Comentario.class);
-                        Almacen.add(c);
+                    if(muroJSON.has("comentarios")) {
+                        JSONObject comeJSON = muroJSON.getJSONObject("comentarios");
+                        JSONArray comentariosJSON = comeJSON.getJSONArray("comentarios");
+                        for (int i = 0; i < comentariosJSON.length(); ++i) {
+                            JSONObject comentario = comentariosJSON.getJSONObject(i);
+                            Comentario c = mapper.readValue(comentario.toString(), Comentario.class);
+                            Almacen.add(c);
+                        }
                     }
                     //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
-                    JSONObject notiJSON = muroJSON.getJSONObject("notificaciones");
-                    JSONArray notificacionesJSON = notiJSON.getJSONArray("notificaciones");
-                    for(int i=0;i<notificacionesJSON.length();++i)
-                    {
-                        JSONObject notificacion = notificacionesJSON.getJSONObject(i);
-                        Notificacion n = mapper.readValue(notificacion.toString(), Notificacion.class);
-                        Almacen.add(n);
+                    if(muroJSON.has("notificaciones")) {
+                        JSONObject notiJSON = muroJSON.getJSONObject("notificaciones");
+                        JSONArray notificacionesJSON = notiJSON.getJSONArray("notificaciones");
+                        for (int i = 0; i < notificacionesJSON.length(); ++i) {
+                            JSONObject notificacion = notificacionesJSON.getJSONObject(i);
+                            Notificacion n = mapper.readValue(notificacion.toString(), Notificacion.class);
+                            Almacen.add(n);
+                        }
                     }
                     //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
-                    JSONObject usuJSON = muroJSON.getJSONObject("usuarios");
-                    JSONArray usuariosJSON = usuJSON.getJSONArray("usuarios");
-                    for(int i=0;i<usuariosJSON.length();++i)
-                    {
-                        JSONObject usuario = usuariosJSON.getJSONObject(i);
-                        Usuario u = mapper.readValue(usuario.toString(), Usuario.class);
-                        Almacen.add(u);
+                    if(muroJSON.has("usuarios")) {
+                        JSONObject usuJSON = muroJSON.getJSONObject("usuarios");
+                        JSONArray usuariosJSON = usuJSON.getJSONArray("usuarios");
+                        for (int i = 0; i < usuariosJSON.length(); ++i) {
+                            JSONObject usuario = usuariosJSON.getJSONObject(i);
+                            Usuario u = mapper.readValue(usuario.toString(), Usuario.class);
+                            Almacen.add(u);
+                        }
                     }
                     //Añado un nivel más debido a que me traigo el numtotal de elementos del tipo en el server
-                    JSONObject areJSON = muroJSON.getJSONObject("areas");
-                    JSONArray areasJSON = areJSON.getJSONArray("areas");
-                    for(int i=0;i<areasJSON.length();++i)
-                    {
-                        JSONObject area = areasJSON.getJSONObject(i);
-                        Area a = mapper.readValue(area.toString(), Area.class);
-                        Almacen.add(a);
+                    if(muroJSON.has("areas")) {
+                        JSONObject areJSON = muroJSON.getJSONObject("areas");
+                        JSONArray areasJSON = areJSON.getJSONArray("areas");
+                        for (int i = 0; i < areasJSON.length(); ++i) {
+                            JSONObject area = areasJSON.getJSONObject(i);
+                            Area a = mapper.readValue(area.toString(), Area.class);
+                            Almacen.add(a);
+                        }
                     }
 
                 }

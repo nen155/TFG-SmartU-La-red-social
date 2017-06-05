@@ -24,13 +24,13 @@ $app->group('/publish/', function () {
            ->getBody()
            ->write(
             json_encode(
-				array("publicaciones"=>array("publicaciones"=>array(
-				$com->GetAll($data["offset"],$data["limit"]),
-				$pro->GetAll($data["offset"],$data["limit"]),
-				$not->GetAll($data["offset"],$data["limit"]),
-				$use->GetAll($data["offset"],$data["limit"]),
-				$are->GetAll($data["offset"],$data["limit"])
-				)))
+				array("publicaciones"=>array(
+				"comentarios"=>$com->GetAll($data["offset"],$data["limit"]),
+				"proyectos"=>$pro->GetAll($data["offset"],$data["limit"]),
+				"notificaciones"=>$not->GetAll($data["offset"],$data["limit"]),
+				"usuarios"=>$use->GetAll($data["offset"],$data["limit"]),
+				"areas"=>$are->GetAll($data["offset"],$data["limit"])
+				))
                 
             )
         );
@@ -70,15 +70,19 @@ $app->group('/publish/', function () {
 		switch($tipo){
 			case 0:
 			$pub = new ProyectoModel();
+			$tipo="proyectos";
 			break;
 			case 1:
 			$pub = new UserModel();
+			$tipo="usuarios";
 			break;
 			case 2:
 			$pub = new NotificacionModel();
+			$tipo="notificaciones";
 			break;
 			case 3:
 			$pub = new ComentarioModel();
+			$tipo="comentarios";
 			break;
 		}
 
@@ -87,7 +91,7 @@ $app->group('/publish/', function () {
            ->getBody()
            ->write(
             json_encode(
-               array("publicacion"=> $pub->GetbyIds($data["publicaciones"]))
+               array("publicaciones"=>array($tipo => $pub->GetbyIds($data["publicaciones"])))
             )
         );
     });

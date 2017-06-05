@@ -3,7 +3,6 @@ namespace App\Model;
 
 use App\Lib\Database;
 use App\Lib\Response;
-include_once "class.comentario.php";
 
 class ComentarioModel
 {
@@ -26,7 +25,7 @@ class ComentarioModel
 			$stm->execute();
 			$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
 			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
-            $comentarios=array("comentarios"=>array("comentarios"=>array()),"totalserver"=>$totalserver["totalserver"]);
+            $comentarios=array("comentarios"=>array(),"totalserver"=>$totalserver["totalserver"]);
 			
 			$result = array();
 			if($id==null){
@@ -45,10 +44,10 @@ class ComentarioModel
 			$this->response->setResponse(true);
 			
 			while ($fila =$stm->fetch(\PDO::FETCH_ASSOC)){
-				$comentario = new Comentario();
+				$comentario = new \Comentario();
 				$comentario->set($fila);
 				
-				array_push($comentarios["comentarios"]["comentarios"],$comentario);
+				array_push($comentarios["comentarios"],$comentario);
 			}
 			
             $this->response->result = $comentarios;
@@ -65,21 +64,22 @@ class ComentarioModel
 	
 	public function GetbyIds($ids)
     {
-		
-		$this->response->setResponse(true);
-		//Recojo el total de comentarios del server
-		$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
-		$stm->execute();
-		$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
-		//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
-        $comentarios=array("comentarios"=>array("comentarios"=>array()),"totalserver"=>$totalserver["totalserver"]);
-		
-		for($i=0;$i<count($ids);++$i){
-			$comentario =$this->Get($ids[$i]);
-			array_push($comentarios["comentarios"]["comentarios"],$comentario["comentario"]);
-		}
-		
-		$this->response->result = $comentarios;
+		try{
+			
+			$this->response->setResponse(true);
+			//Recojo el total de comentarios del server
+			$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
+			$stm->execute();
+			$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
+			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
+			$comentarios=array("comentarios"=>array(),"totalserver"=>$totalserver["totalserver"]);
+			
+			for($i=0;$i<count($ids);++$i){
+				$comentario =$this->Get($ids[$i]);
+				array_push($comentarios["comentarios"],$comentario["comentario"]);
+			}
+			
+			$this->response->result = $comentarios;
 			
             
             return $this->response->result;
@@ -103,7 +103,7 @@ class ComentarioModel
 			$this->response->setResponse(true);
 			
 			$fila =$stm->fetch(\PDO::FETCH_ASSOC);
-			$comentario = new Comentario();
+			$comentario = new \Comentario();
 			$comentario->set($fila);
 				
             $this->response->result = array("comentario"=>$comentario);

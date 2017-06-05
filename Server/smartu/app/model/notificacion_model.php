@@ -3,7 +3,6 @@ namespace App\Model;
 
 use App\Lib\Database;
 use App\Lib\Response;
-include_once "class.notificacion.php";
 
 class NotificacionModel
 {
@@ -26,7 +25,7 @@ class NotificacionModel
 			$stm->execute();
 			$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
 			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
-            $notificaciones=array("notificaciones"=>array("notificaciones"=>array()),"totalserver"=>$totalserver["totalserver"]);
+            $notificaciones=array("notificaciones"=>array(),"totalserver"=>$totalserver["totalserver"]);
 			
 			$result = array();
 			$stm = $this->db->prepare("SELECT c.id,c.descripcion,c.fecha,c.idUsuario,c.idProyecto,u.nombre as usuario,p.nombre as proyecto ".
@@ -37,10 +36,10 @@ class NotificacionModel
 			$this->response->setResponse(true);
 			
 			while ($fila =$stm->fetch(\PDO::FETCH_ASSOC)){
-				$notificacion = new Notificacion();
+				$notificacion = new \Notificacion();
 				$notificacion->set($fila);
 				
-				array_push($notificaciones["notificaciones"]["notificaciones"],$notificacion);
+				array_push($notificaciones["notificaciones"],$notificacion);
 			}
 			
             $this->response->result = $notificaciones;
@@ -56,21 +55,21 @@ class NotificacionModel
     }
 	public function GetbyIds($ids)
     {
-		
-		$this->response->setResponse(true);
-		//Recojo el total de notificaciones del server
-		$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
-		$stm->execute();
-		$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
-		//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
-        $notificaciones=array("notificaciones"=>array("notificaciones"=>array()),"totalserver"=>$totalserver["totalserver"]);
-		
-		for($i=0;$i<count($ids);++$i){
-			$notificacion =$this->Get($ids[$i]);
-			array_push($notificaciones["notificaciones"]["notificaciones"],$notificacion["notificacion"]);
-		}
-		
-		$this->response->result = $notificaciones;
+		try{
+			$this->response->setResponse(true);
+			//Recojo el total de notificaciones del server
+			$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
+			$stm->execute();
+			$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
+			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
+			$notificaciones=array("notificaciones"=>array(),"totalserver"=>$totalserver["totalserver"]);
+			
+			for($i=0;$i<count($ids);++$i){
+				$notificacion =$this->Get($ids[$i]);
+				array_push($notificaciones["notificaciones"],$notificacion["notificacion"]);
+			}
+			
+			$this->response->result = $notificaciones;
 			
             
             return $this->response->result;
@@ -95,7 +94,7 @@ class NotificacionModel
 			$this->response->setResponse(true);
 			
 			$fila =$stm->fetch(\PDO::FETCH_ASSOC);
-			$notificacion = new Notificacion();
+			$notificacion = new \Notificacion();
 			$notificacion->set($fila);
 				
             $this->response->result = array("notificacion"=>$notificacion);

@@ -24,6 +24,7 @@ import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class FragmentNotificaciones extends Fragment {
             }
 
             try {
-                notificacion.setFecha(SimpleDateFormat.getInstance().parse(fecha));
+                notificacion.setFecha(new Timestamp(SimpleDateFormat.getInstance().parse(fecha).getTime()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }

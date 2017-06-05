@@ -25,7 +25,7 @@ class AreaModel
 			$stm->execute();
 			$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
 			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
-            $areas=array("areas"=>array("areas"=>array()),"totalserver"=>$totalserver["totalserver"]);
+            $areas=array("areas"=>array(),"totalserver"=>$totalserver["totalserver"]);
 			
 			$result = array();
 			$stm = $this->db->prepare("SELECT a.id,a.nombre,a.descripcion, m.url as urlImg FROM ". $this->table." as a LEFT JOIN multimedia as m ON a.idImagenDestacada=m.id");
@@ -34,7 +34,7 @@ class AreaModel
 			$this->response->setResponse(true);
 			
 			while ($fila =$stm->fetch(\PDO::FETCH_ASSOC)){
-				array_push($areas["areas"]["areas"],$fila);
+				array_push($areas["areas"],$fila);
 			}
 			
             $this->response->result = $areas;
