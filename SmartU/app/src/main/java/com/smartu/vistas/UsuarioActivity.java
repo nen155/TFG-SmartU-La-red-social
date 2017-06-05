@@ -109,9 +109,9 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                     }
                 }
             });
-            if (misProyectos == null) {
-                Almacen.buscarProyectos(usuario.getMisProyectos(), misProyectos, this);
-            }
+
+            Almacen.buscarProyectos(usuario.getMisProyectos(), misProyectos, this);
+
             //Cargo el perfil por defecto
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content_usuario, FragmentUsuario.newInstance(usuario));
