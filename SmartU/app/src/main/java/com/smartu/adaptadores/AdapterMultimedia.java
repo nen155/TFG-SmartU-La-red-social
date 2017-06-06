@@ -178,7 +178,7 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
     }
 
     public void addItem(Multimedia pushMessage) {
-        boolean esta = StreamSupport.parallelStream(multimediaList).filter(usuario1 -> usuario1.getId() == multimedia.getId()).findAny().isPresent();
+        boolean esta = StreamSupport.stream(multimediaList).filter(usuario1 -> usuario1.getId() == multimedia.getId()).findAny().isPresent();
         if(!esta) {
             multimediaList.add(pushMessage);
             notifyItemInserted(multimediaList.size()-1);

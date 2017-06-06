@@ -90,7 +90,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                 if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
                     comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(Almacen.getComentarios().stream().filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
                 else
-                    comentariosProyecto = new ArrayList<Comentario>(StreamSupport.parallelStream(Almacen.getComentarios()).filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).collect(Collectors.toList()));
+                    comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(StreamSupport.stream(Almacen.getComentarios()).filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
                 transaction.replace(R.id.content_proyecto, FragmentComentariosProyecto.newInstance(comentariosProyecto, proyecto));
                 transaction.commit();
             }
@@ -161,7 +161,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
             if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
                 usuarioBuenaidea= proyecto.getBuenaIdea().stream().anyMatch(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId());
             else
-                usuarioBuenaidea= StreamSupport.parallelStream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();
+                usuarioBuenaidea= StreamSupport.stream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();
             //Si es así lo dejo presionado y le cambio la imagen
             buenaidea.setPressed(usuarioBuenaidea);
             if (usuarioBuenaidea)

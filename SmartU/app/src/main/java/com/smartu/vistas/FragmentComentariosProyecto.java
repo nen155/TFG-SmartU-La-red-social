@@ -2,6 +2,7 @@ package com.smartu.vistas;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,6 +35,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -153,6 +155,7 @@ public class FragmentComentariosProyecto extends Fragment {
                         comentario.setIdUsuario(usuarioSesion.getId());
                         comentario.setIdProyecto(proyectoOrigen.getId());
                         hComentar = new HComentar(comentario);
+                        hComentar.execute();
                     }else //sino le devuelvo el foco
                     {
                         textoComentario.requestFocus();
@@ -189,15 +192,21 @@ public class FragmentComentariosProyecto extends Fragment {
     ///////////////////////////////////////////////////////////////////////////////////////
 
     private class HComentar extends AsyncTask<Void, Void, String> {
-
+        private SweetAlertDialog pDialog;
         private Comentario comentario;
         HComentar() {
-
+            pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            pDialog.setTitleText("Cargando...");
+            pDialog.setCancelable(false);
         }
         HComentar(Comentario comentario) {
             this.comentario = comentario;
         }
-
+        @Override
+        protected void onPreExecute() {
+            pDialog.show();
+        }
         @Override
         protected String doInBackground(Void... params) {
             ObjectMapper objectMapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES).disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES);
@@ -220,6 +229,7 @@ public class FragmentComentariosProyecto extends Fragment {
         @Override
         protected void onPostExecute(String resultado) {
             super.onPostExecute(resultado);
+            pDialog.dismissWithAnimation();
             //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
             hComentar = null;
             //Obtengo el objeto JSON con el resultado
@@ -251,6 +261,7 @@ public class FragmentComentariosProyecto extends Fragment {
         @Override
         protected void onCancelled(String resultado) {
             super.onCancelled(resultado);
+            pDialog.dismissWithAnimation();
             //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
             hComentar = null;
         }
@@ -258,6 +269,7 @@ public class FragmentComentariosProyecto extends Fragment {
         @Override
         protected void onCancelled() {
             super.onCancelled();
+            pDialog.dismissWithAnimation();
             //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
             hComentar = null;
         }

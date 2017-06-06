@@ -68,11 +68,11 @@ public class AdapterAreasInteres extends BaseAdapter {
 		ImageView seleccionado = (ImageView) rowView.findViewById(R.id.elemento_area);
 		final Area area = this.areas.get(position);
 		//Si esta en el arrayList la selecciono
-		boolean esta = StreamSupport.parallelStream(areasBack).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
+		boolean esta = StreamSupport.stream(areasBack).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
 		if(esta)
 			seleccionado.setVisibility(View.VISIBLE);
 		//Esta comprobación la hago para que cuando areasBack sea modificado no modifique el SET inicial que es el que quiero mantener
-		boolean estaAreaInicial = StreamSupport.parallelStream(areasInicales).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
+		boolean estaAreaInicial = StreamSupport.stream(areasInicales).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
 		if(estaAreaInicial)
 			posicionAreasInicial.add(position);
 
@@ -92,7 +92,7 @@ public class AdapterAreasInteres extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				//Compruebo si estaba para quitarlo y sino para añadirlo como seleccionado
-				boolean esta = StreamSupport.parallelStream(areasBack).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
+				boolean esta = StreamSupport.stream(areasBack).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
 				if(esta)
 					uncheck(seleccionado,position);
 				else

@@ -199,7 +199,7 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 	public void addItemTop(Publicacion publicacion) {
 		Notificacion notificacion =(Notificacion) publicacion;
 
-		boolean esta = StreamSupport.parallelStream(notificaciones).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
+		boolean esta = StreamSupport.stream(notificaciones).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
 		if(!esta) {
 			notificaciones.add(0, notificacion);
 			Almacen.add(notificacion);
@@ -210,7 +210,7 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 	public void addItem(Publicacion publicacion) {
 		Notificacion notificacion =(Notificacion) publicacion;
 
-		boolean esta = StreamSupport.parallelStream(notificaciones).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
+		boolean esta = StreamSupport.stream(notificaciones).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
 		if(!esta) {
 			notificaciones.add(notificacion);
 			Almacen.add(notificacion);

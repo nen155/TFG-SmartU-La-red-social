@@ -231,7 +231,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 usuarioSigue = usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == usuario.getId());
             else
-                usuarioSigue = StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
+                usuarioSigue = StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
             seguirUsuario.setPressed(usuarioSigue);
             if (usuarioSigue)
@@ -243,7 +243,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     public void addItem(Publicacion publicacion) {
         Usuario usuario = (Usuario) publicacion;
 
-        boolean esta = StreamSupport.parallelStream(usuarios).filter(usuario1 -> usuario1.getId() == usuario.getId()).findAny().isPresent();
+        boolean esta = StreamSupport.stream(usuarios).filter(usuario1 -> usuario1.getId() == usuario.getId()).findAny().isPresent();
         if (!esta)
         {
             usuarios.add(usuario);

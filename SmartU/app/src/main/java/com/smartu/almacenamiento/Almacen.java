@@ -163,7 +163,7 @@ public class Almacen {
             if(usuario==null)
                 usuariosABuscarServer.add(idUsuario);
             else {
-                boolean esta =StreamSupport.parallelStream(usuarios).filter(usuario1 -> usuario1.getId() == usuario.getId()).findAny().isPresent();
+                boolean esta =StreamSupport.stream(usuarios).filter(usuario1 -> usuario1.getId() == usuario.getId()).findAny().isPresent();
                 if(!esta)
                     usuarios.add(usuario);
             }
@@ -189,7 +189,7 @@ public class Almacen {
             if(proyecto==null)
                 proyectosABuscarServer.add(idProyecto);
             else {
-                boolean esta =StreamSupport.parallelStream(proyectos).filter(usuario1 -> usuario1.getId() == proyecto.getId()).findAny().isPresent();
+                boolean esta =StreamSupport.stream(proyectos).filter(usuario1 -> usuario1.getId() == proyecto.getId()).findAny().isPresent();
                 if(!esta)
                     proyectos.add(proyecto);
             }
@@ -216,7 +216,7 @@ public class Almacen {
             if(notificacion==null)
                 notificacionesABuscarServer.add(idNotificacion);
             else {
-                boolean esta =StreamSupport.parallelStream(notificacions).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
+                boolean esta =StreamSupport.stream(notificacions).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
                 if(!esta)
                     notificacions.add(notificacion);
             }
@@ -242,7 +242,7 @@ public class Almacen {
             if(comentario==null)
                 comentariosABuscarServer.add(idComentario);
             else {
-                boolean esta =StreamSupport.parallelStream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
+                boolean esta =StreamSupport.stream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
                 if(!esta)
                     comentarios.add(comentario);
             }
@@ -280,13 +280,13 @@ public class Almacen {
             Proyecto[] proyectos = proyectoStream.toArray(Proyecto[]::new);
             proyectosFilter = new ArrayList<Proyecto>(Arrays.asList(proyectos));
         } else {
-            proyectosFilter = new ArrayList<>(StreamSupport.parallelStream( proyectoHashMap.values()).filter(
-                    proyecto -> StreamSupport.parallelStream(proyecto.getMisAreas())
-                            .filter(area -> StreamSupport.parallelStream(usuarioSesion.getMisAreasInteres())
+            proyectosFilter = new ArrayList<>(Arrays.asList(StreamSupport.stream( proyectoHashMap.values()).filter(
+                    proyecto -> StreamSupport.stream(proyecto.getMisAreas())
+                            .filter(area -> StreamSupport.stream(usuarioSesion.getMisAreasInteres())
                                     .filter(areaU -> areaU.getNombre().compareTo(area.getNombre()) == 0).findAny().isPresent()).findAny().isPresent()
                             ||
-                            StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuarioSesion.getId()).findAny().isPresent()
-            ).collect(Collectors.toList()));
+                            StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuarioSesion.getId()).findAny().isPresent()
+            ).toArray(Proyecto[]::new)));
         }
         return proyectosFilter;
     }
@@ -314,12 +314,12 @@ public class Almacen {
             )
             );
         } else {
-            nofiticacionesFilter = new ArrayList<>(StreamSupport.parallelStream(notificacionHashMap.values()).filter(notificacion -> StreamSupport.parallelStream(proyectosFiltrados)
+            nofiticacionesFilter = new ArrayList<>(Arrays.asList(StreamSupport.stream(notificacionHashMap.values()).filter(notificacion -> StreamSupport.stream(proyectosFiltrados)
                     .filter(proyecto -> proyecto.getId() == notificacion.getIdProyecto()).findAny().isPresent()
                     ||
-                    StreamSupport.parallelStream(usuarioSesion.getMisSeguidos())
+                    StreamSupport.stream(usuarioSesion.getMisSeguidos())
                             .filter(usuario1 -> usuario1 == notificacion.getIdUsuario()).findAny().isPresent()
-            ).collect(Collectors.toList()));
+            ).toArray(Notificacion[]::new)));
         }
         return nofiticacionesFilter;
     }
@@ -347,14 +347,14 @@ public class Almacen {
             ;
         } else {
 
-            comentariossFilter = new ArrayList<Comentario>(StreamSupport.parallelStream(comentarioHashMap.values())
-                    .filter(comentario -> StreamSupport.parallelStream(proyectosFiltrados)
+            comentariossFilter = new ArrayList<Comentario>(Arrays.asList(StreamSupport.stream(comentarioHashMap.values())
+                    .filter(comentario -> StreamSupport.stream(proyectosFiltrados)
                             .filter(proyecto -> proyecto.getId() == comentario.getIdProyecto()).findAny().isPresent()
                             ||
-                            StreamSupport.parallelStream(usuarioSesion.getMisSeguidos())
+                            StreamSupport.stream(usuarioSesion.getMisSeguidos())
                                     .filter(usuario1 -> usuario1 == comentario.getIdUsuario()).findAny().isPresent()
                     )
-                    .collect(Collectors.toList()));
+                    .toArray(Comentario[]::new)));
         }
 
         return comentariossFilter;
@@ -385,7 +385,7 @@ public class Almacen {
 
         for(int i=0;i<usuarioSesion.getMisProyectos().size() && !flag;++i){
             int idProyecto = usuarioSesion.getMisProyectos().get(i);
-            flag=StreamSupport.parallelStream(usuario.getMisProyectos()).filter(integer -> idProyecto==integer).findAny().isPresent();
+            flag=StreamSupport.stream(usuario.getMisProyectos()).filter(integer -> idProyecto==integer).findAny().isPresent();
         }
 
         return flag;

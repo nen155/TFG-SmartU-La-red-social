@@ -195,7 +195,7 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
     @Override
     public void addItem(Publicacion publicacion) {
         Comentario comentario=(Comentario) publicacion;
-        boolean esta = StreamSupport.parallelStream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
+        boolean esta = StreamSupport.stream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
         if (!esta) {
             comentarios.add(comentario);
             Almacen.add(comentario);

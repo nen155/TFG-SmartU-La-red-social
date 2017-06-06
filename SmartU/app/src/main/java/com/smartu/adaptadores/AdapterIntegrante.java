@@ -215,7 +215,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 solicitado = usuarioSesion.getMisSolicitudes().parallelStream().anyMatch(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId());
             else
-                solicitado = StreamSupport.parallelStream(usuarioSesion.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findAny().isPresent();
+                solicitado = StreamSupport.stream(usuarioSesion.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findAny().isPresent();
             if (solicitado) {
                 seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
                 seguidoresUsuarioEditable.setPressed(true);
@@ -235,7 +235,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 usuarioSigue = usuarioSesion.getMisSeguidos().stream().anyMatch(usuario1 -> usuario1 == usuario.getId());
             else
-                usuarioSigue = StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
+                usuarioSigue = StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
             seguirUsuarioEditable.setPressed(usuarioSigue);
             if (usuarioSigue)
@@ -332,7 +332,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     @Override
     public void addItem(Publicacion publicacion) {
         Usuario u = (Usuario) publicacion;
-        boolean esta = StreamSupport.parallelStream(usuarios).filter(usuario1 -> usuario1.getId() == u.getId()).findAny().isPresent();
+        boolean esta = StreamSupport.stream(usuarios).filter(usuario1 -> usuario1.getId() == u.getId()).findAny().isPresent();
         if (!esta) {
             usuarios.add(u);
             if (u.getId() != -1)

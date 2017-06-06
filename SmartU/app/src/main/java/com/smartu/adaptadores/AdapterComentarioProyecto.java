@@ -184,7 +184,7 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
     }
     public void addItemTop(Comentario pushMessage) {
         Comentario comentario= pushMessage;
-        boolean esta = StreamSupport.parallelStream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
+        boolean esta = StreamSupport.stream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
         if (!esta) {
             comentarios.add(comentario);
             Almacen.add(comentario);

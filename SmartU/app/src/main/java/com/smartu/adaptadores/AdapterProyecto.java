@@ -240,7 +240,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 usuarioBuenaidea = proyecto.getBuenaIdea().parallelStream().anyMatch(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId());
             else
-                usuarioBuenaidea = StreamSupport.parallelStream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();
+                usuarioBuenaidea = StreamSupport.stream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();
             //Si es así lo dejo presionado y le cambio la imagen
             imgBuenaIdea.setPressed(usuarioBuenaidea);
             if (usuarioBuenaidea) {
@@ -253,7 +253,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
     @Override
     public void addItem(Publicacion publicacion) {
         Proyecto proyecto = (Proyecto) publicacion;
-        boolean esta = StreamSupport.parallelStream(proyectos).filter(usuario1 -> usuario1.getId() == proyecto.getId()).findAny().isPresent();
+        boolean esta = StreamSupport.stream(proyectos).filter(usuario1 -> usuario1.getId() == proyecto.getId()).findAny().isPresent();
         if (!esta) {
             proyectos.add(proyecto);
             Almacen.add(proyecto);

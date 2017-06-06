@@ -162,7 +162,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 usuarioSigue = usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == usuario.getId());
             else
-                usuarioSigue = StreamSupport.parallelStream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
+                usuarioSigue = StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
             if(usuarioSigue) {
                 seguir.setImageResource(R.drawable.dejarseguir);

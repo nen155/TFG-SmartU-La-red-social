@@ -302,7 +302,7 @@ public class LoginActivity extends AppCompatActivity {
                             //Mapeo el usuario que me han pasado para mantener la sesión abierta
                             usuario = mapper.readValue(usuarioJSONServer.toString(), Usuario.class);
                             usuario.setPassword(password);
-
+                            return true;
                         }
                     } else
                         return false;
@@ -315,8 +315,7 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
-                return true;
+                return false;
             }else
                 return false;
         }

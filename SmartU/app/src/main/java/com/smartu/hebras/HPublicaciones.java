@@ -91,42 +91,6 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
         start = System.currentTimeMillis();
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
         //Recojo el resultado en un String
-        /*String resultado="{\"publicaciones\":{\n" +
-                "  \"proyectos\":[\n" +
-                "    {\n" +
-                "      \"id\":\"1\",\"nombre\":\"SmartU\",\"descripcion\":\"La idea general de este proyecto es mediante el uso de herramientas, metodologías y técnicas provenientes de todas las disciplinas integrantes del proyecto se obtenga como resultado un producto final, el cual conecte la Universidad con la ciudad mediante un espacio de coworking de ideas y servicios.\",\"fechaCreacion\":\"2017-01-12\",\"fechaFinalizacion\":\"2018-03-29\",\"imagenDestacada\":\"wp-content/uploads/2017/05/logo_web.png\",\"coordenadas\":\"37.1625378,-3.5964669\",\"localizacion\":\"Calle puertas 10\",\"web\":\"http://coloredmoon.com\",\"idPropietario\":\"1\",\n" +
-                "        \"buenaIdea\":[{\"idUsuario\":\"1\"}],\n" +
-                "        \"misAreas\":[{\"id\":\"1\",\"nombre\":\"Informatica\"},{\"id\":\"2\",\"nombre\":\"Empresariales\"}],\n" +
-                "        \"vacantesProyecto\":[{\"id\":\"1\",\"especialidades\":[\n" +
-                "              {\"id\":\"1\",\"nombre\":\"Informática\"}]}],\n" +
-                "        \"misArchivos\":[{\"id\":\"1\",\"nombre\":\"logo\",\"url\":\"wp-content/uploads/2017/05/logo_web.png\",\"tipo\":\"imagen\"}],\n" +
-                "        \"misAvances\":[{\"id\":\"1\",\"nombre\":\"Casi hemos terminado la app!\",\"fecha\":\"2017-01-12\",\"descripcion\":\"Hemos trabajado duro desde octubre de 2016 para que este proyecto saliese adelante y ahora hemos conseguido casi terminarlo.\",\n" +
-                "                \"misArchivos\":[{\"id\":\"1\",\"nombre\":\"logo\",\"url\":\"wp-content/uploads/2017/05/logo_web.png\",\"tipo\":\"imagen\"}]\n" +
-                "              }],\n" +
-                "        \"integrantes\":[\"1\"],\n" +
-                "        \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
-                "    }\n" +
-                "    ],\n" +
-                "  \"comentarios\":[{\"id\":\"1\",\"descripcion\":\"Es un buen proyecto, esta genial!\",\"fecha\":\"2017-05-29\",\"idUsuario\":\"1\",\"idProyecto\":\"1\",\"usuario\":\"emiliocj\",\"proyecto\":\"SmartU\"}],\n" +
-                "  \"notificaciones\":[],\n" +
-                "  \"usuarios\":[{\"id\":\"1\",\"nombre\":\"Emilio\",\"apellidos\":\"Chica Jiménez\",\"verificado\":\"true\",\"user\":\"emiliocj\",\"email\":\"emiliocj@correo.ugr.es\",\"nPuntos\":\"100\",\"localizacion\":\"C/Poeta Manuel\",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada y es Graduado en Ingeniería Informática\", \"web\":\"http://coloremoon.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/foto-buena.jpg\",\n" +
-                "          \"misProyectos\":[\"1\"],\n" +
-                "            \"misAreasInteres\":[\n" +
-                "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
-                "              ],\n" +
-                "              \"misEspecialidades\":[\n" +
-                "              {\"id\":\"1\",\"nombre\":\"Informática\"}\n" +
-                "              ],\n" +
-                "              \"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
-                "              \"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}],\n" +
-                "\"uid\":\"i7OptZwlUQVVQ5w7bHtrgkD5tW43\","+
-                "\"firebaseToken\":\"f-R46MZAWX4:APA91bHpMWEfmjmcJQXgtEvDrvacEDReiLhO0ErEvjldGFobof0xbn8LJqqECIPqGzsvtVjkrx6Ew2Koky-u_YX41mBvIThe4glvT-x70s89o2dXvzptsPrMXych6ugQYHGRQ2LtxJ7L\""+
-                "    }],\n" +
-                "\"areas\":[{\"id\":\"1\",\"nombre\":\"Informática\"},{\"id\":\"2\",\"nombre\":\"Diseño gráfico\"},{\"id\":\"3\",\"nombre\":\"Edificación\"},{\"id\":\"4\",\"nombre\":\"Empresariales\"},{\"id\":\"5\",\"nombre\":\"Audio visuales\"},{\"id\":\"6\",\"nombre\":\"Comunicación\"}]"+
-                "}\n" +
-                "}";*/
-
-        //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
         String resultado="";
         if(tipo==-1)
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaPublicaciones,"{\"limit\":\"10\",\"offset\":\"0\"}","POST");
