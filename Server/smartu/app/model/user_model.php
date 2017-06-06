@@ -147,8 +147,6 @@ class UserModel
     {
 		try
 		{	
-		
-			$result = array();
 
 			$stm = $this->db->prepare("SELECT id,nombre,apellidos,verificado,user,email,nPuntos,biografia,web,imagenPerfil,uid,firebaseToken FROM ". $this->table ." WHERE id= ?");
 			$stm->execute();
@@ -175,7 +173,7 @@ class UserModel
 					array_push($usuario->misAreasInteres,$filaA);
 				
 				//Recojo misEspecialidades
-				$stm = $this->db->prepare("SELECT e.id,e.nombre,e.descripcion,e.experiencia FROM usuarioEspecialidad as u".
+				$stm = $this->db->prepare("SELECT e.id,e.nombre,e.descripcion,u.experiencia FROM usuarioEspecialidad as u".
 				" INNER JOIN especialidad as e ON u.idEspecialidad=e.id WHERE u.idUsuario= ?");
 				$stm->execute(array($usuario->id));
 				// array(array()) resultado misEspecialidades:[{..},{..},..]
@@ -206,7 +204,8 @@ class UserModel
 
 				
 				//Recojo miStatus
-				$stm = $this->db->prepare("SELECT s.id,s.nombre,s.puntos, (SELECT count(*) FROM seguidor as e WHERE e.idUsuario=?) as numSeguidores FROM status as s WHERE s.idUsuario= ?");
+				$stm = $this->db->prepare("SELECT s.id,s.nombre,s.puntos, (SELECT count(*) FROM seguidor as e WHERE e.idUsuario=?) as numSeguidores".
+				" FROM status as s INNER JOIN usuario as u ON u.idStatus=s.id WHERE u.id= ?");
 				$stm->execute(array($usuario->id,$usuario->id));
 				// array(array()) resultado miStatus:[{..},{..},..]
 				$filaSt =$stm->fetch(\PDO::FETCH_ASSOC);
@@ -229,14 +228,72 @@ class UserModel
     {
 		try
 		{
-			$result = array();
-
 			$stm = $this->db->prepare("SELECT id,nombre,apellidos,verificado,user,email,nPuntos,biografia,web,imagenPerfil,uid,firebaseToken FROM " .$this->table ." WHERE email=? AND password=?");
 			$stm->execute(array($email,$password));
 
 			$this->response->setResponse(true);
 			if($stm->rowCount()>0)
-				$this->response->result = array("usuario"=>$stm->fetch());
+			{
+				$fila =$stm->fetch(\PDO::FETCH_ASSOC);
+				$usuario = new \Usuario();
+				$usuario->set($fila);
+				
+				//Recojo misProyectos
+				$stm = $this->db->prepare("SELECT idProyecto FROM usuarioColaboradorProyecto WHERE idUsuario= ?");
+				$stm->execute(array($usuario->id));
+				$usuario->misProyectos=$stm->fetchAll(\PDO::FETCH_COLUMN, 0);
+				
+				//Recojo misAreasInteres
+				$stm = $this->db->prepare("SELECT a.id,a.nombre,a.descripcion,m.url as urlImg FROM usuarioInteresaArea as u".
+				" INNER JOIN area as a ON u.idArea=a.id LEFT JOIN multimedia as m ON a.idImagenDestacada=m.id WHERE u.idUsuario= ?");
+				$stm->execute(array($usuario->id));
+				$usuario->misAreasInteres=array();
+				while ($filaA =$stm->fetch(\PDO::FETCH_ASSOC))
+					array_push($usuario->misAreasInteres,$filaA);
+				
+				//Recojo misEspecialidades
+				$stm = $this->db->prepare("SELECT e.id,e.nombre,e.descripcion,u.experiencia FROM usuarioEspecialidad as u".
+				" INNER JOIN especialidad as e ON u.idEspecialidad=e.id WHERE u.idUsuario= ?");
+				$stm->execute(array($usuario->id));
+				// array(array()) resultado misEspecialidades:[{..},{..},..]
+				$usuario->misEspecialidades=array();
+				while ($filaE =$stm->fetch(\PDO::FETCH_ASSOC))
+					array_push($usuario->misEspecialidades,$filaE);
+				
+				//Recojo misSeguidos
+				$stm = $this->db->prepare("SELECT idUsuarioSeguido FROM seguidor WHERE idUsuario= ?");
+				$stm->execute(array($usuario->id));
+				$usuario->misSeguidos=$stm->fetchAll(\PDO::FETCH_COLUMN, 0);
+				
+				//Recojo misRedesSociales
+				$stm = $this->db->prepare("SELECT r.id,r.nombre,r.url FROM redSocial as r WHERE r.idUsuario= ?");
+				$stm->execute(array($usuario->id));
+				// array(array()) resultado misRedesSociales:[{..},{..},..]
+				$usuario->misRedesSociales=array();
+				while ($filaR =$stm->fetch(\PDO::FETCH_ASSOC))
+					array_push($usuario->misRedesSociales,$filaR);
+				
+				//Recojo misSolicitudes
+				$stm = $this->db->prepare("SELECT s.id,s.fecha,s.descripcion,s.idProyecto,p.nombre FROM solicitudUnion as s INNER JOIN proyecto as p ON s.idProyecto=p.id WHERE s.idUsuarioSolicitante= ?");
+				$stm->execute(array($usuario->id));
+				// array(array()) resultado misSolicitudes:[{..},{..},..]
+				$usuario->misSolicitudes=array();
+				while ($filaS =$stm->fetch(\PDO::FETCH_ASSOC))
+					array_push($usuario->misSolicitudes,$filaS);
+
+				
+				//Recojo miStatus
+				$stm = $this->db->prepare("SELECT s.id,s.nombre,s.puntos, (SELECT count(*) FROM seguidor as e WHERE e.idUsuario=?) as numSeguidores".
+				" FROM status as s INNER JOIN usuario as u ON u.idStatus=s.id WHERE u.id= ?");
+				$stm->execute(array($usuario->id,$usuario->id));
+				// array(array()) resultado miStatus:[{..},{..},..]
+				$filaSt =$stm->fetch(\PDO::FETCH_ASSOC);
+				$usuario->miStatus=$filaSt;
+			
+            $this->response->result = array("usuario"=>$usuario);
+				
+				
+			}
 			else
 				$this->response->result = null;
             
