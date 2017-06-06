@@ -7,7 +7,6 @@ import android.os.Parcelable;
 import com.smartu.contratos.Publicacion;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -85,7 +84,7 @@ public class Comentario implements Parcelable,Serializable,Publicacion {
         return fecha;
     }
 
-    public void setFecha(java.sql.Date fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 

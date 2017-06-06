@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -152,6 +153,7 @@ public class FragmentComentariosProyecto extends Fragment {
                         Comentario comentario = new Comentario();
                         comentario.setId(0);
                         comentario.setDescripcion(textoComentario.getText().toString());
+                        comentario.setFecha(new Date());
                         comentario.setIdUsuario(usuarioSesion.getId());
                         comentario.setIdProyecto(proyectoOrigen.getId());
                         hComentar = new HComentar(comentario);
@@ -195,13 +197,14 @@ public class FragmentComentariosProyecto extends Fragment {
         private SweetAlertDialog pDialog;
         private Comentario comentario;
         HComentar() {
+
+        }
+        HComentar(Comentario comentario) {
+            this.comentario = comentario;
             pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
             pDialog.setTitleText("Cargando...");
             pDialog.setCancelable(false);
-        }
-        HComentar(Comentario comentario) {
-            this.comentario = comentario;
         }
         @Override
         protected void onPreExecute() {

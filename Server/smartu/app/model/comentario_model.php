@@ -126,12 +126,14 @@ class ComentarioModel
                 $sql = "INSERT INTO comentario
                             (id, descripcion, fecha,idUsuario,idProyecto)
                             VALUES (NULL,?,?,?,?)";
-                
+				//Conversión de fecha
+                $milliseconds =  $data['fecha'];
+				$timestamp = $milliseconds/1000;
                 $this->db->prepare($sql)
                      ->execute(
                         array(
                             $data['descripcion'],
-                            $data['fecha'],
+                            date("Y-m-d", $timestamp),
 							$data['idUsuario'],
 							$data['idProyecto']
                         )

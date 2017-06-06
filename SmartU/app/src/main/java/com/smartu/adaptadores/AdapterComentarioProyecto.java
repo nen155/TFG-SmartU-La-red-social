@@ -186,7 +186,7 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
         Comentario comentario= pushMessage;
         boolean esta = StreamSupport.stream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
         if (!esta) {
-            comentarios.add(comentario);
+            comentarios.add(0,comentario);
             Almacen.add(comentario);
             notifyItemInserted(0);
         }

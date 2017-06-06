@@ -113,6 +113,7 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
                     ArrayList<Area> areasInteresList = usuario.getMisAreasInteres();
                     areasInteresList = new ArrayList<Area>(areasBack);
                     usuario.setMisAreasInteres(areasInteresList);
+                    Sesion.serializaUsuario(context,usuario);
                 }
 
             } catch (JSONException e) {
