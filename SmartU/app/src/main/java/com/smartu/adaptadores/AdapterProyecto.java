@@ -245,7 +245,6 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
             else
                 usuarioBuenaidea = StreamSupport.stream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();
             //Si es así lo dejo presionado y le cambio la imagen
-            imgBuenaIdea.setPressed(usuarioBuenaidea);
             if (usuarioBuenaidea) {
                 imgBuenaIdea.setImageResource(R.drawable.buenaidea);
                 imgBuenaIdea.setTag(R.drawable.buenaidea);

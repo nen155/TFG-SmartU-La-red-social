@@ -202,7 +202,12 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
         if (!esta) {
             comentarios.add(comentario);
             Almacen.add(comentario);
-            notifyItemInserted(comentarios.size()-1);
+            ((Activity)context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemInserted(comentarios.size() - 1);
+                }
+            });
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.smartu.hebras;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -90,15 +91,25 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
                         JSONObject comentario = comentariosJSON.getJSONObject(i);
                         Comentario c = mapper.readValue(comentario.toString(), Comentario.class);
                         if(adapterComentarioProyecto==null)
-                            adapterComentario.addItem(c);
+                            ((Activity)context).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapterComentario.addItem(c);
+                                }
+                            });
                         else
-                            adapterComentarioProyecto.addItem(c);
+                            ((Activity)context).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapterComentarioProyecto.addItem(c);
+                                }
+                            });
                     }
                     //Digo a los adapter cual es el total de comentarios que tienen
                     if(adapterComentarioProyecto==null)
                         adapterComentario.setTotalElementosServer(res.getInt("totalserver"));
                     else
-                        adapterComentario.setTotalElementosServer(res.getInt("totalserver"));
+                        adapterComentarioProyecto.setTotalElementosServer(res.getInt("totalserver"));
                 }
             }
         } catch (JSONException e) {

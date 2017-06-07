@@ -214,7 +214,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                         seguirContador.setText(String.valueOf(cont));
                         Toast.makeText(getApplicationContext(), "¿Ya no te interesa el usuario?", Toast.LENGTH_SHORT).show();
                         //Inicializo la hebra
-                        hSeguir = new HSeguir(false, usuario, UsuarioActivity.this, null, seguirContador);
+                        hSeguir = new HSeguir(true, usuario, UsuarioActivity.this, null, seguirContador);
                         hSeguir.setFabButton(seguir);
                         //Para poder poner la referencia a null cuando termine la hebra
                         hSeguir.sethSeguir(hSeguir);

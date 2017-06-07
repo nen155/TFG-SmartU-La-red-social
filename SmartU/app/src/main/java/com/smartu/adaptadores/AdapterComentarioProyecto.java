@@ -1,5 +1,6 @@
 package com.smartu.adaptadores;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
@@ -198,13 +199,17 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
     }
     @Override
     public void addItem(Publicacion publicacion) {
-        comentarios.add((Comentario) publicacion);
-        Almacen.add((Comentario) publicacion);
-        notifyItemInserted(comentarios.size()-1);
+        Comentario comentario= (Comentario) publicacion;
+        boolean esta = StreamSupport.stream(comentarios).filter(comentario1 -> comentario1.getId() == comentario.getId()).findAny().isPresent();
+        if (!esta) {
+            comentarios.add(comentario);
+            Almacen.add(comentario);
+            notifyItemInserted(comentarios.size() - 1);
+        }
     }
     public void addItemTop(Comentario pushMessage) {
         Comentario comentario= pushMessage;
-        boolean esta = StreamSupport.stream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
+        boolean esta = StreamSupport.stream(comentarios).filter(comentario1 -> comentario1.getId() == comentario.getId()).findAny().isPresent();
         if (!esta) {
             holderDescripcionComentario.setText("");
             comentarios.add(0,comentario);

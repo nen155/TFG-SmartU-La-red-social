@@ -1,5 +1,6 @@
 package com.smartu.vistas;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -253,7 +254,12 @@ public class FragmentComentariosProyecto extends Fragment {
                         Toast.makeText(getContext(),"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
                     else { //Añado el comentario al top del adapter y lo actualizo
                         Toast.makeText(getContext(),"Has comentado este proyecto",Toast.LENGTH_SHORT).show();
-                        adapterComentarioProyecto.addItemTop(comentario);
+                        ((Activity)getActivity()).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapterComentarioProyecto.addItemTop(comentario);
+                            }
+                        });
                     }
 
                 } catch (JSONException e) {

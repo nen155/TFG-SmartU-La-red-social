@@ -93,7 +93,7 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
                     "},\"totalserver\":\"3\"}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
         String resultado="";
-        if(adapterIntegrante==null)
+        if(adapterUsuario==null)
          resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaIntegrantes,"{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
         else
          resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaUsuarios,"{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");

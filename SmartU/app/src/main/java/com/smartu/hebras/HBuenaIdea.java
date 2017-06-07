@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.util.Date;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import java8.util.stream.StreamSupport;
 
 /**
  * Created by Emilio Chica Jiménez on 27/05/2017.
@@ -103,11 +104,13 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
                 if(res.getString("resultado").compareToIgnoreCase("ok")!=0){
                     reestablecerEstado();
                 }else{
+
                     //Inserto una buena idea en el proyecto
                     if(eliminar){
-                        proyecto.getBuenaIdea().add(new BuenaIdea(usuarioSesion.getId()));
+                        BuenaIdea buenaIdea1 = StreamSupport.stream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().get();
+                        proyecto.getBuenaIdea().remove(proyecto.getBuenaIdea().indexOf(buenaIdea1));
                     }else{//Elimino las buenas ideas del proyecto
-                        proyecto.getBuenaIdea().remove(new BuenaIdea(usuarioSesion.getId()));
+                        proyecto.getBuenaIdea().add(new BuenaIdea(usuarioSesion.getId()));
                     }
                     buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
                 }
@@ -146,13 +149,5 @@ public class HBuenaIdea extends AsyncTask<Void, Void, String> {
             buenaidea.setTag(R.drawable.buenaidea);
         }
         buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
-        /*if(eliminar) {
-            //Si quería eliminar la buena idea significa que le he restado uno al contador previamente
-            buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
-        }else
-        {
-            //Si quería añadirlo como buena idea significa que le he sumando 1 al contador previamente
-            buenaidea_contador.setText(String.valueOf(proyecto.getBuenaIdea().size()));
-        }*/
     }
 }

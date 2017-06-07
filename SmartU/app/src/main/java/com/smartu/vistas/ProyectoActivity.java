@@ -16,8 +16,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
+
 import com.smartu.R;
 import com.smartu.almacenamiento.Almacen;
 import com.smartu.hebras.HBuenaIdea;
@@ -35,11 +37,12 @@ import java.util.Arrays;
 
 public class ProyectoActivity extends AppCompatActivity implements FragmentIntegrantes.OnIntegranteSelectedListener {
 
-    private Proyecto proyecto=new Proyecto();
+    private Proyecto proyecto = new Proyecto();
     private Usuario usuarioSesion;
     private FloatingActionButton buenaidea, comentarios;
     private TextView buenaidea_contador;
     private ArrayList<Usuario> integrantes = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +51,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         //Obtengo el proyecto que me han pasado
         if (bundle != null) {
             int idProyecto = bundle.getInt("idProyecto");
-            Almacen.buscar(idProyecto,proyecto,ProyectoActivity.this);
+            Almacen.buscar(idProyecto, proyecto, ProyectoActivity.this);
         }
         //Cargo el menú lateral y pongo el nombre del proyecto a el Toolbar
         SliderMenu sliderMenu = new SliderMenu(getBaseContext(), this);
@@ -57,10 +60,11 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         //Inicia
         buenaidea_contador = (TextView) findViewById(R.id.buenaidea_text_proyecto);
         buenaidea = (FloatingActionButton) findViewById(R.id.buenaidea_proyecto);
+        buenaidea.setTag(R.drawable.idea);
 
         //Cargo la imágen destacada del proyecto en la parte superior
         ImageView imgDestadada = (ImageView) findViewById(R.id.img_activity_proyecto);
-        Picasso.with(getApplicationContext()).load(ConsultasBBDD.server+ ConsultasBBDD.imagenes + proyecto.getImagenDestacada()).into(imgDestadada);
+        Picasso.with(getApplicationContext()).load(ConsultasBBDD.server + ConsultasBBDD.imagenes + proyecto.getImagenDestacada()).into(imgDestadada);
 
         //Obtengo el usuario que ha iniciado sesión
         usuarioSesion = Sesion.getUsuario(getApplicationContext());
@@ -85,9 +89,9 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                 buenaidea.setVisibility(View.GONE);
                 buenaidea_contador.setVisibility(View.GONE);
                 // que pertenezcan al proyecto en lugar de guardarlos
-                ArrayList<Comentario> comentariosProyecto=null;
+                ArrayList<Comentario> comentariosProyecto = null;
                 //Filtro los comentarios por proyecto ID
-                if(Build.VERSION.SDK_INT>Build.VERSION_CODES.M)
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
                     comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(Almacen.getComentarios().stream().filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
                 else
                     comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(StreamSupport.stream(Almacen.getComentarios()).filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
@@ -112,30 +116,25 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
     private void darBuenaIdea() {
         //Compruebo si el usuario ha iniciado sesión
         if (usuarioSesion != null) {
-            //Actualizo el botón
-            buenaidea.setPressed(!buenaidea.isPressed());
             //Compruebo como ha quedado su estado después de hacer click
             HBuenaIdea hBuenaIdea;
             //Añado buena idea
             Integer integer = (Integer) buenaidea.getTag();
-            if(R.drawable.buenaidea==integer)
+            if (R.drawable.buenaidea == integer) {
                 buenaidea.setImageResource(R.drawable.idea);
-            else
+                buenaidea.setTag(R.drawable.idea);
+            } else {
                 buenaidea.setImageResource(R.drawable.buenaidea);
+                buenaidea.setTag(R.drawable.buenaidea);
+            }
 
-            if (R.drawable.buenaidea==integer) {
-                //Añado al contador 1 para decir que es buena idea
-                int cont = Integer.parseInt(buenaidea_contador.getText().toString()) + 1;
-                buenaidea_contador.setText(String.valueOf(cont));
+            if (R.drawable.buenaidea == (Integer) buenaidea.getTag()) {
                 Toast.makeText(ProyectoActivity.this, "Genial!, este proyecto te parece buena idea!", Toast.LENGTH_SHORT).show();
                 //Inicializo la hebra con false pues voy a añadir una nueva idea
                 hBuenaIdea = new HBuenaIdea(false, ProyectoActivity.this, proyecto, buenaidea, buenaidea_contador);
                 //Para poder poner la referencia a null cuando termine la hebra
                 hBuenaIdea.sethBuenaIdea(hBuenaIdea);
             } else {//Elimino buena idea
-                //Elimino de buena idea 1 usuario.
-                int cont = Integer.parseInt(buenaidea_contador.getText().toString()) - 1;
-                buenaidea_contador.setText(String.valueOf(cont));
                 Toast.makeText(ProyectoActivity.this, "¿Ya no te parece buena idea?", Toast.LENGTH_SHORT).show();
                 //Inicializo la hebra con true para eliminarla
                 hBuenaIdea = new HBuenaIdea(true, ProyectoActivity.this, proyecto, buenaidea, buenaidea_contador);
@@ -155,21 +154,22 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
      */
     private void cargarPreferenciasUsuario() {
         //Cargo las preferencias del usuario
-        if (usuarioSesion != null && proyecto.getBuenaIdea()!=null) {
+        if (usuarioSesion != null && proyecto.getBuenaIdea() != null) {
             //Compruebo si el usuario le ha dado antes a buena idea a este proyecto
             boolean usuarioBuenaidea = false;
-            if(Build.VERSION.SDK_INT>Build.VERSION_CODES.M)
-                usuarioBuenaidea= proyecto.getBuenaIdea().stream().anyMatch(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId());
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+                usuarioBuenaidea = proyecto.getBuenaIdea().stream().anyMatch(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId());
             else
-                usuarioBuenaidea= StreamSupport.stream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();
+                usuarioBuenaidea = StreamSupport.stream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();
             //Si es así lo dejo presionado y le cambio la imagen
             buenaidea.setPressed(usuarioBuenaidea);
-            if (usuarioBuenaidea)
+            if (usuarioBuenaidea) {
                 buenaidea.setImageResource(R.drawable.buenaidea);
-            else
+                buenaidea.setTag(R.drawable.buenaidea);
+            } else {
                 buenaidea.setImageResource(R.drawable.idea);
-
-
+                buenaidea.setTag(R.drawable.idea);
+            }
         }
     }
 
