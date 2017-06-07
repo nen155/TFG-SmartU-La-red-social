@@ -70,8 +70,7 @@ public class HMultimedia extends AsyncTask<Void,Void,Void> {
             if(resultado !=null) {
                 res = new JSONObject(resultado);
                 if (!res.isNull("multimedia")) {
-                    JSONObject multiJSON = res.getJSONObject("multimedia");
-                    JSONArray multimediaJSON = multiJSON.getJSONArray("multimedia");
+                    JSONArray multimediaJSON = res.getJSONArray("multimedia");
                     for(int i=0;i<multimediaJSON.length();++i)
                     {
                         JSONObject multimedia = multimediaJSON.getJSONObject(i);

@@ -60,6 +60,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
         this.context = context;
         this.usuarios = items;
         this.onUsuarioSelectedListener = onUsuarioSelectedListener;
+        usuarioSesion = Sesion.getUsuario(context);
     }
 
 
@@ -120,69 +121,75 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
         //Sino es el último elemento ni es un progress bar pues muestro el elemento que me toca
         if (holder.tipoView == 1) {
             usuario = (Usuario) this.usuarios.get(position);
-            Picasso.with(context).load(ConsultasBBDD.server + ConsultasBBDD.imagenes +  usuario.getImagenPerfil()).into(holder.imgUsuario);
-            holder.nombreUsuario.setText(usuario.getNombre());
+            Picasso.with(context).load(ConsultasBBDD.server + ConsultasBBDD.imagenes +  usuarios.get(position).getImagenPerfil()).into(holder.imgUsuario);
+            holder.nombreUsuario.setText(usuarios.get(position).getNombre());
 
-            if(usuario.getMisEspecialidades()!=null) {
+            if(usuarios.get(position).getMisEspecialidades()!=null) {
                 int numEspecialidades = 3;
                 //Pongo de previsualización 3 especialidades como mucho
-                if (usuario.getMisEspecialidades().size() < 3)
-                    numEspecialidades = usuario.getMisEspecialidades().size();
+                if (usuarios.get(position).getMisEspecialidades().size() < 3)
+                    numEspecialidades = usuarios.get(position).getMisEspecialidades().size();
                 //Añado las especialidades al TagCloud
                 for (int i = 0; i < numEspecialidades; ++i) {
-                    Especialidad e = usuario.getMisEspecialidades().get(i);
+                    Especialidad e = usuarios.get(position).getMisEspecialidades().get(i);
                     holder.especialidadUsuario.add(new Tag(e.getId(), e.getNombre()));
                 }
             }
             if(usuario.getMiStatus()!=null) {
-                holder.seguidoresUsuario.setText(String.valueOf(usuario.getMiStatus().getNumSeguidores()));
-                holder.statusUsuario.setText(usuario.getMiStatus().getNombre());
+                holder.seguidoresUsuario.setText(String.valueOf(usuarios.get(position).getMiStatus().getNumSeguidores()));
+                holder.statusUsuario.setText(usuarios.get(position).getMiStatus().getNombre());
             }
-            holder.imgUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
-            holder.statusUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
-            holder.nombreUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
+            holder.imgUsuario.setOnClickListener(cargaUsuario(usuarios.get(position).getId()));
+            holder.statusUsuario.setOnClickListener(cargaUsuario(usuarios.get(position).getId()));
+            holder.nombreUsuario.setOnClickListener(cargaUsuario(usuarios.get(position).getId()));
 
 
             //Cargo las preferencias del usuario si tuviese sesión
-            cargarPreferenciasUsuario(holder.seguirUsuario);
-            holder.seguirUsuario.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    usuarioSesion = Sesion.getUsuario(context);
-                    //Si el usuario ha iniciado sesión
-                    if (usuarioSesion != null) {
-                        //Actualizo el botón
-                        holder.seguirUsuario.setPressed(!holder.seguirUsuario.isPressed());
-                        //Compruebo como ha quedado su estado después de hacer click
-                        if (holder.seguirUsuario.isPressed()) {
-                            holder.seguirUsuario.setText(R.string.no_seguir);
-                            //Añado al contador 1 para decir que eres seguidor
-                            int cont = Integer.parseInt(holder.seguidoresUsuario.getText().toString()) + 1;
-                            holder.seguidoresUsuario.setText(String.valueOf(cont));
-                            Toast.makeText(context, "Genial!,sigues a este usuario!", Toast.LENGTH_SHORT).show();
-                            //Inicializo la hebra con 0 pues voy a añadir una nueva idea
-                            hSeguir = new HSeguir(false, usuario, context, holder.seguirUsuario, holder.seguidoresUsuario);
-                            //Para poder poner la referencia a null cuando termine la hebra
-                            hSeguir.sethSeguir(hSeguir);
-                        } else {
-                            holder.seguirUsuario.setText(R.string.seguir);
-                            //Añado al contador 1 para decir que eres seguidor
-                            int cont = Integer.parseInt(holder.seguidoresUsuario.getText().toString()) - 1;
-                            holder.seguidoresUsuario.setText(String.valueOf(cont));
-                            Toast.makeText(context, "¿Ya no te interesa el usuario?", Toast.LENGTH_SHORT).show();
-                            //Inicializo la hebra con el id de la buena idea que encontré
-                            hSeguir = new HSeguir(false, usuario, context, holder.seguirUsuario, holder.seguidoresUsuario);
-                            //Para poder poner la referencia a null cuando termine la hebra
-                            hSeguir.sethSeguir(hSeguir);
-                        }
-                        hSeguir.execute();
-                    } else {
-                        Intent intent = new Intent(context, LoginActivity.class);
-                        context.startActivity(intent);
-                    }
-                }
-            });
+            cargarPreferenciasUsuario(holder.seguirUsuario, usuarios.get(position));
+            holder.seguirUsuario.setOnClickListener(seguirUsuario(usuarios.get(position),holder.seguirUsuario,holder.seguidoresUsuario,position));
         }
+    }
+
+    private View.OnClickListener seguirUsuario(Usuario usuario,Button seguirUsuarioEditable,TextView seguidoresUsuarioEditable,int position){
+       return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Si el usuario ha iniciado sesión
+                if (usuarioSesion != null) {
+                    //Compruebo si el usuario le ha dado antes a seguir a este usuario
+                    boolean usuarioSigue = false;
+                    usuarioSesion = Sesion.getUsuario(context);
+                    usuarioSigue = StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
+
+                    //Compruebo como ha quedado su estado después de hacer click
+                    if (!usuarioSigue) {
+                        seguirUsuarioEditable.setText(context.getResources().getString(R.string.no_seguir));
+                        //Añado al contador 1 para decir que eres seguidor
+                        int cont = Integer.parseInt(seguidoresUsuarioEditable.getText().toString()) + 1;
+                        seguidoresUsuarioEditable.setText(String.valueOf(cont));
+                        Toast.makeText(context, "Genial!,sigues a este usuario!", Toast.LENGTH_SHORT).show();
+                        //Inicializo la hebra con 0 pues voy a añadir una nueva idea
+                        hSeguir = new HSeguir(false, usuarios.get(position), context, seguirUsuarioEditable, seguidoresUsuarioEditable);
+                        //Para poder poner la referencia a null cuando termine la hebra
+                        hSeguir.sethSeguir(hSeguir);
+                    } else {
+                        seguirUsuarioEditable.setText(context.getResources().getString(R.string.seguir));
+                        //Añado al contador 1 para decir que eres seguidor
+                        int cont = Integer.parseInt(seguidoresUsuarioEditable.getText().toString()) - 1;
+                        seguidoresUsuarioEditable.setText(String.valueOf(cont));
+                        Toast.makeText(context, "¿Ya no te interesa el usuario?", Toast.LENGTH_SHORT).show();
+                        //Inicializo la hebra con el id de la buena idea que encontré
+                        hSeguir = new HSeguir(true, usuarios.get(position), context, seguirUsuarioEditable, seguidoresUsuarioEditable);
+                        //Para poder poner la referencia a null cuando termine la hebra
+                        hSeguir.sethSeguir(hSeguir);
+                    }
+                    hSeguir.execute();
+                } else {
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    context.startActivity(intent);
+                }
+            }
+        };
     }
 
     @Override
@@ -223,7 +230,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     /**
      * Comprueba si el usuario ha dado buena idea al proyecto
      */
-    private void cargarPreferenciasUsuario(Button seguirUsuario) {
+    private void cargarPreferenciasUsuario(Button seguirUsuario,Usuario usuario) {
         //Cargo las preferencias del usuario
         if (usuarioSesion != null && usuarioSesion.getMisSeguidos() != null) {
             //Compruebo si el usuario le ha dado antes a seguir a este usuario
@@ -236,6 +243,8 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
             seguirUsuario.setPressed(usuarioSigue);
             if (usuarioSigue)
                 seguirUsuario.setText(R.string.no_seguir);
+            else
+                seguirUsuario.setText(R.string.seguir);
         }
     }
 

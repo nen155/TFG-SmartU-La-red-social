@@ -104,9 +104,10 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
                     reestablecerEstado();
                 else{
                    if(eleminar)
-                       seguidor.getMisSeguidos().remove(seguido.getId());
+                       seguidor.getMisSeguidos().remove(seguidor.getMisSeguidos().indexOf(seguido.getId()));
                     else
                         seguidor.getMisSeguidos().add(seguido.getId());
+                    Sesion.serializaUsuario(context,seguidor);
                 }
 
             } catch (JSONException e) {
@@ -137,7 +138,7 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
         if(seguirUSuario!=null){
             seguirUSuario.setPressed(!seguirUSuario.isPressed());
             //Si no es un botón de tipo fabButton entonces le cambio el texto
-            if (seguirUSuario.isPressed())
+            if (!seguirUSuario.isPressed())
                 seguirUSuario.setText(R.string.no_seguir);
             else
                 seguirUSuario.setText(R.string.seguir);

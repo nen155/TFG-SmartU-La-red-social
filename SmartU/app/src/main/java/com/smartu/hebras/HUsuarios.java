@@ -103,8 +103,8 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
             if(resultado !=null) {
                 res = new JSONObject(resultado);
                 if (!res.isNull("usuarios")) {
-                    JSONObject usuJSON = res.getJSONObject("usuarios");
-                    JSONArray usuariosJSON = usuJSON.getJSONArray("usuarios");
+                   // JSONObject usuJSON = res.getJSONObject("usuarios");
+                    JSONArray usuariosJSON = res.getJSONArray("usuarios");
                     for(int i=0;i<usuariosJSON.length();++i)
                     {
                         JSONObject usuario = usuariosJSON.getJSONObject(i);

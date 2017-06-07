@@ -3,7 +3,11 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.android.gms.appindexing.Thing;
+import com.smartu.utilidades.ConversoresJSON;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +17,9 @@ import java.util.Date;
  */
 
 public class SolicitudUnion implements Parcelable,Serializable {
+    @JsonProperty
+    @JsonSerialize(using=ConversoresJSON.DateTimeSerializer.class)
+    @JsonDeserialize(using=ConversoresJSON.DateTimeDeserializer.class)
     private Date fecha;
     private String proyecto;
     private int idProyecto;

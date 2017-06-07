@@ -71,8 +71,8 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
             if(resultado !=null) {
                 res = new JSONObject(resultado);
                 if (!res.isNull("proyectos")) {
-                    JSONObject proyectJSON = res.getJSONObject("proyectos");
-                    JSONArray proyectosJSON = proyectJSON.getJSONArray("proyectos");
+                    //JSONObject proyectJSON = res.getJSONObject("proyectos");
+                    JSONArray proyectosJSON = res.getJSONArray("proyectos");
                     for(int i=0;i<proyectosJSON.length();++i)
                     {
                         JSONObject proyecto = proyectosJSON.getJSONObject(i);

@@ -148,13 +148,13 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
             holder.descripcionComentario.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cargaProyecto(comentario.getIdProyecto());
+                    cargaProyecto(comentarios.get(position).getIdProyecto());
                 }
             });
             holder.btnNombreProyecto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cargaProyecto(comentario.getIdProyecto());
+                    cargaProyecto(comentarios.get(position).getIdProyecto());
                 }
             });
         }

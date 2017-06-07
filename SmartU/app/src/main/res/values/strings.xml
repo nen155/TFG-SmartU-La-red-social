@@ -68,5 +68,6 @@
     <string name="reg_strate">Regístrate</string>
     <string name="nombre_de_usuario">Nombre de usuario</string>
     <string name="nombre_y_apellidos">Nombre y apellidos</string>
+    <string name="eres_colaborador">Eres colaborador</string>
 
 </resources>

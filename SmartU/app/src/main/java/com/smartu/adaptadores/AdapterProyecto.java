@@ -147,7 +147,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
             holder.nombreProyecto.setOnClickListener(cargaProyecto(proyecto.getId()));
 
             //Cargo las preferencias del usuario si tuviese sesión
-            cargarPreferenciasUsuario(holder.imgBuenaIdea);
+            cargarPreferenciasUsuario(holder.imgBuenaIdea,proyectos.get(position));
 
             holder.imgBuenaIdea.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -168,13 +168,13 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
                         if ((Integer) holder.imgBuenaIdea.getTag() == R.drawable.buenaidea) {
                             Toast.makeText(context, "Genial!, este proyecto te parece buena idea!", Toast.LENGTH_SHORT).show();
                             //Inicializo la hebra con false pues voy a añadir una nueva idea
-                            hBuenaIdea = new HBuenaIdea(false, context, proyecto, holder.imgBuenaIdea, holder.contadorBuenaIdea);
+                            hBuenaIdea = new HBuenaIdea(false, context, proyectos.get(position), holder.imgBuenaIdea, holder.contadorBuenaIdea);
                             //Para poder poner la referencia a null cuando termine la hebra
                             hBuenaIdea.sethBuenaIdea(hBuenaIdea);
                         } else {
                             Toast.makeText(context, "¿Ya no te parece buena idea?", Toast.LENGTH_SHORT).show();
                             //Inicializo la hebra con true para eliminar la buena idea de la BD.
-                            hBuenaIdea = new HBuenaIdea(true, context, proyecto, holder.imgBuenaIdea, holder.contadorBuenaIdea);
+                            hBuenaIdea = new HBuenaIdea(true, context, proyectos.get(position), holder.imgBuenaIdea, holder.contadorBuenaIdea);
                             //Para poder poner la referencia a null cuando termine la hebra
                             hBuenaIdea.sethBuenaIdea(hBuenaIdea);
                         }
@@ -190,7 +190,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, UsuarioActivity.class);
-                    intent.putExtra("idUsuario", proyecto.getIdPropietario());
+                    intent.putExtra("idUsuario", proyectos.get(position).getIdPropietario());
                     context.startActivity(intent);
                 }
             });
@@ -235,7 +235,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
     /**
      * Comprueba si el usuario ha dado buena idea al proyecto
      */
-    private void cargarPreferenciasUsuario(ImageView imgBuenaIdea) {
+    private void cargarPreferenciasUsuario(ImageView imgBuenaIdea,Proyecto proyecto) {
         //Cargo las preferencias del usuario
         if (usuarioSesion != null && proyecto.getBuenaIdea() != null) {
             //Compruebo si el usuario le ha dado antes a buena idea a este proyecto
@@ -249,6 +249,9 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
             if (usuarioBuenaidea) {
                 imgBuenaIdea.setImageResource(R.drawable.buenaidea);
                 imgBuenaIdea.setTag(R.drawable.buenaidea);
+            }else {
+                imgBuenaIdea.setImageResource(R.drawable.idea);
+                imgBuenaIdea.setTag(R.drawable.idea);
             }
         }
     }

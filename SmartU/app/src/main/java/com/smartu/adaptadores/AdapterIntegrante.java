@@ -63,6 +63,8 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
         this.usuarios = items;
         this.onIntegranteSelectedListener = onIntegranteSelectedListener;
         this.proyecto = proyecto;
+        //Cargo la sesió del usuario si es que hubiese, para usarla en los demás metodos
+        usuarioSesion = Sesion.getUsuario(context);
     }
 
 
@@ -122,8 +124,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
         //Sino es el último elemento ni es un progress bar pues muestro el elemento que me toca
         if (holder.tipoView == 1) {
             usuario = (Usuario) this.usuarios.get(position);
-            //Cargo la sesió del usuario si es que hubiese, para usarla en los demás metodos
-            usuarioSesion = Sesion.getUsuario(context);
+
             //Compruebo que no sean los usuarios que he metido como vacantes
             //para dejar la imagen por defecto.
             if (usuario.getId() != -1)
@@ -161,21 +162,21 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
             //Compruebo que no sean los usuarios que he metido como vacantes
             if (usuario.getId() != -1) {
-                holder.imgUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
-                holder.statusUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
-                holder.nombreUsuario.setOnClickListener(cargaUsuario(usuario.getId()));
+                holder.imgUsuario.setOnClickListener(cargaUsuario(usuarios.get(position).getId()));
+                holder.statusUsuario.setOnClickListener(cargaUsuario(usuarios.get(position).getId()));
+                holder.nombreUsuario.setOnClickListener(cargaUsuario(usuarios.get(position).getId()));
 
                 //Cargo las preferencias del usuario si tuviese sesión
-                cargarPreferenciasUsuario();
-                holder.seguirUsuario.setOnClickListener(seguirUsuario());
+                cargarPreferenciasUsuario( usuarios.get(position));
+                holder.seguirUsuario.setOnClickListener(seguirUsuario(usuarios.get(position),holder.seguirUsuario,holder.seguidoresUsuario));
             } else {
                 //Cargo las posibles solicitudes
                 cargarSolicitudesUnion();
                 //Todos llaman al mismo método que hace una solicitud de unión al proyecto
-                holder.imgUsuario.setOnClickListener(solicitarUnion(usuario));
-                holder.statusUsuario.setOnClickListener(solicitarUnion(usuario));
-                holder.nombreUsuario.setOnClickListener(solicitarUnion(usuario));
-                holder.seguirUsuario.setOnClickListener(solicitarUnion(usuario));
+                holder.imgUsuario.setOnClickListener(solicitarUnion(usuarios.get(position)));
+                holder.statusUsuario.setOnClickListener(solicitarUnion(usuarios.get(position)));
+                holder.nombreUsuario.setOnClickListener(solicitarUnion(usuarios.get(position)));
+                holder.seguirUsuario.setOnClickListener(solicitarUnion(usuarios.get(position)));
             }
         }
     }
@@ -210,6 +211,13 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
      * pone los botones deshabilitados
      */
     private void cargarSolicitudesUnion() {
+
+        boolean soyPropietario =StreamSupport.stream(usuarioSesion.getMisProyectos()).filter(proyect-> proyect == proyecto.getId()).findAny().isPresent();
+        if(soyPropietario) {
+            seguirUsuarioEditable.setText(R.string.eres_colaborador);
+            seguirUsuarioEditable.setPressed(true);
+            seguirUsuarioEditable.setEnabled(false);
+        }else
         if (usuarioSesion != null && usuarioSesion.getMisSolicitudes() != null) {
             boolean solicitado = false;
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
@@ -218,8 +226,12 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                 solicitado = StreamSupport.stream(usuarioSesion.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findAny().isPresent();
             if (solicitado) {
                 seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
-                seguidoresUsuarioEditable.setPressed(true);
-                seguidoresUsuarioEditable.setEnabled(false);
+                seguirUsuarioEditable.setPressed(true);
+                seguirUsuarioEditable.setEnabled(false);
+            }else {
+                seguirUsuarioEditable.setText(R.string.unirse);
+                seguirUsuarioEditable.setPressed(false);
+                seguirUsuarioEditable.setEnabled(true);
             }
         }
     }
@@ -227,7 +239,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     /**
      * Comprueba si el usuario ha dado buena idea al proyecto
      */
-    private void cargarPreferenciasUsuario() {
+    private void cargarPreferenciasUsuario(Usuario usuario) {
         //Cargo las preferencias del usuario
         if (usuarioSesion != null && usuarioSesion.getMisSeguidos() != null) {
             //Compruebo si el usuario le ha dado antes a seguir a este usuario
@@ -240,6 +252,8 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
             seguirUsuarioEditable.setPressed(usuarioSigue);
             if (usuarioSigue)
                 seguirUsuarioEditable.setText(R.string.no_seguir);
+            else
+                seguirUsuarioEditable.setText(R.string.seguir);
         }
     }
 
@@ -248,17 +262,19 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
      *
      * @return
      */
-    private View.OnClickListener seguirUsuario() {
+    private View.OnClickListener seguirUsuario(Usuario usuario,Button seguirUsuarioEditable,TextView seguidoresUsuarioEditable) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Si el usuario ha iniciado sesión
                 if (usuarioSesion != null) {
                     HSeguir hSeguir;
-                    //Actualizo el botón
-                    seguirUsuarioEditable.setPressed(!seguirUsuarioEditable.isPressed());
+                    usuarioSesion = Sesion.getUsuario(context);
+                    //Compruebo si el usuario le ha dado antes a seguir a este usuario
+                    boolean usuarioSigue = false;
+                    usuarioSigue = StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
                     //Sigo al usuario
-                    if (seguirUsuarioEditable.isPressed()) {
+                    if (!usuarioSigue) {
                         seguirUsuarioEditable.setText(R.string.no_seguir);
                         //Añado al contador 1 para decir que eres idProyecto
                         int cont = Integer.parseInt(seguidoresUsuarioEditable.getText().toString()) + 1;

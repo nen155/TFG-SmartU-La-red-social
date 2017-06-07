@@ -69,8 +69,7 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
             if(resultado !=null) {
                 res = new JSONObject(resultado);
                 if (!res.isNull("notificaciones")) {
-                    JSONObject notiJSON = res.getJSONObject("notificaciones");
-                    JSONArray notificacionesJSON = notiJSON.getJSONArray("notificaciones");
+                    JSONArray notificacionesJSON = res.getJSONArray("notificaciones");
                     for(int i=0;i<notificacionesJSON.length();++i)
                     {
                         JSONObject notificacion = notificacionesJSON.getJSONObject(i);

@@ -156,19 +156,19 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 			holder.nombreNotificacion.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					cargaElemento();
+					cargaElemento(notificaciones.get(position));
 				}
 			});
 			holder.descripcionNotificacion.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					cargaElemento();
+					cargaElemento(notificaciones.get(position));
 				}
 			});
 			holder.nombreUsuarioOProyecto.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					cargaElemento();
+					cargaElemento(notificaciones.get(position));
 				}
 			});
 		}
@@ -199,7 +199,7 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 	}
 
 
-	private void cargaElemento(){
+	private void cargaElemento(Notificacion notificacion){
 			if(notificacion.getIdUsuario()!=0){
 				Intent intent = new Intent(context,UsuarioActivity.class);
 				intent.putExtra("idUsuario",  notificacion.getIdUsuario());

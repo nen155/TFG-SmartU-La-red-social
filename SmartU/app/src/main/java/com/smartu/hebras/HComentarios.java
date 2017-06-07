@@ -83,8 +83,8 @@ public class HComentarios extends AsyncTask<Void,Void,Void> {
             if(resultado !=null) {
                 res = new JSONObject(resultado);
                 if (!res.isNull("comentarios")) {
-                    JSONObject comentJSON = res.getJSONObject("comentarios");
-                    JSONArray comentariosJSON = comentJSON.getJSONArray("comentarios");
+                    //JSONObject comentJSON = res.getJSONObject("comentarios");
+                    JSONArray comentariosJSON = res.getJSONArray("comentarios");
                     for(int i=0;i<comentariosJSON.length();++i)
                     {
                         JSONObject comentario = comentariosJSON.getJSONObject(i);

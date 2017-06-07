@@ -91,7 +91,7 @@ class UserModel
 
 				
 				//Recojo miStatus
-				$stmSub = $this->db->prepare("SELECT s.id,s.nombre,s.puntos, (SELECT count(*) FROM seguidor as e WHERE e.idUsuario=?) as numSeguidores".
+				$stmSub = $this->db->prepare("SELECT s.id,s.nombre,s.puntos, (SELECT count(*) FROM seguidor as e WHERE e.idUsuarioSeguido=?) as numSeguidores".
 				" FROM status as s INNER JOIN usuario as u ON u.idStatus=s.id WHERE u.id= ?");
 				$stmSub->execute(array($usuario->id,$usuario->id));
 				// array(array()) resultado miStatus:[{..},{..},..]
@@ -203,7 +203,7 @@ class UserModel
 
 				
 				//Recojo miStatus
-				$stm = $this->db->prepare("SELECT s.id,s.nombre,s.puntos, (SELECT count(*) FROM seguidor as e WHERE e.idUsuario=?) as numSeguidores".
+				$stm = $this->db->prepare("SELECT s.id,s.nombre,s.puntos, (SELECT count(*) FROM seguidor as e WHERE e.idUsuarioSeguido=?) as numSeguidores".
 				" FROM status as s INNER JOIN usuario as u ON u.idStatus=s.id WHERE u.id= ?");
 				$stm->execute(array($usuario->id,$usuario->id));
 				// array(array()) resultado miStatus:[{..},{..},..]
@@ -282,7 +282,7 @@ class UserModel
 
 				
 				//Recojo miStatus
-				$stm = $this->db->prepare("SELECT s.id,s.nombre,s.puntos, (SELECT count(*) FROM seguidor as e WHERE e.idUsuario=?) as numSeguidores".
+				$stm = $this->db->prepare("SELECT s.id,s.nombre,s.puntos, (SELECT count(*) FROM seguidor as e WHERE e.idUsuarioSeguido=?) as numSeguidores".
 				" FROM status as s INNER JOIN usuario as u ON u.idStatus=s.id WHERE u.id= ?");
 				$stm->execute(array($usuario->id,$usuario->id));
 				// array(array()) resultado miStatus:[{..},{..},..]
@@ -324,8 +324,8 @@ class UserModel
                             (nombre, apellidos, email, password, user, uid, firebaseToken)
                             VALUES (?,?,?,?,?,?,?)";
                 
-                $this->db->prepare($sql)
-                     ->execute(
+                $smt= $this->db->prepare($sql);
+                 $smt->execute(
                         array(
                             $data['nombre'], 
                             $data['apellidos'],
@@ -341,6 +341,7 @@ class UserModel
 			$this->response->setResponse(true);
 			
 			$this->response->result= array("resultado" =>"ok" );
+			$data["idUsuario"]=$smt->lastInsertId();
 			//Inserto notificacion
 			$this->InsertaNotificacionUsuario($data);
 			
@@ -357,6 +358,17 @@ class UserModel
 		
 		try 
 		{
+			$sql = "SELECT idUsuario FROM seguidor WHERE idUsuario=? AND idUsuarioSeguido=?";
+               
+            $stm = $this->db->prepare($sql);
+			$stm->execute(
+                        array(
+                            $data['idUsuario'],
+                            $data['idUsuarioSeguido']
+                        )
+             ); 
+				//Sino la he insertado antes
+			if($stm->rowCount()==0){
                 $sql = "INSERT INTO seguidor
                             (id, idUsuario, idUsuarioSeguido)
                             VALUES (NULL,?,?)";
@@ -368,17 +380,24 @@ class UserModel
                             $data['idUsuarioSeguido']
                         )
                     ); 
-            
+			}
+					
+            $datos = array("idUsuarioSeguido"=>$data['idUsuarioSeguido'],"tipo"=>"seguidor","operacion"=>"plus");
+            //Actualizo los puntos del propietario del proyecto
+			if($stm->rowCount()==0)
+				$this->UpdatePuntosUsuario($datos);
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
 			//Inserto notificacion
-			$this->InsertaNotificacionSeguir($data);
+			if($stm->rowCount()==0)
+				$this->InsertaNotificacionSeguir($data);
 			
             return $this->response->result;
 		}catch (Exception $e) 
 		{
             $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
 		}
     }
 	
@@ -396,7 +415,9 @@ class UserModel
                             $data['idUsuarioSeguido']
                         )
                     ); 
-            
+            $datos = array("idUsuarioSeguido"=>$data['idUsuarioSeguido'],"tipo"=>"seguidor","operacion"=>"minus");
+            //Actualizo los puntos del propietario del proyecto
+            $this->UpdatePuntosUsuario($datos);
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
@@ -405,6 +426,7 @@ class UserModel
 		}catch (Exception $e) 
 		{
             $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
 		}
     }
 	public function InsertBuenaIdea($data)
@@ -423,7 +445,10 @@ class UserModel
                             $data['idProyecto']
                         )
                     ); 
-            
+					
+			$datos = array("idUsuario"=>$data['idUsuario'],"idProyecto"=>$data['idProyecto'],"tipo"=>"idea","operacion"=>"plus");
+            //Actualizo los puntos del propietario del proyecto
+            $this->UpdatePuntosUsuario($datos);
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
@@ -434,6 +459,7 @@ class UserModel
 		}catch (Exception $e) 
 		{
             $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
 		}
     }
 	
@@ -451,7 +477,10 @@ class UserModel
                             $data['idProyecto']
                         )
                     ); 
-            
+            $datos = array("idUsuario"=>$data['idUsuario'],"idProyecto"=>$data['idProyecto'],"tipo"=>"idea","operacion"=>"minus");
+			
+            //Actualizo los puntos del propietario del proyecto
+            $this->UpdatePuntosUsuario($datos);
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
@@ -460,6 +489,7 @@ class UserModel
 		}catch (Exception $e) 
 		{
             $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
 		}
     }
 	
@@ -468,30 +498,49 @@ class UserModel
 		
 		try 
 		{
-                $sql = "INSERT INTO solicitudUnion
-                            (id, idUsuario, idProyecto,fecha,descripcion)
-                            VALUES (NULL,?,?,?,?)";
-                
-                $this->db->prepare($sql)
-                     ->execute(
+			$sql = "SELECT idUsuarioSolicitante as idUsuario,idProyecto FROM solicitudUnion WHERE idUsuarioSolicitante=? AND idProyecto=?";
+               
+            $stm = $this->db->prepare($sql);
+			$stm->execute(
                         array(
                             $data['idUsuario'],
-                            $data['idProyecto'],
-							$data['fecha'],
-							$data['descripcion']
+                            $data['idProyecto']
                         )
-                    ); 
-            
-            
+             ); 
+				//Sino la he insertado antes
+			if($stm->rowCount()==0){
+					$sql = "INSERT INTO solicitudUnion
+								(id, idUsuarioSolicitante, idProyecto,fecha,descripcion)
+								VALUES (NULL,?,?,?,?)";
+					
+					$this->db->prepare($sql)
+						 ->execute(
+							array(
+								$data['idUsuario'],
+								$data['idProyecto'],
+								date("Y-m-d H:i:s"),
+								$data['descripcion']
+							)
+						); 
+			}
+			
+			$datos = array("idUsuario"=>$data['idUsuario'],"idProyecto"=>$data['idProyecto'],"tipo"=>"union","operacion"=>"plus");
+			
+            //Actualizo los puntos del propietario del proyecto
+			if($stm->rowCount()==0)
+				$this->UpdatePuntosUsuario($datos);
+			
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
 			//Inserto notificacion
-			$this->InsertaNotificacionSolicitud($data);
+			if($stm->rowCount()==0)
+				$this->InsertaNotificacionSolicitud($data);
 			
             return $this->response->result;
 		}catch (Exception $e) 
 		{
             $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
 		}
     }
 	
@@ -500,7 +549,7 @@ class UserModel
 		
 		try 
 		{
-                $sql = "DELETE FROM solicitudUnion WHERE idUsuario=? AND idProyecto=?";
+                $sql = "DELETE FROM solicitudUnion WHERE idUsuarioSolicitante=? AND idProyecto=?";
                 
                 $this->db->prepare($sql)
                      ->execute(
@@ -509,7 +558,10 @@ class UserModel
                             $data['idProyecto']
                         )
                     ); 
-            
+			$datos = array("idUsuario"=>$data['idUsuario'],"idProyecto"=>$data['idProyecto'],"tipo"=>"union","operacion"=>"minus");
+
+            //Actualizo los puntos del propietario del proyecto
+            $this->UpdatePuntosUsuario($datos );
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
@@ -518,6 +570,7 @@ class UserModel
 		}catch (Exception $e) 
 		{
             $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
 		}
     }
 	
@@ -527,36 +580,144 @@ class UserModel
 		try 
 		{
 			for($i=0;$i<count($data["idsAreas"]);++$i){
-                $sql = "INSERT INTO usuarioInteresaArea
-                            (id, idUsuario, idArea)
-                            VALUES (NULL,?,?)";
-                
-                $this->db->prepare($sql)
-                     ->execute(
+				$sql = "SELECT idUsuario,idProyecto FROM usuarioInteresaArea WHERE idUsuario=? AND idArea=?";
+               
+                 $stm = $this->db->prepare($sql);
+				 $stm->execute(
                         array(
                             $data['idUsuario'],
                             $data['idsAreas'][$i]
                         )
-                    ); 
+                    );
+				
+				if($stm->rowCount()==0){
+					$sql = "INSERT INTO usuarioInteresaArea
+								(id, idUsuario, idArea)
+								VALUES (NULL,?,?)";
+					
+					$this->db->prepare($sql)
+						 ->execute(
+							array(
+								$data['idUsuario'],
+								$data['idsAreas'][$i]
+							)
+						); 
+				}
             }
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
 			//Inserto notificacion
-			$this->InsertaNotificacionInteres($data);
+			if($stm->rowCount()==0)
+				$this->InsertaNotificacionInteres($data);
 			
             return $this->response->result;
 		}catch (Exception $e) 
 		{
             $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
 		}
     }
+	public function UpdatePuntosUsuario($data)
+	{
+		
+		try 
+		{
+			//Recojo el ID del usuario
+			if(isset($data["idUsuarioSeguido"])){
+				$id=$data["idUsuarioSeguido"];
+			}else{
+				//Sólo le doy puntos al creador del proyecto,
+				//se puede implementar para los colaboradores si se quiere
+				//sería hacer un for por cada uno de los colaboradores e ir añadiendole puntos a cada
+				//uno y comprobar el status de cada uno
+				$sql = "SELECT idUsuario FROM proyecto WHERE id=?";
+				$stm = $this->db->prepare($sql);
+				$stm->execute(array($data["idProyecto"]));
+				$filaA =$stm->fetch(\PDO::FETCH_ASSOC);
+				$id=$filaA["idUsuario"];
+			}
+
+			//Obtengo los puntos y el status del usuario
+			$sql = "SELECT u.id as idUsuario,u.nombre,u.nPuntos,u.idStatus,s.nombre as estatus FROM usuario as u LEFT JOIN status as s ON u.idStatus=s.id  WHERE u.id=?";
+			$stm = $this->db->prepare($sql);
+			$stm->execute(array($id));
+			$fila =$stm->fetch(\PDO::FETCH_ASSOC);
+
+			
+			//Lógica de la gamificación
+			//Depenciendo del tipo sumaré mas o menos puntos
+			switch($data["tipo"]){
+				case "union":
+					if($data["operacion"]=="plus")
+						$nPuntos = $fila["nPuntos"]+3;
+					else
+						$nPuntos = $fila["nPuntos"]-3;
+				break;
+				case "seguidor":
+					if($data["operacion"]=="plus")
+						$nPuntos = $fila["nPuntos"]+1;
+					else
+						$nPuntos = $fila["nPuntos"]-1;
+				break;
+				case "idea":
+					if($data["operacion"]=="plus")
+						$nPuntos = $fila["nPuntos"]+2;
+					else
+						$nPuntos = $fila["nPuntos"]-2;
+				break;
+			}
+			
+			if($nPuntos<=10){
+				$idStatus=1;
+			}
+			if($nPuntos>10){
+				$idStatus=2;
+			}
+			if($nPuntos>30){
+				$idStatus=3;
+			}
+			if($nPuntos>40){
+				$idStatus=4;
+			}
+			
+			//Actualizo puntos y estado de usuario
+			$sql = "UPDATE usuario SET nPuntos =?, idStatus=? WHERE id=?";
+			$stm = $this->db->prepare($sql);
+			$stm->execute(array($nPuntos,$idStatus,$id));
+			
+			$this->response->setResponse(true);
+			$this->response->result=array("resultado" =>"ok" );
+			
+			//Muestro la notificación si ha subido de status
+			if($idStatus!=$fila["idStatus"]){
+				$this->InsertaNotificacionStatus($fila);
+			}
+            return $this->response->result;
+		}catch (Exception $e) 
+		{
+            $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
+		}
+    }
+	
 	
 	/*
 	*
 	*INSERCCIÓN DE NOTIFICACIONES 
 	*
 	*/
+	public function InsertaNotificacionStatus($data){
+			
+			$datos=array("nombre"=>"El usuario ".$data["nombre"]." ha subido de status!",
+			"descripcion"=>"El usuario ".$data["nombre"]." ahora es ".$data["estatus"],
+			 "idUsuario"=>$data['idUsuario'],
+			 0);
+			 
+			$pub = new NotificacionModel();
+			$pub->InsertNotificacion($datos);
+	}
+	
 	public function InsertaNotificacionUsuario($data){
 			
 			$datos=array("nombre"=>"Nuevo usuario en la red!",
