@@ -43,6 +43,10 @@ public class AdapterAreasInteres extends BaseAdapter {
 		this.posicionAreasInicial = posicionAreasInicial;
 	}
 
+	public ArrayList<Area> getAreasBack() {
+		return areasBack;
+	}
+
 	@Override
 	public int getCount() {
 		return this.areas.size();
@@ -88,17 +92,12 @@ public class AdapterAreasInteres extends BaseAdapter {
 			imgItem.setImageResource(R.drawable.areas);
 		}
 
-		imgItem.setOnClickListener(new View.OnClickListener() {
+		/*imgItem.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//Compruebo si estaba para quitarlo y sino para añadirlo como seleccionado
-				boolean esta = StreamSupport.stream(areasBack).filter(area1 -> area1.getId() == area.getId()).findAny().isPresent();
-				if(esta)
-					uncheck(seleccionado,position);
-				else
-					check(seleccionado,position);
+
 			}
-		});
+		});*/
 		return rowView;
 	}
 
@@ -107,7 +106,7 @@ public class AdapterAreasInteres extends BaseAdapter {
 	 * @param view
 	 * @param position
 	 */
-	private void check(View view,int position){
+	public void check(View view,int position){
 		view.setVisibility(View.VISIBLE);
 		areasBack.add((Area) getItem(position));
 	}
@@ -121,7 +120,8 @@ public class AdapterAreasInteres extends BaseAdapter {
 		View view =gridView.getChildAt(position);
 		ImageView seleccionado = (ImageView) view.findViewById(R.id.elemento_area);
 		seleccionado.setVisibility(View.GONE);
-		areasBack.remove((Area) getItem(position));
+		Area area = StreamSupport.stream(areasBack).filter(area1 -> area1.getId() == ((Area)getItem(position)).getId()).findAny().get();
+		areasBack.remove(area);
 	}
 	/**
 	 * Selecciona el elemento sólo por la posicion del mismo
@@ -138,9 +138,10 @@ public class AdapterAreasInteres extends BaseAdapter {
 	 * @param view
 	 * @param position
 	 */
-	private void uncheck(View view,int position){
+	public void uncheck(View view,int position){
 		view.setVisibility(View.GONE);
-		areasBack.remove((Area) getItem(position));
+		Area area = StreamSupport.stream(areasBack).filter(area1 -> area1.getId() == ((Area)getItem(position)).getId()).findAny().get();
+		areasBack.remove(area);
 	}
 
 

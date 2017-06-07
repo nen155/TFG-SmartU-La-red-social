@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -50,6 +51,22 @@ public class AreasActivity extends AppCompatActivity {
         final GridView areasInteres = (GridView) findViewById(R.id.areas_interes);
         adapterAreasInteres =new AdapterAreasInteres(savedInstanceState,this, posicionAreasInicial,areasBack,areasInteres,areasInteresList);
         areasInteres.setAdapter(adapterAreasInteres);
+
+        areasInteres.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                //Compruebo si estaba para quitarlo y sino para añadirlo como seleccionado
+                boolean esta = StreamSupport.stream(adapterAreasInteres.getAreasBack()).filter(area1 -> area1.getId() == ((Area)adapterAreasInteres.getItem(position)).getId()).findAny().isPresent();
+                if(esta)
+                    adapterAreasInteres.uncheck(view.findViewById(R.id.elemento_area),position);
+                else
+                    adapterAreasInteres.check(view.findViewById(R.id.elemento_area),position);
+
+            }
+        });
+
         //Guardo las areas que ha seleccionado
         ((FloatingActionButton)findViewById(R.id.guardar_intereses)).setOnClickListener(new View.OnClickListener() {
             @Override

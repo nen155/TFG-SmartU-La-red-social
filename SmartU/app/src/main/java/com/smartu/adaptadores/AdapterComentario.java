@@ -17,10 +17,12 @@ import com.smartu.almacenamiento.Almacen;
 import com.smartu.contratos.OperacionesAdapter;
 import com.smartu.contratos.Publicacion;
 import com.smartu.modelos.Comentario;
+import com.smartu.utilidades.Comparador;
 import com.smartu.vistas.ProyectoActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -50,6 +52,7 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
         super();
         this.context = context;
         this.comentarios = items;
+        Collections.sort(comentarios, new Comparador.ComparaComentarios());
     }
 
 

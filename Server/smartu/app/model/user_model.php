@@ -3,7 +3,6 @@ namespace App\Model;
 
 use App\Lib\Database;
 use App\Lib\Response;
-include_once "class.usuario.php";
 
 class UserModel
 {
@@ -342,12 +341,17 @@ class UserModel
 			$this->response->setResponse(true);
 			
 			$this->response->result= array("resultado" =>"ok" );
+			//Inserto notificacion
+			$this->InsertaNotificacionUsuario($data);
+			
             return $this->response->result;
 		}catch (Exception $e) 
 		{
             $this->response->setResponse(false, $e->getMessage());
 		}
     }
+
+	
 	public function InsertSeguidor($data)
 	{
 		
@@ -368,6 +372,8 @@ class UserModel
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
+			//Inserto notificacion
+			$this->InsertaNotificacionSeguir($data);
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -421,6 +427,8 @@ class UserModel
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
+			
+			$this->InsertaNotificacionBuenaIdea($data);
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -477,6 +485,8 @@ class UserModel
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
+			//Inserto notificacion
+			$this->InsertaNotificacionSolicitud($data);
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -532,6 +542,8 @@ class UserModel
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
+			//Inserto notificacion
+			$this->InsertaNotificacionInteres($data);
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -540,8 +552,112 @@ class UserModel
 		}
     }
 	
+	/*
+	*
+	*INSERCCIÓN DE NOTIFICACIONES 
+	*
+	*/
+	public function InsertaNotificacionUsuario($data){
+			
+			$datos=array("nombre"=>"Nuevo usuario en la red!",
+			"descripcion"=>"El usuario ".$data["nombre"]." ahora está en SmartU",
+			 "idUsuario"=>$data['idUsuario'],
+			 0);
+			 
+			$pub = new NotificacionModel();
+			$pub->InsertNotificacion($datos);
+	}
+	public function InsertaNotificacionSeguir($data){
+			
+			//Busco el proyecto
+			$stm = $this->db->prepare("SELECT nombre as seguido FROM usuario WHERE id=?");
+			$stm->execute(array($data["idUsuarioSeguido"]));
+			$seguido = $stm->fetch(\PDO::FETCH_ASSOC);
+			
+			//Busco el usuario
+			$stm = $this->db->prepare("SELECT nombre as usuario FROM  usuario WHERE id=?");
+			$stm->execute(array($data["idUsuario"]));
+			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
+			
+			$datos=array("nombre"=>"El usuario ".$usuario["usuario"]." ha seguido a alguien!",
+			"descripcion"=>"El usuario ".$usuario["usuario"]." ahora está siguiendo a ".$seguido["seguido"],
+			 "idUsuario"=>$data['idUsuario'],
+			 0);
+			 
+			$pub = new NotificacionModel();
+			$pub->InsertNotificacion($datos);
+	}
+	
+	public function InsertaNotificacionBuenaIdea($data){
+			
+			//Busco el proyecto
+			$stm = $this->db->prepare("SELECT nombre as proyecto FROM  proyecto WHERE id=?");
+			$stm->execute(array($data["idProyecto"]));
+			$proyecto = $stm->fetch(\PDO::FETCH_ASSOC);
+			
+			//Busco el usuario
+			$stm = $this->db->prepare("SELECT nombre as usuario FROM  usuario WHERE id=?");
+			$stm->execute(array($data["idUsuario"]));
+			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
+			
+			$datos=array("nombre"=>"El proyecto ".$proyecto["proyecto"]." es una buena idea!",
+			"descripcion"=>"El usuario ".$usuario["usuario"]." ha dado una buena idea al proyecto ".$proyecto["proyecto"],
+			 "idUsuario"=>$data['idUsuario'],
+			 "idProyecto"=>$data['idProyecto']);
+			 
+			$pub = new NotificacionModel();
+			$pub->InsertNotificacion($datos);
+	}
 	
 	
+	
+	public function InsertaNotificacionSolicitud($data){
+			
+			//Busco el proyecto
+			$stm = $this->db->prepare("SELECT nombre as proyecto FROM  proyecto WHERE id=?");
+			$stm->execute(array($data["idProyecto"]));
+			$proyecto = $stm->fetch(\PDO::FETCH_ASSOC);
+			
+			//Busco el usuario
+			$stm = $this->db->prepare("SELECT nombre as usuario FROM  usuario WHERE id=?");
+			$stm->execute(array($data["idUsuario"]));
+			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
+			
+			$datos=array("nombre"=>"Nueva solicitud de unión en ".$proyecto["proyecto"]."!",
+			"descripcion"=>"El usuario ".$usuario["usuario"]." quiere unirse al proyecto ",
+			 "idUsuario"=>$data['idUsuario'],
+			 "idProyecto"=>$data['idProyecto']);
+			 
+			$pub = new NotificacionModel();
+			$pub->InsertNotificacion($datos);
+	}
+	
+	public function InsertaNotificacionInteres($data){
+			
+			//Busco el areas
+			for($i=0;$i<count($data["idsAreas"]);++$i){
+				$stm = $this->db->prepare("SELECT nombre as interes FROM area WHERE id=?");
+				$stm->execute(array($data['idsAreas'][$i]));
+				$area=$stm->fetch(\PDO::FETCH_ASSOC);
+				if($i!=count($data["idsAreas"])-1)
+					$areas.="".$area["interes"].", ";
+				else
+					$areas.="".$area["interes"];
+			}
+			
+			//Busco el usuario
+			$stm = $this->db->prepare("SELECT nombre as usuario FROM  usuario WHERE id=?");
+			$stm->execute(array($data["idUsuario"]));
+			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
+			
+			$datos=array("nombre"=>"El usuario ". $usuario["usuario"] . " tiene nuevos intereses!",
+			"descripcion"=>"Al usuario ".$usuario["usuario"]." ahora le interesan ".$areas,
+			 "idUsuario"=>$data['idUsuario'],
+			 0);
+			 
+			$pub = new NotificacionModel();
+			$pub->InsertNotificacion($datos);
+	}
 	
 	
 	

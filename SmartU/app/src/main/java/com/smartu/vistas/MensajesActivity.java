@@ -58,7 +58,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MensajesActivity extends AppCompatActivity {
 
-    public static final String MESSAGES_CHILD = "messages";
     private static final int REQUEST_IMAGE = 2;
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 100;
     private static final String MESSAGE_SENT_EVENT = "message_sent";
@@ -281,7 +280,7 @@ public class MensajesActivity extends AppCompatActivity {
                     getMessageFromFirebaseUser(mensaje.getSenderUid(),mensaje.getReceiverUid(),null);
                 }
                 // send push notification to the receiver
-                sendPushNotificationToReceiver(mensaje.getSender(), mensaje.getMessage(), mensaje.getSenderUid(), ControladorPreferencias.getTokenFCM(), receiverFirebaseToken);
+                sendPushNotificationToReceiver(mensaje.getReceiver(), mensaje.getMessage(), mensaje.getReceiverUid(), usuarioChat.getFirebaseToken(), receiverFirebaseToken);
             }
 
             @Override

@@ -169,6 +169,7 @@ public class FragmentComentariosProyecto extends Fragment {
         });
         // Adds the scroll listener to RecyclerView
         recyclerViewComentarios.addOnScrollListener(scrollListener);
+        recyclerViewComentarios.setNestedScrollingEnabled(false);
         //La primera vez le pongo el tamaño del Array por si no son más de 10
         //que son lo que me traigo
         adapterComentarioProyecto.setTotalElementosServer(comentarios.size());
@@ -250,8 +251,10 @@ public class FragmentComentariosProyecto extends Fragment {
                 try {
                     if(res.getString("resultado").compareToIgnoreCase("ok")!=0)
                         Toast.makeText(getContext(),"No se ha podido realizar la operacion, problemas de conexión?",Toast.LENGTH_SHORT).show();
-                    else //Añado el comentario al top del adapter y lo actualizo
+                    else { //Añado el comentario al top del adapter y lo actualizo
+                        Toast.makeText(getContext(),"Has comentado este proyecto",Toast.LENGTH_SHORT).show();
                         adapterComentarioProyecto.addItemTop(comentario);
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

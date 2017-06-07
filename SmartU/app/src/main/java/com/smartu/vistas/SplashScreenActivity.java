@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.smartu.R;
 import com.smartu.almacenamiento.Almacen;
 import com.smartu.hebras.HPublicaciones;
@@ -35,9 +36,14 @@ import java.util.ArrayList;
 public class SplashScreenActivity extends AppCompatActivity {
 
     private HPublicaciones hPublicaciones;
+    //Cargo la referencia al FCM
+    private final FirebaseMessaging mFCMInteractor = FirebaseMessaging.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //me subscribo a las notificaciones
+        mFCMInteractor.subscribeToTopic("/topics/notificaciones");
         //Para cuando es llamado desde una notificacion
         Bundle bundle = getIntent().getExtras();
         // Oculto la barra de título para que no se vea en el Splash
@@ -54,6 +60,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
         hPublicaciones.execute();
     }
+
 
 
 }

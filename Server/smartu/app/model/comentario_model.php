@@ -30,7 +30,7 @@ class ComentarioModel
 			$result = array();
 			if($id==null){
 				$stm = $this->db->prepare("SELECT c.id,c.descripcion,c.fecha,c.idUsuario,c.idProyecto,u.nombre as usuario,p.nombre as proyecto ".
-				" FROM ". $this->table ." as c INNER JOIN proyecto as p ON c.idProyecto=p.id INNER JOIN usuario as u ON c.idUsuario=u.id LIMIT ".$offset.",".$limit);
+				" FROM ". $this->table ." as c INNER JOIN proyecto as p ON c.idProyecto=p.id INNER JOIN usuario as u ON c.idUsuario=u.id ORDER BY c.fecha DESC LIMIT ".$offset.",".$limit);
 				$stm->execute();
 			}
 			else
@@ -38,7 +38,7 @@ class ComentarioModel
 				$stm = $this->db->prepare("SELECT c.id,c.descripcion,c.fecha,c.idUsuario,c.idProyecto,u.nombre as usuario,p.nombre as proyecto ".
 				" FROM ". $this->table ." as c INNER JOIN proyecto as p ON c.idProyecto=p.id INNER JOIN usuario as u ON c.idUsuario=u.id".
 				" WHERE c.idProyecto= ?".
-				" LIMIT ".$offset.",".$limit);
+				"ORDER BY c.fecha DESC LIMIT ".$offset.",".$limit);
 				$stm->execute(array($id));
 			}
 			$this->response->setResponse(true);
@@ -133,7 +133,7 @@ class ComentarioModel
                      ->execute(
                         array(
                             $data['descripcion'],
-                            date("Y-m-d", $timestamp),
+                            date("Y-m-d H:i:s", $timestamp),
 							$data['idUsuario'],
 							$data['idProyecto']
                         )
@@ -142,6 +142,8 @@ class ComentarioModel
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
+			//Inserto la notificacion del comentario
+			$this->InsertaNotificacionComentario($data);
 			
             return $this->response->result;
 		}catch (Exception $e) 
@@ -149,7 +151,30 @@ class ComentarioModel
             $this->response->setResponse(false, $e->getMessage());
 		}
     }
-	
+	public function InsertaNotificacionComentario($data){
+			//Busco el proyecto
+			$stm = $this->db->prepare("SELECT nombre as proyecto FROM  proyecto WHERE id=?");
+			$stm->execute(array($data["idProyecto"]));
+			$proyecto = $stm->fetch(\PDO::FETCH_ASSOC);
+			//Busco el usuario
+			$stm = $this->db->prepare("SELECT nombre as usuario FROM  usuario WHERE id=?");
+			$stm->execute(array($data["idUsuario"]));
+			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
+			
+			if(strlen($data["descripcion"])>150){
+					$descripcion=substr($data["descripcion"],0,150);
+			}else
+				$descripcion=$data["descripcion"];
+			
+			
+			$datos = array("nombre"=>"Nuevo comentario en ".$proyecto["proyecto"]."!",
+			"descripcion"=>"El usuario ".$usuario["usuario"]." ha hecho el siguiente comentario ".$descripcion."...",
+			 "idUsuario"=>$data['idUsuario'],
+			 "idProyecto"=>$data['idProyecto']);
+			 
+			$pub = new NotificacionModel();
+			$pub->InsertNotificacion($datos);
+	}
 	
     /**
 	* TODO Como esta función no se va a usar en la app se deja por hacer

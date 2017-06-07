@@ -18,6 +18,7 @@ import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.smartu.R;
 import com.smartu.modelos.Multimedia;
+import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.SpinnerHelper;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -73,7 +74,7 @@ public class Imagen360Activity extends AppCompatActivity {
                     @Override
                     public void onProvideBitmap(final MD360BitmapTexture.Callback callback) {
                         /*TODO Esto es para cuando funcione el server Uri.parse(ConsultasBBDD.server+multimedia.getUrl()*/
-                        loadImage(getDrawableUri(R.drawable.imagen360test), callback);
+                        loadImage(Uri.parse(ConsultasBBDD.server+ConsultasBBDD.imagenes+multimedia.getUrl()), callback);
                     }
                 })
                 .pinchEnabled(true)

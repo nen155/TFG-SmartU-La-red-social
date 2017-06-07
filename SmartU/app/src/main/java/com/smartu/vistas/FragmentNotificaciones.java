@@ -45,8 +45,9 @@ public class FragmentNotificaciones extends Fragment {
     private static final String ARG_NOTIFICACIONES = "notificaciones";
     private RecyclerView recyclerViewNotificacion;
 
-    /**NO VA A SER NECESARIO PUES COGERÉ LOS DATOS DE LA BASE DE DATOS,
-    *PERO PUEDE PENSARSE SI ES ÚTIL
+
+    /**
+    *PUEDE PENSARSE SI ES ÚTIL
     *Creo el BroadcastReceiver en su método añado al ArrayList del Adapter
     *una nueva novedad
     *Necesario para recibir el Intent del servicio de FCM*/
@@ -73,9 +74,9 @@ public class FragmentNotificaciones extends Fragment {
                 notificacion.setIdProyecto(Integer.parseInt(idproyecto));
                 notificacion.setProyecto(proyecto);
             }
-
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
-                notificacion.setFecha(new Timestamp(SimpleDateFormat.getInstance().parse(fecha).getTime()));
+                notificacion.setFecha(sdf.parse(fecha));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -119,6 +120,7 @@ public class FragmentNotificaciones extends Fragment {
         if (getArguments() != null) {
             notificaciones = getArguments().getParcelableArrayList(ARG_NOTIFICACIONES);
         }
+
     }
 
     @Override
@@ -171,19 +173,15 @@ public class FragmentNotificaciones extends Fragment {
         super.onResume();
         //Me subscribo y cargo las notificaciones si las hubiese
         start();
-        //NO VA A SER NECESARIO PUES COGERÉ LOS DATOS DE LA BASE DE DATOS,
-        //PERO PUEDE PENSARSE SI ES ÚTIL
         //Escucho los Intents que me llegan con el filtro novedad
-        //LocalBroadcastManager.getInstance(getContext()).registerReceiver(mNotificationsReceiver, new IntentFilter(ACTION_NOTIFY_NEW_NOTIFICACION));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mNotificationsReceiver, new IntentFilter(ACTION_NOTIFY_NEW_NOTIFICACION));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        //NO VA A SER NECESARIO PUES COGERÉ LOS DATOS DE LA BASE DE DATOS,
-        //PERO PUEDE PENSARSE SI ES ÚTIL
         //Dejo de escuchar los Intents
-        //LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mNotificationsReceiver);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mNotificationsReceiver);
     }
 
     /**
@@ -198,7 +196,7 @@ public class FragmentNotificaciones extends Fragment {
      * Subscribe la aplicación al tema notificaciones
      */
     public void subscribirseANotificaciones() {
-        mFCMInteractor.subscribeToTopic("notificaciones");
+        mFCMInteractor.subscribeToTopic("/topics/notificaciones");
     }
 
     /**
@@ -221,7 +219,7 @@ public class FragmentNotificaciones extends Fragment {
      * @param notificacion
      */
     public void guardaNotificacion(Notificacion notificacion) {
-        notificaciones.add(notificacion);
+        notificaciones.add(0,notificacion);
         muestraSinNotificaciones(false);
         addNotificacionTop(notificacion);
     }

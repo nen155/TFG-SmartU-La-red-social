@@ -16,11 +16,13 @@ import com.smartu.almacenamiento.Almacen;
 import com.smartu.contratos.OperacionesAdapter;
 import com.smartu.contratos.Publicacion;
 import com.smartu.modelos.Notificacion;
+import com.smartu.utilidades.Comparador;
 import com.smartu.vistas.ProyectoActivity;
 import com.smartu.vistas.UsuarioActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -50,6 +52,7 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 		super();
 		this.context = context;
 		this.notificaciones = items;
+		Collections.sort(notificaciones, new Comparador.ComparaNotificaciones());
 	}
 
 
@@ -114,11 +117,32 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 			holder.descripcionNotificacion.setText(notificacion.getDescripcion());
 			Date fecha = notificacion.getFecha();
 			if (fecha != null) {
-				Date tiempo = new Date(fecha.getTime() - new Date().getTime());
-				Calendar calendar = GregorianCalendar.getInstance();
-				calendar.setTime(tiempo);
-				int horas = calendar.get(Calendar.HOUR);
-				String hace = "Hace " + horas + " horas";
+				long res = (((new Date().getTime()-fecha.getTime())/1000)/60)/60;
+				String hace ="";
+				if(res>24) {
+					res = res / 24;
+					if(res>1)
+						hace = "Hace " + res + " dias";
+					else
+						hace = "Hace " + res + " día";
+				}else if(res>1)
+					hace = "Hace " + res + " horas";
+				else if(res==1){
+					hace = "Hace " + res + " hora";
+				}
+				else if(res<1) {
+					res = res/60;
+					if(res>1)
+						hace = "Hace " + res + " minutos";
+					else if(res==1){
+						hace = "Hace " + res + " minuto";
+					}
+					else if(res<1) {
+						res=res/60;
+						hace = "Hace " + res + " segundos";
+					}
+				}
+
 				holder.fechaNotificacion.setText(hace);
 			}
 			String textoBoton = "";
@@ -182,7 +206,7 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 				context.startActivity(intent);
 			}else if(notificacion.getIdProyecto()!=0) {
 				Intent intent = new Intent(context,ProyectoActivity.class);
-				intent.putExtra("idProyecot", notificacion.getIdProyecto());
+				intent.putExtra("idProyecto", notificacion.getIdProyecto());
 				context.startActivity(intent);
 			}
 	}

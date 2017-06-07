@@ -121,13 +121,13 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
             holder.nombreMultimedia.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cargaMultimedia();
+                    cargaMultimedia((Multimedia) multimediaList.get(position));
                 }
             });
             holder.imgPreviewMultimedia.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cargaMultimedia();
+                    cargaMultimedia((Multimedia) multimediaList.get(position));
                 }
             });
         }
@@ -154,7 +154,7 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
     /**
      * Carga el multimedia dependiendo del tipo en la Activity correspondiente
      */
-    private void cargaMultimedia(){
+    private void cargaMultimedia(Multimedia multimedia){
         Intent intent=null;
         switch(multimedia.getTipo()) {
             case "video":

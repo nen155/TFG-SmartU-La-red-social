@@ -13,14 +13,18 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
+import com.smartu.modelos.Notificacion;
 import com.smartu.utilidades.Constantes;
 import com.smartu.vistas.FragmentNotificaciones;
 import com.smartu.vistas.MainActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
- * Created by NeN on 21/05/2017.
+ * Created by Emilio Chica Jiménez on 21/05/2017.
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -41,14 +45,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }else {
             //Es una nueva notificación de que alguien ha creado algo
             displayNotification(remoteMessage.getNotification(), remoteMessage.getData());
-            //NO VA A SER NECESARIO PUES COGERÉ LOS DATOS DE LA BASE DE DATOS,
-            //PERO PUEDE PENSARSE SI ES ÚTIL
             //Envío los datos al RecyclerCiew correspondiente para que se actualice
-            //sendNewPromoBroadcast(remoteMessage);
+            addNotificacion(remoteMessage);
         }
     }
+
     /**
-     * Create and show a simple notification containing the received FCM message.
+     * Crea una notificación cuando recibes un mensaje del chat de FCM
      */
     private void sendNotification(String title, String message, String receiver, String receiverUid, String firebaseToken) {
         Intent intent = new Intent(this, MainActivity.class);
@@ -79,15 +82,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * Se encuentra en FragmentNotificaciones en el onCreate.....
      * @param remoteMessage
      */
-    private void sendNewPromoBroadcast(RemoteMessage remoteMessage) {
+    private void addNotificacion(RemoteMessage remoteMessage) {
         Intent intent = new Intent(FragmentNotificaciones.ACTION_NOTIFY_NEW_NOTIFICACION);
-        intent.putExtra("nombre", remoteMessage.getNotification().getTitle());
-        intent.putExtra("descripcion", remoteMessage.getNotification().getBody());
+        intent.putExtra("id", remoteMessage.getData().get("id"));
+        intent.putExtra("nombre", remoteMessage.getData().get("nombre"));
+        intent.putExtra("descripcion", remoteMessage.getData().get("descripcion"));
         intent.putExtra("fecha", remoteMessage.getData().get("fecha"));
         intent.putExtra("idusuario", remoteMessage.getData().get("idusuario"));
         intent.putExtra("idproyecto", remoteMessage.getData().get("idproyecto"));
         intent.putExtra("usuario", remoteMessage.getData().get("usuario"));
         intent.putExtra("proyecto", remoteMessage.getData().get("proyecto"));
+
+        Notificacion notificacion = new Notificacion();
+        notificacion.setId(Integer.parseInt(remoteMessage.getData().get("id")));
+        notificacion.setNombre(remoteMessage.getData().get("nombre"));
+        notificacion.setDescripcion(remoteMessage.getData().get("descripcion"));
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            notificacion.setFecha(sdf.parse(remoteMessage.getData().get("fecha")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(remoteMessage.getData().get("idUsuario")!=null)
+            notificacion.setIdUsuario(Integer.parseInt(remoteMessage.getData().get("idUsuario")));
+        if(remoteMessage.getData().get("idProyecto")!=null)
+            notificacion.setIdProyecto(Integer.parseInt(remoteMessage.getData().get("idProyecto")));
+        if(remoteMessage.getData().get("usuario")!=null) {
+            notificacion.setUsuario(remoteMessage.getData().get("usuario"));
+        }
+        if(remoteMessage.getData().get("proyecto")!=null)
+            notificacion.setProyecto(remoteMessage.getData().get("proyecto"));
+        Almacen.add(notificacion);
+
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

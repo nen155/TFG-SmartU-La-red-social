@@ -34,14 +34,14 @@ import com.smartu.utilidades.ConsultasBBDD;
 import java.util.Locale;
 
 public class VideoActivity extends AppCompatActivity {
-
+    private SimpleExoPlayer player;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null && bundle.containsKey("multimedia")) {
-            SimpleExoPlayer player;
+
             Multimedia multimedia = bundle.getParcelable("multimedia");
             SimpleExoPlayerView videoView = (SimpleExoPlayerView) findViewById(R.id.video);
 
@@ -84,5 +84,28 @@ public class VideoActivity extends AppCompatActivity {
             } else // Si no tiene subtitulos preparo solo el video
                 player.prepare(videoSource);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        if(player!=null)
+            player.stop();
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(player!=null)
+            player.stop();
+        super.onBackPressed();
+
+    }
+
+    @Override
+    protected void onPause() {
+        if(player!=null)
+            player.stop();
+        super.onPause();
+
     }
 }

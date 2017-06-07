@@ -35,7 +35,7 @@
             android:padding="10dp"
             android:text="nombre"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
 

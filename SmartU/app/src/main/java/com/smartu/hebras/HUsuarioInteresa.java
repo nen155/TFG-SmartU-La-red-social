@@ -112,7 +112,9 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
                     Usuario usuario = Sesion.getUsuario(context);
                     ArrayList<Area> areasInteresList = usuario.getMisAreasInteres();
                     areasInteresList = new ArrayList<Area>(areasBack);
-                    usuario.setMisAreasInteres(areasInteresList);
+                    usuario.getMisAreasInteres().clear();
+                    for(int i=0;i<areasInteresList.size();++i)
+                        usuario.getMisAreasInteres().add(areasInteresList.get(i));
                     Sesion.serializaUsuario(context,usuario);
                 }
 

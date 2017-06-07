@@ -87,7 +87,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                 // que pertenezcan al proyecto en lugar de guardarlos
                 ArrayList<Comentario> comentariosProyecto=null;
                 //Filtro los comentarios por proyecto ID
-                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+                if(Build.VERSION.SDK_INT>Build.VERSION_CODES.M)
                     comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(Almacen.getComentarios().stream().filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
                 else
                     comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(StreamSupport.stream(Almacen.getComentarios()).filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
@@ -158,7 +158,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         if (usuarioSesion != null && proyecto.getBuenaIdea()!=null) {
             //Compruebo si el usuario le ha dado antes a buena idea a este proyecto
             boolean usuarioBuenaidea = false;
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+            if(Build.VERSION.SDK_INT>Build.VERSION_CODES.M)
                 usuarioBuenaidea= proyecto.getBuenaIdea().stream().anyMatch(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId());
             else
                 usuarioBuenaidea= StreamSupport.stream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();

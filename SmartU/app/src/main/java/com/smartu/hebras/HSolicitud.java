@@ -113,7 +113,7 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
                 else {
                     Usuario usuario = Sesion.getUsuario(context);
                     if (eliminar)
-                        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
+                        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.M)
                             usuario.getMisSolicitudes().remove(usuario.getMisSolicitudes().stream().filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findFirst().get());
                         else
                             usuario.getMisSolicitudes().remove(StreamSupport.stream(usuario.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findFirst().get());

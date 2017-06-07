@@ -268,7 +268,7 @@ public class Almacen {
 
         ArrayList<Proyecto> proyectosFilter = null;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             Stream<Proyecto> proyectoStream = proyectoHashMap.values().parallelStream()
                     .filter(
                             proyecto -> proyecto.getMisAreas().parallelStream()
@@ -302,7 +302,7 @@ public class Almacen {
         if (proyectosFiltrados.isEmpty() || notificacionHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
             return getNotificaciones();
         ArrayList<Notificacion> nofiticacionesFilter = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             nofiticacionesFilter = new ArrayList<Notificacion>(Arrays.asList(notificacionHashMap.values().parallelStream()
                     .filter(notificacion -> proyectosFiltrados.parallelStream()
                             .anyMatch(proyecto -> proyecto.getId() == notificacion.getIdProyecto())
@@ -335,7 +335,7 @@ public class Almacen {
         if (proyectosFiltrados.isEmpty() || comentarioHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
             return getComentarios();
         ArrayList<Comentario> comentariossFilter = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             comentariossFilter = new ArrayList<Comentario>(Arrays.asList(comentarioHashMap.values().parallelStream()
                     .filter(comentario -> proyectosFiltrados.parallelStream()
                             .anyMatch(proyecto -> proyecto.getId() == comentario.getIdProyecto())

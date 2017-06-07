@@ -17,13 +17,18 @@ import com.smartu.contratos.OperacionesAdapter;
 import com.smartu.contratos.Publicacion;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Proyecto;
+import com.smartu.utilidades.Comparador;
 import com.smartu.vistas.ProyectoActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import java8.util.stream.Stream;
 import java8.util.stream.StreamSupport;
 
 
@@ -32,6 +37,7 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
     private ArrayList<Comentario> comentarios;
     private Comentario comentario;
     private Proyecto proyectoOrigen;
+    private TextView holderDescripcionComentario;
 
     //Es el número total de elementos que hay en el server
     //tengo que recogerlo de las hebras de consulta
@@ -50,6 +56,7 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
         super();
         this.context = context;
         this.comentarios = items;
+        Collections.sort(comentarios, new Comparador.ComparaComentarios());
         this.proyectoOrigen = proyectoOrigen;
     }
 
@@ -118,13 +125,26 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
                         hace = "Hace " + res + " dias";
                     else
                         hace = "Hace " + res + " día";
-                }else
-                if(res>1)
+                }else if(res>1)
                     hace = "Hace " + res + " horas";
-                else
+                else if(res==1){
                     hace = "Hace " + res + " hora";
+                }
+                else if(res<1) {
+                    res = res/60;
+                    if(res>1)
+                        hace = "Hace " + res + " minutos";
+                    else if(res==1){
+                        hace = "Hace " + res + " minuto";
+                    }
+                    else if(res<1) {
+                        res=res/60;
+                        hace = "Hace " + res + " segundos";
+                    }
+                }
                 holder.fechaComentario.setText(hace);
             }
+            holderDescripcionComentario= holder.descripcionComentario;
             holder.descripcionComentario.setText(comentario.getDescripcion());
             holder.btnNombreProyecto.setText(proyectoOrigen.getNombre());
             holder.nombreUsuario.setText(comentario.getUsuario());
@@ -186,6 +206,7 @@ public class AdapterComentarioProyecto extends RecyclerView.Adapter<AdapterComen
         Comentario comentario= pushMessage;
         boolean esta = StreamSupport.stream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
         if (!esta) {
+            holderDescripcionComentario.setText("");
             comentarios.add(0,comentario);
             Almacen.add(comentario);
             notifyItemInserted(0);

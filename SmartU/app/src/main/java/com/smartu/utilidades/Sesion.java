@@ -46,15 +46,16 @@ public class Sesion {
      * Serializa el usuario para mantener la sesión
      *
      * @param context
-     * @param usuario
+     * @param user
      */
-    public static void serializaUsuario(Context context, Usuario usuario) {
+    public static void serializaUsuario(Context context, Usuario user) {
         try {
             fos = context.openFileOutput("usu.bin", Context.MODE_PRIVATE);
             out = new ObjectOutputStream(fos);
-            out.writeObject(usuario);
+            out.writeObject(user);
             out.close();
             fos.close();
+            usuario =null;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

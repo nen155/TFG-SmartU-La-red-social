@@ -147,7 +147,7 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
         //Compruebo los permisos de la localización
         //si no los tengo me salgo del método
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
         //Obtengo la última localización conocida
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -175,7 +175,7 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
         //Compruebo los permisos de la localización
         //si no los tengo me salgo del método
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
         //Pongo mi localización en el mapa
         googleMap.setMyLocationEnabled(true);

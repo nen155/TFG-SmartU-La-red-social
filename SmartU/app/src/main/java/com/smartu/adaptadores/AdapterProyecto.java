@@ -23,6 +23,7 @@ import com.smartu.contratos.Publicacion;
 import com.smartu.hebras.HBuenaIdea;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
+import com.smartu.utilidades.Comparador;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
 import com.smartu.vistas.FragmentProyectos;
@@ -32,6 +33,7 @@ import com.squareup.picasso.Picasso;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -64,6 +66,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
         this.context = context;
         this.proyectos = items;
         this.onProyectoSelectedListener = onProyectoSelectedListener;
+        Collections.sort(proyectos, new Comparador.ComparaProyectos());
         usuarioSesion = Sesion.getUsuario(context);
     }
 
@@ -237,7 +240,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
         if (usuarioSesion != null && proyecto.getBuenaIdea() != null) {
             //Compruebo si el usuario le ha dado antes a buena idea a este proyecto
             boolean usuarioBuenaidea = false;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
                 usuarioBuenaidea = proyecto.getBuenaIdea().parallelStream().anyMatch(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId());
             else
                 usuarioBuenaidea = StreamSupport.stream(proyecto.getBuenaIdea()).filter(buenaIdea -> buenaIdea.getIdUsuario() == usuarioSesion.getId()).findAny().isPresent();

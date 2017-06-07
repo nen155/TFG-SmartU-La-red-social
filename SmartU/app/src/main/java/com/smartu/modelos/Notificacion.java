@@ -3,10 +3,21 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.smartu.contratos.Publicacion;
+import com.smartu.utilidades.ConversoresJSON;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.security.PublicKey;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -16,7 +27,10 @@ import java.util.Date;
 
 public class Notificacion implements Parcelable,Serializable,Publicacion {
     private int id;
-    private Timestamp fecha;
+    @JsonProperty
+    @JsonSerialize(using=ConversoresJSON.DateTimeSerializer.class)
+    @JsonDeserialize(using=ConversoresJSON.DateTimeDeserializer.class)
+    private Date fecha;
     private String nombre;
     private String descripcion;
     private int idUsuario;
@@ -37,7 +51,7 @@ public class Notificacion implements Parcelable,Serializable,Publicacion {
     public Notificacion() {
     }
 
-    public Notificacion(int id, Timestamp fecha, String nombre, String descripcion, int idUsuario, int idProyecto, String proyecto, String usuario) {
+    public Notificacion(int id, Date fecha, String nombre, String descripcion, int idUsuario, int idProyecto, String proyecto, String usuario) {
         this.id = id;
         this.fecha = fecha;
         this.nombre = nombre;
@@ -54,7 +68,7 @@ public class Notificacion implements Parcelable,Serializable,Publicacion {
         descripcion = in.readString();
         idUsuario = in.readInt();
         idProyecto = in.readInt();
-        fecha = new Timestamp(in.readLong());
+        fecha = new Date(in.readLong());
         usuario = in.readString();
         proyecto = in.readString();
     }
@@ -79,11 +93,11 @@ public class Notificacion implements Parcelable,Serializable,Publicacion {
         this.id = id;
     }
 
-    public Timestamp getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(Timestamp fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
@@ -147,7 +161,8 @@ public class Notificacion implements Parcelable,Serializable,Publicacion {
         dest.writeString(descripcion);
         dest.writeInt(idUsuario);
         dest.writeInt(idProyecto);
-        dest.writeLong(fecha.getTime());
+        if(fecha!=null)
+            dest.writeLong(fecha.getTime());
         dest.writeString(usuario);
         dest.writeString(proyecto);
     }

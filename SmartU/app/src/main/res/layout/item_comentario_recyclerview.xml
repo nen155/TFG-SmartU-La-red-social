@@ -34,7 +34,7 @@
             android:padding="10dp"
             android:text="@string/nuevo_comentario"
             android:textColor="@color/white"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView

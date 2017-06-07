@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.smartu.contratos.Publicacion;
+import com.smartu.utilidades.ConversoresJSON;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -39,8 +40,8 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
     private String web;
     private String imagenPerfil;
     @JsonProperty
-    @JsonSerialize(using=NumericBooleanSerializer.class)
-    @JsonDeserialize(using=NumericBooleanDeserializer.class)
+    @JsonSerialize(using=ConversoresJSON.NumericBooleanSerializer.class)
+    @JsonDeserialize(using=ConversoresJSON.NumericBooleanDeserializer.class)
     private boolean verificado;
     //Contenedores para los elementos de los que es propietario el usuario
     private ArrayList<Integer> misProyectos;
@@ -51,25 +52,7 @@ public class Usuario implements Parcelable,Serializable,Publicacion {
     private ArrayList<SolicitudUnion> misSolicitudes;
     private Status miStatus;
 
-    /**
-     * Sirven para serializar y deserializar un objeto de tipo boolean que viene como int
-     * Son custom serializadores y deserializadores
-     */
-    public static class NumericBooleanSerializer extends JsonSerializer<Boolean> {
 
-        @Override
-        public void serialize(Boolean bool, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
-            generator.writeString(bool ? "1" : "0");
-        }
-    }
-
-    public static class NumericBooleanDeserializer extends JsonDeserializer<Boolean> {
-
-        @Override
-        public Boolean deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
-            return !"0".equals(parser.getText());
-        }
-    }
 
     public void clonar(Usuario u){
         id = u.getId();

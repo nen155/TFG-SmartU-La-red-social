@@ -29,7 +29,7 @@ class ProyectoModel
 			
 			$result = array();
 			$stm = $this->db->prepare("SELECT p.id,p.nombre,p.descripcion,p.fechaCreacion,p.fechaFinalizacion,m.url as imagenDestacada,p.localizacion,p.coordenadas,p.web,p.idUsuario as idPropietario,u.nombre as propietarioUser".
-			" FROM ". $this->table ." as p INNER JOIN usuario as u ON p.idUsuario=u.id LEFT JOIN multimedia as m ON m.id=p.idImagenDestacada LIMIT ".$offset.",".$limit);
+			" FROM ". $this->table ." as p INNER JOIN usuario as u ON p.idUsuario=u.id LEFT JOIN multimedia as m ON m.id=p.idImagenDestacada ORDER BY p.fechaCreacion DESC LIMIT ".$offset.",".$limit);
 			$stm->execute();
 			
 			$this->response->setResponse(true);
