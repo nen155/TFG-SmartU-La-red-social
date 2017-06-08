@@ -212,13 +212,15 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
         if (position >= proyectos.size() && position >= totalElementosServer && totalElementosServer > 0) {
             return VIEW_TYPE_FINAL;
         } else if (position >= proyectos.size()) {
-            return VIEW_TYPE_LOADING;
+            return VIEW_TYPE_FINAL;
         } else
             return VIEW_TYPE_ACTIVITY;
     }
 
     @Override
     public int getItemCount() {
+        if(proyectos.size()==0)
+            return proyectos.size();
         return proyectos.size() + 1;
     }
 

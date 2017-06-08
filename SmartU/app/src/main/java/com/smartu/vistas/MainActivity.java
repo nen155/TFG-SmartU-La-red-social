@@ -35,11 +35,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
     private static int itemMenuSeleccionado = R.id.navigation_muro;
     private FloatingActionsMenu filtros;
     private Usuario usuarioSesion = null;
-    //Declaro los arrays filtrados por intereses
-    private static ArrayList<Proyecto> proyectosFiltrados = new ArrayList<>();
-    private static ArrayList<Notificacion> notificacionesFiltradas=new ArrayList<>();
-    private static ArrayList<Usuario> usuariosFiltrados=new ArrayList<>();
-    private static ArrayList<Comentario> comentariosFiltrados=new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +51,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
         //Si ha iniciado sesión el usuario filtro los arrays para
         //poder mostrarlos en el fragment Intereses
         if (usuarioSesion != null) {
-                proyectosFiltrados = Almacen.proyectosFiltrados(usuarioSesion);
-                notificacionesFiltradas = Almacen.notificacionsFiltradas(usuarioSesion,proyectosFiltrados);
-                comentariosFiltrados = Almacen.comentariosFiltrados(usuarioSesion,proyectosFiltrados);
-                Almacen.usuariosFiltrados(usuarioSesion,usuariosFiltrados,this);
+            Almacen.filtrarPublicaciones(usuarioSesion,MainActivity.this);
         }
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -123,9 +116,12 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
         switch (v.getId()) {
             case R.id.filtro_notificaciones:
                 //Si estoy en intereses muestro las notificaciones filtradas
-                if (itemMenuSeleccionado == R.id.navigation_intereses)
-                    swicthTo = FragmentNotificaciones.newInstance(notificacionesFiltradas);
-                else
+                if (itemMenuSeleccionado == R.id.navigation_intereses) {
+                    if (usuarioSesion != null)
+                        swicthTo = FragmentNotificaciones.newInstance(Almacen.getNotificacionesFiltradas());
+                    else
+                        swicthTo = FragmentNotificaciones.newInstance(Almacen.getNotificaciones());
+                }else
                     swicthTo = FragmentNotificaciones.newInstance(Almacen.getNotificaciones());
                 Toast.makeText(getApplicationContext(), "Novedades", Toast.LENGTH_SHORT).show();
                 /*Intent intent = new Intent(MainActivity.this,MapsActivity.class);
@@ -133,25 +129,34 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
                 break;
             case R.id.filtro_comentarios:
                 //Si estoy en intereses muestro las comentarios filtrados
-                if (itemMenuSeleccionado == R.id.navigation_intereses)
-                    swicthTo = FragmentComentarios.newInstance(comentariosFiltrados);
-                else
+                if (itemMenuSeleccionado == R.id.navigation_intereses) {
+                    if (usuarioSesion != null)
+                        swicthTo = FragmentComentarios.newInstance(Almacen.getComentariosFiltrados());
+                    else
+                        swicthTo = FragmentComentarios.newInstance(Almacen.getComentarios());
+                }else
                     swicthTo = FragmentComentarios.newInstance(Almacen.getComentarios());
                 Toast.makeText(getApplicationContext(), "Comentarios", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.filtro_proyectos:
                 //Si estoy en intereses muestro los proyectos filtrados
-                if (itemMenuSeleccionado == R.id.navigation_intereses)
-                    swicthTo = FragmentProyectos.newInstance(proyectosFiltrados);
-                else
+                if (itemMenuSeleccionado == R.id.navigation_intereses) {
+                    if (usuarioSesion != null)
+                        swicthTo = FragmentProyectos.newInstance(Almacen.getProyectosFiltrados());
+                    else
+                        swicthTo = FragmentProyectos.newInstance(Almacen.getProyectos());
+                }else
                     swicthTo = FragmentProyectos.newInstance(Almacen.getProyectos());
                 Toast.makeText(getApplicationContext(), "Proyectos", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.filtro_usuarios:
                 //Si estoy en intereses muestro las usuarios filtrados
-                if (itemMenuSeleccionado == R.id.navigation_intereses)
-                    swicthTo = FragmentUsuarios.newInstance(usuariosFiltrados);
-                else
+                if (itemMenuSeleccionado == R.id.navigation_intereses) {
+                    if (usuarioSesion != null)
+                        swicthTo = FragmentUsuarios.newInstance(Almacen.getUsuariosFiltrados());
+                    else
+                        swicthTo = FragmentUsuarios.newInstance(Almacen.getUsuarios());
+                }else
                     swicthTo = FragmentUsuarios.newInstance(Almacen.getUsuarios());
                 Toast.makeText(getApplicationContext(), "Usuarios", Toast.LENGTH_SHORT).show();
                 break;
@@ -195,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
                     //Guardo el item por el que estoy para luego comparar
                     itemMenuSeleccionado = R.id.navigation_intereses;
                     //Cargo el fragment con los filtros
-                    swicthTo = FragmentProyectos.newInstance(proyectosFiltrados);
+                    swicthTo = FragmentProyectos.newInstance(Almacen.getProyectosFiltrados());
                     break;
 
             }

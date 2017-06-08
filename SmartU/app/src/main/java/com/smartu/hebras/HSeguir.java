@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
@@ -108,6 +109,7 @@ public class HSeguir extends AsyncTask<Void, Void, String> {
                     else
                         seguidor.getMisSeguidos().add(seguido.getId());
                     Sesion.serializaUsuario(context,seguidor);
+                    Almacen.filtrarPublicaciones(Sesion.getUsuario(context),context);
                 }
 
             } catch (JSONException e) {

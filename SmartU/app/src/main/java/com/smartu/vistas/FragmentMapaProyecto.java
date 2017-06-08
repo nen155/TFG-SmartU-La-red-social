@@ -45,6 +45,7 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
 
     private LatLng miPosicion =null;
     private Bundle mBundle;
+    private LatLng posicionProyecto;
 
     public FragmentMapaProyecto() {
         // Required empty public constructor
@@ -154,6 +155,11 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
                 mGoogleApiClient);
         if (mLastLocation != null) {
             miPosicion = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+            if(mMap!=null)
+                if(posicionProyecto!=null)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicionProyecto,12));
+                else
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion,12));
         }
     }
 
@@ -184,7 +190,7 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
                 String[]coordenadas=proyecto.getCoordenadas().split(",");
                 double lat = Double.parseDouble(coordenadas[0]);
                 double lon = Double.parseDouble(coordenadas[1]);
-                LatLng posicion = new LatLng(lat, lon);
+                posicionProyecto = new LatLng(lat, lon);
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.title(proyecto.getNombre());
                 //Pongo la descripción en el infowindow solo con 10 caracteres
@@ -192,13 +198,13 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
                     markerOptions.snippet(proyecto.getDescripcion().substring(0,50));
                 else
                     markerOptions.snippet(proyecto.getDescripcion());
-                markerOptions.position(posicion);
+                markerOptions.position(posicionProyecto);
                 mMap.addMarker(markerOptions);
         }
 
         // Movemos la camara a la posicion del usuario
         if(miPosicion!=null)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion,12));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion,3));
 
     }
 }

@@ -196,13 +196,15 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
         if (position >= usuarios.size() && position >= totalElementosServer && totalElementosServer > 0) {
             return VIEW_TYPE_FINAL;
         } else if (position >= usuarios.size()) {
-            return VIEW_TYPE_LOADING;
+            return VIEW_TYPE_FINAL;
         } else
             return VIEW_TYPE_ACTIVITY;
     }
 
     @Override
     public int getItemCount() {
+        if(usuarios.size()==0)
+            return usuarios.size();
         return usuarios.size() + 1;
     }
 

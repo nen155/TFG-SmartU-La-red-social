@@ -34,6 +34,12 @@ public class Almacen {
     private static Map<Integer,Comentario> comentarioHashMap = new HashMap<>();
     private static Map<Integer,Area> areasHashMap = new HashMap<>();
 
+    //Declaro los arrays filtrados por intereses
+    private static ArrayList<Proyecto> proyectosFiltrados = new ArrayList<>();
+    private static ArrayList<Notificacion> notificacionesFiltradas=new ArrayList<>();
+    private static ArrayList<Usuario> usuariosFiltrados=new ArrayList<>();
+    private static ArrayList<Comentario> comentariosFiltrados=new ArrayList<>();
+
     public static void add(Area a){
         areasHashMap.put(a.getId(),a);
     }
@@ -80,6 +86,22 @@ public class Almacen {
     }
     public static ArrayList<Area> getAreas(){
         return new ArrayList<Area>(areasHashMap.values());
+    }
+
+    public static ArrayList<Proyecto> getProyectosFiltrados() {
+        return proyectosFiltrados;
+    }
+
+    public static ArrayList<Notificacion> getNotificacionesFiltradas() {
+        return notificacionesFiltradas;
+    }
+
+    public static ArrayList<Usuario> getUsuariosFiltrados() {
+        return usuariosFiltrados;
+    }
+
+    public static ArrayList<Comentario> getComentariosFiltrados() {
+        return comentariosFiltrados;
     }
 
     /**
@@ -275,7 +297,7 @@ public class Almacen {
                                     .anyMatch(area -> usuarioSesion.getMisAreasInteres().parallelStream()
                                             .anyMatch(areaU -> areaU.getNombre().compareTo(area.getNombre()) == 0))
                                     ||
-                                    usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == usuarioSesion.getId())
+                                    usuarioSesion.getMisSeguidos().parallelStream().anyMatch(usuario1 -> usuario1 == proyecto.getIdPropietario())
                     );
             Proyecto[] proyectos = proyectoStream.toArray(Proyecto[]::new);
             proyectosFilter = new ArrayList<Proyecto>(Arrays.asList(proyectos));
@@ -285,7 +307,7 @@ public class Almacen {
                             .filter(area -> StreamSupport.stream(usuarioSesion.getMisAreasInteres())
                                     .filter(areaU -> areaU.getNombre().compareTo(area.getNombre()) == 0).findAny().isPresent()).findAny().isPresent()
                             ||
-                            StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuarioSesion.getId()).findAny().isPresent()
+                            StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == proyecto.getIdPropietario()).findAny().isPresent()
             ).toArray(Proyecto[]::new)));
         }
         return proyectosFilter;
@@ -294,10 +316,9 @@ public class Almacen {
     /**
      * Filtra las notificaciones por intereses y por usuarios a los que sigo
      * @param usuarioSesion
-     * @param proyectosFiltrados
      * @return
      */
-    public static ArrayList<Notificacion> notificacionsFiltradas(Usuario usuarioSesion,ArrayList<Proyecto> proyectosFiltrados) {
+    public static ArrayList<Notificacion> notificacionsFiltradas(Usuario usuarioSesion) {
         //Sino tengo proyectos o no tengo notificaciones gente que siga y areas de interes devuelvo los proyectos como estan
         if (proyectosFiltrados.isEmpty() || notificacionHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
             return getNotificaciones();
@@ -327,10 +348,9 @@ public class Almacen {
     /**
      * Filtra los comentarios por intereses y por usuarios a los que sigo
       * @param usuarioSesion
-     * @param proyectosFiltrados
      * @return
      */
-    public static ArrayList<Comentario> comentariosFiltrados(Usuario usuarioSesion,ArrayList<Proyecto> proyectosFiltrados) {
+    public static ArrayList<Comentario> comentariosFiltrados(Usuario usuarioSesion) {
         //Sino tengo proyectos o no tengo notificaciones gente que siga y areas de interes devuelvo los proyectos como estan
         if (proyectosFiltrados.isEmpty() || comentarioHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
             return getComentarios();
@@ -372,6 +392,19 @@ public class Almacen {
             usuariosFiltrados = new ArrayList<>(getUsuarios());
         else
             buscarUsuarios(usuarioSesion.getMisSeguidos(),usuariosFiltrados,context);
+    }
+
+    /**
+     * Patrón Fachada para Comentarios, Notificaciones, Proyectos y Usuarios
+     * Filtra todas las publicaciones
+     * @param usuarioSesion
+     * @param context
+     */
+    public static void filtrarPublicaciones(Usuario usuarioSesion,Context context){
+        proyectosFiltrados = Almacen.proyectosFiltrados(usuarioSesion);
+        notificacionesFiltradas = Almacen.notificacionsFiltradas(usuarioSesion);
+        comentariosFiltrados = Almacen.comentariosFiltrados(usuarioSesion);
+        Almacen.usuariosFiltrados(usuarioSesion,usuariosFiltrados,context);
     }
 
     /**

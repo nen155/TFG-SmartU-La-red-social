@@ -159,6 +159,7 @@ public class FragmentComentariosProyecto extends Fragment {
                         comentario.setIdProyecto(proyectoOrigen.getId());
                         hComentar = new HComentar(comentario);
                         hComentar.execute();
+                        textoComentario.setText("");
                     }else //sino le devuelvo el foco
                     {
                         textoComentario.requestFocus();
@@ -171,9 +172,6 @@ public class FragmentComentariosProyecto extends Fragment {
         // Adds the scroll listener to RecyclerView
         recyclerViewComentarios.addOnScrollListener(scrollListener);
         recyclerViewComentarios.setNestedScrollingEnabled(false);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterComentarioProyecto.setTotalElementosServer(comentarios.size());
     }
 
     @Override

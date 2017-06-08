@@ -84,7 +84,8 @@ public class FragmentMultimedia extends Fragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // El evento sólo se provoca cuando necesito añadir más elementos
-                cargarMasMultimedia(page);
+                //El *10 es por el limit y para cargar de 10 en 10
+                cargarMasMultimedia(page*10);
             }
         };
 
@@ -111,7 +112,7 @@ public class FragmentMultimedia extends Fragment {
         recyclerViewMultimedia.addOnScrollListener(scrollListener);
         //La primera vez le pongo el tamaño del Array por si no son más de 10
         //que son lo que me traigo
-        adapterMultimedia.setTotalElementosServer(multimedia.size());
+       // adapterMultimedia.setTotalElementosServer(multimedia.size());
     }
 
     @Override

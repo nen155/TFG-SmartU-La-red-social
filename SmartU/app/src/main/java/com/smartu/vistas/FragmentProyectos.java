@@ -105,9 +105,6 @@ public class FragmentProyectos extends Fragment {
         recyclerViewProyectos.setAdapter(adapterProyecto);
         // Adds the scroll listener to RecyclerView
         recyclerViewProyectos.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterProyecto.setTotalElementosServer(proyectos.size());
     }
 
     @Override

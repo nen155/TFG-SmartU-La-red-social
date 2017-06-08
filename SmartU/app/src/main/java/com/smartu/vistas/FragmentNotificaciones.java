@@ -163,9 +163,6 @@ public class FragmentNotificaciones extends Fragment {
         recyclerViewNotificacion.setAdapter(adapterNotificacion);
         // Adds the scroll listener to RecyclerView
         recyclerViewNotificacion.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterNotificacion.setTotalElementosServer(notificaciones.size());
     }
 
     @Override

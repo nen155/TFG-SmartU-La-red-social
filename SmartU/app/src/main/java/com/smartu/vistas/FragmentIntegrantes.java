@@ -125,9 +125,6 @@ public class FragmentIntegrantes extends Fragment {
         recyclerViewUsuarios.setAdapter(adapterIntegrante);
         // Adds the scroll listener to RecyclerView
         recyclerViewUsuarios.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        adapterIntegrante.setTotalElementosServer(integrantes.size());
 
     }
 
@@ -173,9 +170,28 @@ public class FragmentIntegrantes extends Fragment {
 
     @Override
     public void onDetach() {
+        // 1. First, clear the array of data
+        integrantes.clear();
+        // 2. Notify the adapter of the update
+        adapterIntegrante.notifyDataSetChanged(); // or notifyItemRangeRemoved
+        // 3. Reset endless scroll listener when performing a new search
+        scrollListener.resetState();
         super.onDetach();
         mListener = null;
     }
+
+    @Override
+    public void onPause() {
+        // 1. First, clear the array of data
+        integrantes.clear();
+        // 2. Notify the adapter of the update
+        adapterIntegrante.notifyDataSetChanged(); // or notifyItemRangeRemoved
+        // 3. Reset endless scroll listener when performing a new search
+        scrollListener.resetState();
+        super.onPause();
+    }
+
+
 
     /**
      * Esta interfaz debe ser implementada por las activities que contienen este

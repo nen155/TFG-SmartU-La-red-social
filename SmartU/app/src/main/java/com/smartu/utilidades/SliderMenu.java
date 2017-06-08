@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.smartu.R;
+import com.smartu.almacenamiento.Almacen;
 import com.smartu.modelos.Usuario;
 import com.smartu.vistas.AreasActivity;
 import com.smartu.vistas.ContactoActivity;
@@ -192,9 +193,19 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
                 context.startActivity(intent1);
                 break;
             case R.id.nav_out:
+                //Elimino el archivo y la referencia del usuario
                 Sesion.logOut(context);
+                //Dejo el usuario a null pues es lo que devuelve el metodo
+                //despues del logout
                 usuarioSesion=Sesion.getUsuario(context);
+                //Limpio los almacenes para que no tenga filtros
+                Almacen.getComentariosFiltrados().clear();
+                Almacen.getNotificacionesFiltradas().clear();
+                Almacen.getProyectosFiltrados().clear();
+                Almacen.getUsuariosFiltrados().clear();
+                //Me salgo de firebase
                 FirebaseAuth.getInstance().signOut();
+                //Pongo el menú de navigation a anonimo
                 navigationView.getMenu().setGroupVisible(R.id.autentificado, false);
                 navigationView.getMenu().setGroupVisible(R.id.anonimo,true);
                 intent1=new Intent(context, MainActivity.class);

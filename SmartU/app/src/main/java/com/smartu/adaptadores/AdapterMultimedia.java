@@ -146,7 +146,7 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
         if (position >= multimediaList.size() && position>=totalElementosServer && totalElementosServer > 0){
             return VIEW_TYPE_FINAL;
         }else if(position >= multimediaList.size()){
-            return VIEW_TYPE_LOADING;
+            return VIEW_TYPE_FINAL;
         }else
             return VIEW_TYPE_ACTIVITY;
     }
@@ -174,6 +174,8 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
 
     @Override
     public int getItemCount() {
+        if(multimediaList.size()==0)
+            return multimediaList.size();
         return multimediaList.size()+1;
     }
 

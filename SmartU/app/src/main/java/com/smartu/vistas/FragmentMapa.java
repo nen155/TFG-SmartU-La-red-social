@@ -217,7 +217,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback, Google
         }
         // Movemos la camara a la posicion del usuario
         if(miPosicion!=null)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion,12));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion,3));
 
         //Creamos el evento click de los marker
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -246,6 +246,8 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback, Google
                 mGoogleApiClient);
         if (mLastLocation != null) {
             miPosicion = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+            if(mMap!=null)
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion,12));
         }
     }
 

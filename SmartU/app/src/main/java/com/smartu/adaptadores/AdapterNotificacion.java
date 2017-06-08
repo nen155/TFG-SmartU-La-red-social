@@ -188,13 +188,15 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 		if (position >= notificaciones.size() && position>=totalElementosServer && totalElementosServer > 0){
 			return VIEW_TYPE_FINAL;
 		}else if(position >= notificaciones.size()){
-			return VIEW_TYPE_LOADING;
+			return VIEW_TYPE_FINAL;
 		}else
 			return VIEW_TYPE_ACTIVITY;
 	}
 
 	@Override
 	public int getItemCount() {
+		if(notificaciones.size()==0)
+			return notificaciones.size();
 		return notificaciones.size()+1;
 	}
 

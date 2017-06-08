@@ -172,6 +172,8 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
      */
     @Override
     public int getItemCount() {
+        if(comentarios.size()==0)
+            return comentarios.size();
         return comentarios.size()+1;
     }
 
@@ -184,7 +186,7 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
         if (position >= comentarios.size() && position>=totalElementosServer && totalElementosServer > 0){
             return VIEW_TYPE_FINAL;
         }else if(position >= comentarios.size()){
-            return VIEW_TYPE_LOADING;
+            return VIEW_TYPE_FINAL;
         }else
             return VIEW_TYPE_ACTIVITY;
     }
