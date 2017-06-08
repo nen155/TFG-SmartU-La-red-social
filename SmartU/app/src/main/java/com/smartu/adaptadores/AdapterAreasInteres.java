@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Set;
 
+import java8.util.Optional;
 import java8.util.stream.StreamSupport;
 
 
@@ -120,8 +121,9 @@ public class AdapterAreasInteres extends BaseAdapter {
 		View view =gridView.getChildAt(position);
 		ImageView seleccionado = (ImageView) view.findViewById(R.id.elemento_area);
 		seleccionado.setVisibility(View.GONE);
-		Area area = StreamSupport.stream(areasBack).filter(area1 -> area1.getId() == ((Area)getItem(position)).getId()).findAny().get();
-		areasBack.remove(area);
+		Optional<Area> areaOptional = StreamSupport.stream(areasBack).filter(area1 -> area1.getId() == ((Area) getItem(position)).getId()).findAny();
+		if(areaOptional.isPresent())
+			areasBack.remove(areaOptional.get());
 	}
 	/**
 	 * Selecciona el elemento sólo por la posicion del mismo

@@ -580,7 +580,7 @@ class UserModel
 		try 
 		{
 			for($i=0;$i<count($data["idsAreas"]);++$i){
-				$sql = "SELECT idUsuario,idProyecto FROM usuarioInteresaArea WHERE idUsuario=? AND idArea=?";
+				$sql = "SELECT idUsuario FROM usuarioInteresaArea WHERE idUsuario=? AND idArea=?";
                
                  $stm = $this->db->prepare($sql);
 				 $stm->execute(
