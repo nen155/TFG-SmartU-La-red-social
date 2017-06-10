@@ -96,7 +96,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             //Lo he cambiado al totalItemCount para que la proxima view empiece desde el total
             //que llevo cargado pues lo almaceno en el Almacen y no debo empezar desde 0,sino desde
             //el número de elementos que tengo totales ese es mi OFFSET
-            currentPage=totalItemCount;
+            currentPage=totalItemCount-1;
             onLoadMore(currentPage, totalItemCount, view);
             loading = true;
         }

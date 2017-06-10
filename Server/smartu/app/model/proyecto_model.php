@@ -239,9 +239,9 @@ class ProyectoModel
 			//Recojo el total de multimedia del server
 			$stm = $this->db->prepare("SELECT count(1) as totalserver FROM multimedia");
 			$stm->execute();
-			$totalserver = $stm->fetch()["totalserver"];
+			$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
 			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
-            $multimedia=array("multimedia"=>array("multimedia"=>array()),"totalserver"=>$totalserver);
+            $multimedia=array("multimedia"=>array(),"totalserver"=>$totalserver);
 			
 			$this->response->setResponse(true);
 			
@@ -249,7 +249,7 @@ class ProyectoModel
 			$stm->execute(array($id));
 			// array(array()) resultado misArchivos:[{..},{..},..]
 			while ($filaAR =$stm->fetch(\PDO::FETCH_ASSOC))
-				array_push($multimedia["multimedia"]["multimedia"],$filaAR);
+				array_push($multimedia["multimedia"],$filaAR);
 				
             $this->response->result = $multimedia;
 			

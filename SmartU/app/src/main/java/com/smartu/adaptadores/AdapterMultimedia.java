@@ -2,6 +2,7 @@ package com.smartu.adaptadores;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -158,16 +159,22 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
         Intent intent=null;
         switch(multimedia.getTipo()) {
             case "video":
+                intent.putExtra("multimedia",(Parcelable) multimedia);
                 intent=new Intent(context, VideoActivity.class);
                 break;
             case "imagen":
+                intent.putExtra("multimedia",(Parcelable) multimedia);
                 intent=new Intent(context, ImagenActivity.class);
                 break;
             case "imagen360":
+                intent.putExtra("multimedia",(Parcelable) multimedia);
                 intent=new Intent(context, Imagen360Activity.class);
                 break;
+            case "pdf":
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConsultasBBDD.server+ConsultasBBDD.imagenes+multimedia.getUrl()));
+                break;
         }
-        intent.putExtra("multimedia",(Parcelable) multimedia);
+
         context.startActivity(intent);
     }
 
@@ -180,7 +187,7 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
     }
 
     public void addItem(Multimedia pushMessage) {
-        boolean esta = StreamSupport.stream(multimediaList).filter(usuario1 -> usuario1.getId() == multimedia.getId()).findAny().isPresent();
+        boolean esta = StreamSupport.stream(multimediaList).filter(multimedia -> multimedia.getId() == pushMessage.getId()).findAny().isPresent();
         if(!esta) {
             multimediaList.add(pushMessage);
             notifyItemInserted(multimediaList.size()-1);
