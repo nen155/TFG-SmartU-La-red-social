@@ -85,7 +85,7 @@ public class FragmentMultimedia extends Fragment {
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // El evento sólo se provoca cuando necesito añadir más elementos
                 //El *10 es por el limit y para cargar de 10 en 10
-                cargarMasMultimedia(page*10);
+                cargarMasMultimedia(page);
             }
         };
 
