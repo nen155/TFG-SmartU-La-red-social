@@ -21,9 +21,9 @@ class UserModel
 		try
 		{	
 			//Recojo el total de usuarios del server
-			$stm = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
-			$stm->execute();
-			$totalserver = $stm->fetch(\PDO::FETCH_ASSOC);
+			$stm1 = $this->db->prepare("SELECT count(1) as totalserver FROM ". $this->table);
+			$stm1->execute();
+			$totalserver = $stm1->fetch(\PDO::FETCH_ASSOC);
 			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
             $usuarios=array("usuarios"=>array(),"totalserver"=>$totalserver["totalserver"]);
 			
@@ -36,12 +36,12 @@ class UserModel
 			{
 				$stm = $this->db->prepare("SELECT u.id,u.nombre,u.apellidos,u.verificado,u.user,u.email,u.nPuntos,u.biografia,u.web,u.imagenPerfil,u.uid,u.firebaseToken".
 				" FROM ". $this->table . " as u INNER JOIN usuarioColaboradorProyecto as c ON u.id=c.idUsuario". 
-				" WHERE c.idProyecto= ?".
+				" WHERE c.idProyecto=?".
 				" LIMIT ".$offset.",".$limit);
 				$stm->execute(array($id));
 			}
 			$this->response->setResponse(true);
-			
+	
 			while ($fila =$stm->fetch(\PDO::FETCH_ASSOC)){
 				$usuario = new \Usuario();
 				$usuario->set($fila);

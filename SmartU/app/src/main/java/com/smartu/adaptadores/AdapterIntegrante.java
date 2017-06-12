@@ -127,7 +127,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
 
             //Compruebo que no sean los usuarios que he metido como vacantes
             //para dejar la imagen por defecto.
-            if (usuario.getId() != -1)
+            if (usuario.getId() != -1 && usuario.getImagenPerfil()!=null)
                 Picasso.with(context).load(ConsultasBBDD.server + ConsultasBBDD.imagenes + usuario.getImagenPerfil()).into(holder.imgUsuario);
 
             holder.nombreUsuario.setText(usuario.getNombre());
@@ -209,31 +209,31 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     }
 
     /**
-     * Si ya ha solicitado anteriormente la unión a este proyecto el usuario actual
+     * Si ya ha solicitado anteriormente la unión a este proyecto el usuario actual sino es anónimo
      * pone los botones deshabilitados
      */
     private void cargarSolicitudesUnion() {
-
-        boolean soyPropietario =StreamSupport.stream(usuarioSesion.getMisProyectos()).filter(proyect-> proyect == proyecto.getId()).findAny().isPresent();
-        if(soyPropietario) {
-            seguirUsuarioEditable.setText(R.string.eres_colaborador);
-            seguirUsuarioEditable.setPressed(true);
-            seguirUsuarioEditable.setEnabled(false);
-        }else
-        if (usuarioSesion != null && usuarioSesion.getMisSolicitudes() != null) {
-            boolean solicitado = false;
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-                solicitado = usuarioSesion.getMisSolicitudes().parallelStream().anyMatch(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId());
-            else
-                solicitado = StreamSupport.stream(usuarioSesion.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findAny().isPresent();
-            if (solicitado) {
-                seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
+        if (usuarioSesion != null) {
+            boolean soyPropietario = StreamSupport.stream(usuarioSesion.getMisProyectos()).filter(proyect -> proyect == proyecto.getId()).findAny().isPresent();
+            if (soyPropietario) {
+                seguirUsuarioEditable.setText(R.string.eres_colaborador);
                 seguirUsuarioEditable.setPressed(true);
                 seguirUsuarioEditable.setEnabled(false);
-            }else {
-                seguirUsuarioEditable.setText(R.string.unirse);
-                seguirUsuarioEditable.setPressed(false);
-                seguirUsuarioEditable.setEnabled(true);
+            } else if (usuarioSesion != null && usuarioSesion.getMisSolicitudes() != null) {
+                boolean solicitado = false;
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+                    solicitado = usuarioSesion.getMisSolicitudes().parallelStream().anyMatch(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId());
+                else
+                    solicitado = StreamSupport.stream(usuarioSesion.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findAny().isPresent();
+                if (solicitado) {
+                    seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
+                    seguirUsuarioEditable.setPressed(true);
+                    seguirUsuarioEditable.setEnabled(false);
+                } else {
+                    seguirUsuarioEditable.setText(R.string.unirse);
+                    seguirUsuarioEditable.setPressed(false);
+                    seguirUsuarioEditable.setEnabled(true);
+                }
             }
         }
     }
