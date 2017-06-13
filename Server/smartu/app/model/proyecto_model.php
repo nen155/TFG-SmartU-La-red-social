@@ -16,7 +16,7 @@ class ProyectoModel
         $this->response = new Response();
     }
     
-    public function GetAll($offset,$limit)
+    public function GetAll($offset,$limit,$id=null)
     {
 		try
 		{	
@@ -27,10 +27,15 @@ class ProyectoModel
 			//Utilizo este modelo porque es el que tengo la APP de Android, podría simplificarse
             $proyectos=array("proyectos"=>array(),"totalserver"=>$totalserver["totalserver"]);
 			
-			$result = array();
-			$stm = $this->db->prepare("SELECT p.id,p.nombre,p.descripcion,p.fechaCreacion,p.fechaFinalizacion,m.url as imagenDestacada,p.localizacion,p.coordenadas,p.web,p.idUsuario as idPropietario,u.nombre as propietarioUser".
-			" FROM ". $this->table ." as p INNER JOIN usuario as u ON p.idUsuario=u.id LEFT JOIN multimedia as m ON m.id=p.idImagenDestacada ORDER BY p.fechaCreacion DESC LIMIT ".$offset.",".$limit);
-			$stm->execute();
+			if($id==null){
+				$stm = $this->db->prepare("SELECT p.id,p.nombre,p.descripcion,p.fechaCreacion,p.fechaFinalizacion,m.url as imagenDestacada,p.localizacion,p.coordenadas,p.web,p.idUsuario as idPropietario,u.nombre as propietarioUser".
+				" FROM ". $this->table ." as p INNER JOIN usuario as u ON p.idUsuario=u.id LEFT JOIN multimedia as m ON m.id=p.idImagenDestacada ORDER BY p.fechaCreacion DESC LIMIT ".$offset.",".$limit);
+				$stm->execute();
+			}else{
+				$stm = $this->db->prepare("SELECT p.id,p.nombre,p.descripcion,p.fechaCreacion,p.fechaFinalizacion,m.url as imagenDestacada,p.localizacion,p.coordenadas,p.web,p.idUsuario as idPropietario,u.nombre as propietarioUser".
+				" FROM ". $this->table ." as p INNER JOIN usuario as u ON p.idUsuario=u.id LEFT JOIN multimedia as m ON m.id=p.idImagenDestacada  WHERE u.id=? ORDER BY p.fechaCreacion DESC LIMIT ".$offset.",".$limit);
+				$stm->execute(array($id));
+			}
 			
 			$this->response->setResponse(true);
 			

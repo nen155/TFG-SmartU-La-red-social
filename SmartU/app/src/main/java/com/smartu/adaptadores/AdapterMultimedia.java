@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.smartu.R;
-import com.smartu.contratos.OperacionesAdapter;
-import com.smartu.contratos.Publicacion;
 import com.smartu.modelos.Multimedia;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.vistas.Imagen360Activity;

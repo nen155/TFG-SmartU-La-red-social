@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.View;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +16,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.almacenamiento.Almacen;
-import com.smartu.contratos.Publicacion;
+import com.smartu.modelos.Publicacion;
 import com.smartu.modelos.Area;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;

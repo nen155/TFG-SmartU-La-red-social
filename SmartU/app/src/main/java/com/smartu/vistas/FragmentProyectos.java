@@ -35,12 +35,20 @@ public class FragmentProyectos extends Fragment {
     private RecyclerView recyclerViewProyectos;
     private AdapterProyecto adapterProyecto;
     private OnProyectoSelectedListener mListener;
+    //Solo se utiliza para los proyectos de un usuario
+    //Es static por que no se recarga cuando se destruye el fragment
+    //por lo que necesita ser static
+    private static int idUsuario=-1;
     //Va hacer de listener para cuando llegue al final del RecyclerView
     //y necesite cargar más elementos
     private EndlessRecyclerViewScrollListener scrollListener;
 
     public FragmentProyectos() {
         // Constructor vacío es necesario
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        FragmentProyectos.idUsuario = idUsuario;
     }
 
     /**
@@ -96,6 +104,7 @@ public class FragmentProyectos extends Fragment {
     public void cargarMasProyectos(int offset) {
         HProyectos hProyectos = new HProyectos(adapterProyecto,offset,getActivity());
         hProyectos.sethProyectos(hProyectos);
+        hProyectos.setIdUsuario(idUsuario);
         hProyectos.execute();
     }
     @Override

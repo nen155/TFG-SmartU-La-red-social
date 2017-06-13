@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.android.gms.appindexing.Thing;
 import com.smartu.utilidades.ConversoresJSON;
 
 import java.io.Serializable;

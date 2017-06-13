@@ -1,9 +1,7 @@
 package com.smartu.adaptadores;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,22 +12,16 @@ import android.widget.TextView;
 
 import com.smartu.R;
 import com.smartu.almacenamiento.Almacen;
-import com.smartu.contratos.OperacionesAdapter;
-import com.smartu.contratos.Publicacion;
+import com.smartu.modelos.Publicacion;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Proyecto;
 import com.smartu.utilidades.Comparador;
 import com.smartu.vistas.ProyectoActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
-import java8.util.stream.Stream;
 import java8.util.stream.StreamSupport;
 
 

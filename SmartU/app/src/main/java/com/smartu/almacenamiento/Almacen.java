@@ -27,7 +27,10 @@ import java8.util.stream.StreamSupport;
  */
 
 public class Almacen {
+    //Constructor privado para crear una clase estatica
+    private Almacen(){
 
+    }
     private static Map<Integer,Proyecto> proyectoHashMap = new HashMap<>();
     private static Map<Integer,Usuario> usuarioHashMap = new HashMap<>();
     private static Map<Integer,Notificacion> notificacionHashMap = new HashMap<>();

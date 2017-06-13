@@ -3,7 +3,6 @@ package com.smartu.modelos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.smartu.contratos.Publicacion;
 
 import java.io.Serializable;
 import java.util.ArrayList;

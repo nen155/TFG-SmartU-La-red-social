@@ -5,33 +5,26 @@ package com.smartu.hebras;
  */
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Handler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.almacenamiento.Almacen;
-import com.smartu.contratos.Publicacion;
+import com.smartu.modelos.Publicacion;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.ConsultasBBDD;
-import com.smartu.utilidades.ControladorPreferencias;
-import com.smartu.vistas.InstruccionesMainActivity;
-import com.smartu.vistas.MainActivity;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 

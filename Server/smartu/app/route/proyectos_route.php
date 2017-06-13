@@ -16,7 +16,7 @@ $app->group('/project/', function () {
            ->getBody()
            ->write(
             json_encode(
-                $um->GetAll($data["offset"],$data["limit"])
+                $um->GetAll($data["offset"],$data["limit"],$data["idUsuario"])
             )
         );
     });

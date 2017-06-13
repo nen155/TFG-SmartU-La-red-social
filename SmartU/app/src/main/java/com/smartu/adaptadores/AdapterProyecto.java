@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.os.Build;
-import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,8 +17,7 @@ import android.widget.Toast;
 
 import com.smartu.R;
 import com.smartu.almacenamiento.Almacen;
-import com.smartu.contratos.OperacionesAdapter;
-import com.smartu.contratos.Publicacion;
+import com.smartu.modelos.Publicacion;
 import com.smartu.hebras.HBuenaIdea;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
@@ -34,10 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
-import java.util.function.Function;
 
-import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
 

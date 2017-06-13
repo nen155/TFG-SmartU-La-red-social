@@ -33,6 +33,7 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
     private HProyectos hProyectos;
     private SweetAlertDialog pDialog;
     private Context context;
+    private int idUsuario=-1;
 
     public HProyectos(AdapterProyecto adapterProyecto, int offset, Context context) {
         this.adapterProyecto = adapterProyecto;
@@ -43,6 +44,11 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
         pDialog.setTitleText("Cargando...");
         pDialog.setCancelable(false);
     }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
     @Override
     protected void onPreExecute() {
         pDialog.show();
@@ -63,7 +69,11 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
                 "}"+
                 "}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaProyectos,"{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
+        String resultado="";
+        if(idUsuario==-1)
+            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaProyectos,"{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
+        else
+            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaProyectos,"{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idUsuario\":\"" + idUsuario + "\"}","POST");
 
         JSONObject res =null;
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);

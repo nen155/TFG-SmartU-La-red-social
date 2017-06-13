@@ -2,7 +2,6 @@ package com.smartu.modelos;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.Button;
 
 import java.io.Serializable;
 
