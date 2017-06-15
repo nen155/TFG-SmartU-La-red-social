@@ -37,7 +37,6 @@ class Proyecto{
     public $misHashtag;
     public $misAvances;
     public $integrantes;
-	public $solicitudes;
 
 }
 ?>

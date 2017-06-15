@@ -102,14 +102,6 @@ class ProyectoModel
 				$stmSub = $this->db->prepare("SELECT idUsuario FROM usuarioColaboradorProyecto WHERE idProyecto= ?");
 				$stmSub->execute(array($proyecto->id));
 				$proyecto->integrantes=$stmSub->fetchAll(\PDO::FETCH_COLUMN, 0);
-	
-				//Recojo solicitudes
-				$stm = $this->db->prepare("SELECT id,fecha,descripcion,idUsuarioSolicitante FROM solicitudUnion idProyecto= ?");
-				$stm->execute(array($proyecto->id));
-				// array(array()) resultado solicitudes:[{..},{..},..]
-				$proyecto->solicitudes=array();
-				while ($filaU =$stm->fetch(\PDO::FETCH_ASSOC))
-					array_push($proyecto->solicitudes,$filaU);
 
 				
 				array_push($proyectos["proyectos"],$proyecto);
@@ -174,7 +166,7 @@ class ProyectoModel
 				$stm->execute(array($proyecto->id));
 				$proyecto->buenaIdea=$stm->fetchAll(\PDO::FETCH_COLUMN, 0);
 				
-				//Recojo misAreas
+				//Recojo misAreasInteres
 				$stm = $this->db->prepare("SELECT a.id,a.nombre,a.descripcion,m.url FROM areaProyecto as u".
 				" INNER JOIN area as a ON u.idArea=a.id LEFT JOIN multimedia as m ON a.idImagenDestacada=m.id WHERE u.idProyecto= ?");
 				$stm->execute(array($proyecto->id));
@@ -228,14 +220,6 @@ class ProyectoModel
 				$stm = $this->db->prepare("SELECT idUsuario FROM usuarioColaboradorProyecto WHERE idProyecto= ?");
 				$stm->execute(array($proyecto->id));
 				$proyecto->integrantes=$stm->fetchAll(\PDO::FETCH_COLUMN, 0);
-				
-				//Recojo solicitudes
-				$stm = $this->db->prepare("SELECT id,fecha,descripcion,idUsuarioSolicitante FROM solicitudUnion idProyecto= ?");
-				$stm->execute(array($proyecto->id));
-				// array(array()) resultado solicitudes:[{..},{..},..]
-				$proyecto->solicitudes=array();
-				while ($filaU =$stm->fetch(\PDO::FETCH_ASSOC))
-					array_push($proyecto->solicitudes,$filaU);
 
 				
 			

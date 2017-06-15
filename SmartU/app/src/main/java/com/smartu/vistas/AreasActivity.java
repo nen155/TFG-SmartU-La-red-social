@@ -80,5 +80,9 @@ public class AreasActivity extends AppCompatActivity {
             }
         });
     }
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }

@@ -108,6 +108,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
             // Poner ícono del drawer toggle
             // ab.setHomeAsUpIndicator(R.drawable.ic_menu);
             ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowHomeEnabled(true);
         }
 
     }

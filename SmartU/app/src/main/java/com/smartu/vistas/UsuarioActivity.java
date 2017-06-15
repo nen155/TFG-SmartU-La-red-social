@@ -122,6 +122,11 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {

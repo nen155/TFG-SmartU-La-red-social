@@ -16,4 +16,9 @@ public class ContactoActivity extends AppCompatActivity {
         SliderMenu sliderMenu = new SliderMenu(getApplicationContext(),this);
         sliderMenu.inicializateToolbar(getTitle().toString());
     }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }

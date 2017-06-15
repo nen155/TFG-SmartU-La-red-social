@@ -32,6 +32,7 @@ import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.ControladorPreferencias;
 import com.smartu.utilidades.Encripta;
 import com.smartu.utilidades.Sesion;
+import com.smartu.utilidades.SliderMenu;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,6 +50,9 @@ public class RegistroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
         context=this;
+        //Cargo el menú lateral
+        SliderMenu sliderMenu = new SliderMenu(getApplicationContext(),this);
+        sliderMenu.inicializateToolbar(getTitle().toString());
 
         email = (EditText) findViewById(R.id.email_registro);
         nombre = (EditText) findViewById(R.id.nombre_completo_registro);

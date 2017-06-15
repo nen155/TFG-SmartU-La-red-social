@@ -33,6 +33,11 @@ public class ProyectosActivity extends AppCompatActivity implements FragmentProy
         transaction.replace(R.id.content_proyectos, FragmentProyectos.newInstance(proyectos));
         transaction.commit();
     }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
     @Override
     public void onProyectoSeleccionado(int idProyecto) {

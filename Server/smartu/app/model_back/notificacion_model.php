@@ -139,28 +139,8 @@ class NotificacionModel
                             "descripcion"=>$data['descripcion'],
                             "fecha"=>date("Y-m-d H:i:s"),
 							"idUsuario"=>$data['idUsuario'],
-							"idProyecto"=>$data['idProyecto'],
-							"tipo"=>$data["tipo"],
-							"accion"=>$data["accion"]
+							"idProyecto"=>$data['idProyecto']
                         );
-			//Dependiendo del tipo de dato añado más o menos valores
-			switch($data["tipo"]){
-				case "status":
-					$datos["estatus"]=$data["estatus"];
-					$datos["numSeguidores"]=$data["numSeguidores"];
-					$datos["nPuntos"]=$data["nPuntos"];
-				break;
-				case "seguir":
-					$datos["numSeguidores"]=$data["numSeguidores"];
-					$datos["idUsuarioSeguido"]=$data["idUsuarioSeguido"];
-				break;
-				case "interes":
-					$datos["idsAreas"]=$data["idsAreas"];
-				break;
-				case "idea":
-				case "solicitud":
-				break;	
-			}
 			//Envío notificación a FCM
 			$this->send_notification($datos);
 			
@@ -185,8 +165,10 @@ class NotificacionModel
 			
 		$path_to_firebase_cm = 'https://fcm.googleapis.com/fcm/send';
 		$token="/topics/notificaciones";
-		//Creo de nuevo el array para modificarlo
-		$map = array("id"=>$data['id'],
+		$fields = array(
+            'to' => $token,
+            'notification' => array('title' => $data['nombre'], 'body' => $data['descripcion']),
+            'data' =>  array("id"=>$data['id'],
 							"nombre"=>$data['nombre'],
                             "descripcion"=>$data['descripcion'],
                             "fecha"=>date("Y-m-d H:i:s"),
@@ -194,30 +176,7 @@ class NotificacionModel
 							"idProyecto"=>$data['idProyecto'],
 							"usuario"=>$usuario["usuario"],
 							"proyecto"=>$proyecto["proyecto"]
-                        );
-		//Vuelvo a comprobar para modificar el map dependiendo del tipo de dato añado más o menos valores
-		switch($data["tipo"]){
-				case "status":
-					$map["estatus"]=$data["estatus"];
-					$map["numSeguidores"]=$data["numSeguidores"];
-					$map["nPuntos"]=$data["nPuntos"];
-				break;
-				case "seguir":
-					$map["numSeguidores"]=$data["numSeguidores"];
-					$map["idUsuarioSeguido"]=$data["idUsuarioSeguido"];
-				break;
-				case "interes":
-					$map["idsAreas"]=$data["idsAreas"];
-				break;
-				case "idea":
-				case "solicitud":
-				break;	
-		}
-		
-		$fields = array(
-            'to' => $token,
-            'notification' => array('title' => $data['nombre'], 'body' => $data['descripcion']),
-            'data' =>  $map
+                        )
         );
  
         $headers = array(

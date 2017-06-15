@@ -109,6 +109,11 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_proyecto);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
     /**
      * Método para dar buena idea a un proyecto
