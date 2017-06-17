@@ -193,7 +193,9 @@ class NotificacionModel
 							"idUsuario"=>$data['idUsuario'],
 							"idProyecto"=>$data['idProyecto'],
 							"usuario"=>$usuario["usuario"],
-							"proyecto"=>$proyecto["proyecto"]
+							"proyecto"=>$proyecto["proyecto"],
+							"tipo"=>$data["tipo"],
+							"accion"=>$data["accion"]
                         );
 		//Vuelvo a comprobar para modificar el map dependiendo del tipo de dato añado más o menos valores
 		switch($data["tipo"]){
@@ -201,6 +203,7 @@ class NotificacionModel
 					$map["estatus"]=$data["estatus"];
 					$map["numSeguidores"]=$data["numSeguidores"];
 					$map["nPuntos"]=$data["nPuntos"];
+					
 				break;
 				case "seguir":
 					$map["numSeguidores"]=$data["numSeguidores"];

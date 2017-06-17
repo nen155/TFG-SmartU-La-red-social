@@ -47,7 +47,10 @@ public class SolicitudUnion implements Parcelable,Serializable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(proyecto);
-        dest.writeLong(fecha.getTime());
+        if(fecha!=null)
+            dest.writeLong(fecha.getTime());
+        else
+            dest.writeLong(new Date().getTime());
         dest.writeInt(idProyecto);
         dest.writeInt(idUsuarioSolicitante);
         dest.writeString(descripcion);

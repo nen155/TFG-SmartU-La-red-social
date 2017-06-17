@@ -8,10 +8,12 @@ import android.widget.Toast;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.adaptadores.AdapterAreasInteres;
+import com.smartu.almacenamiento.Almacen;
 import com.smartu.modelos.Area;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.Sesion;
+import com.smartu.vistas.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -110,12 +112,12 @@ public class HUsuarioInteresa extends AsyncTask<Void, Void, String> {
                     Toast.makeText(context,"Has guardado tus nuevos intereses!",Toast.LENGTH_SHORT).show();
                     //Cambio las areas que tenía previamente a el total de las que ha seleccionado
                     Usuario usuario = Sesion.getUsuario(context);
-                    ArrayList<Area> areasInteresList = usuario.getMisAreasInteres();
-                    areasInteresList = new ArrayList<Area>(areasBack);
                     usuario.getMisAreasInteres().clear();
-                    for(int i=0;i<areasInteresList.size();++i)
-                        usuario.getMisAreasInteres().add(areasInteresList.get(i));
+                    for(int i=0;i<areasBack.size();++i)
+                        usuario.getMisAreasInteres().add(areasBack.get(i));
                     Sesion.serializaUsuario(context,usuario);
+                    //Vuelvo a filtrar las publicaciones
+                    Almacen.filtrarPublicaciones(usuario,context);
                 }
 
             } catch (JSONException e) {

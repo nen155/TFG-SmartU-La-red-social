@@ -39,6 +39,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     private Usuario usuario;
     private HSeguir hSeguir;
     private Usuario usuarioSesion;
+    private boolean filtro=false;
 
     //Es el número total de elementos que hay en el server
     //tengo que recogerlo de las hebras de consulta
@@ -49,6 +50,14 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     public static final int VIEW_TYPE_ACTIVITY = 1;
     public static final int VIEW_TYPE_FINAL = 2;
 
+
+    public void setFiltro(boolean filtro) {
+        this.filtro = filtro;
+    }
+
+    public int getTotalElementosServer() {
+        return totalElementosServer;
+    }
 
     public void setTotalElementosServer(int totalElementosServer) {
         this.totalElementosServer = totalElementosServer;
@@ -256,9 +265,25 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
         boolean esta = StreamSupport.stream(usuarios).filter(usuario1 -> usuario1.getId() == usuario.getId()).findAny().isPresent();
         if (!esta)
         {
-            usuarios.add(usuario);
             Almacen.add(usuario);
-            notifyItemInserted(usuarios.size()-1);
+
+            //Compruebo si tengo que filtrar
+            if(filtro) {
+                //Si tengo que mostrarla porque es perteneciente al filtro
+                if (Almacen.filtra(usuario, Sesion.getUsuario(context))) {
+                    //Compruebo sino la he añadido antes
+                    esta = Almacen.isFiltradaPresent(usuario);
+                    //Sino la he añadido la añado al ArrayList
+                    if (!esta)
+                        Almacen.addFiltro(usuario);
+
+                    notifyItemInserted(usuarios.size()-1);
+                }
+            }else {
+                usuarios.add(usuario);
+                notifyItemInserted(usuarios.size() - 1);
+            }
+
         }
     }
 

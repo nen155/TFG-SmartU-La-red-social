@@ -16,9 +16,12 @@ import com.smartu.utilidades.Sesion;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
+import java8.util.function.Function;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
@@ -75,6 +78,33 @@ public class Almacen {
         comentarioHashMap.remove(id);
     }
 
+    public static void addFiltro(Proyecto p){
+        proyectosFiltrados.add(p);
+    }
+    public static void addFiltro(Notificacion n){
+        notificacionesFiltradas.add(n);
+    }
+    public static void addFiltro(Usuario u){
+        usuariosFiltrados.add(u);
+    }
+    public static void addFiltro(Comentario c){
+        comentariosFiltrados.add(c);
+    }
+
+
+    public static boolean isFiltradaPresent(Notificacion n){
+        return StreamSupport.stream(Almacen.getNotificacionesFiltradas()).filter(notificacion1 -> notificacion1.getId() == n.getId()).findAny().isPresent();
+    }
+    public static boolean isFiltradaPresent(Proyecto p){
+        return StreamSupport.stream(Almacen.getProyectosFiltrados()).filter(notificacion1 -> notificacion1.getId() == p.getId()).findAny().isPresent();
+    }
+    public static boolean isFiltradaPresent(Usuario u){
+        return StreamSupport.stream(Almacen.getUsuariosFiltrados()).filter(notificacion1 -> notificacion1.getId() == u.getId()).findAny().isPresent();
+    }
+    public static boolean isFiltradaPresent(Comentario c){
+        return StreamSupport.stream(Almacen.getComentariosFiltrados()).filter(notificacion1 -> notificacion1.getId() == c.getId()).findAny().isPresent();
+    }
+
     public static ArrayList<Proyecto> getProyectos(){
         return new ArrayList<Proyecto>(proyectoHashMap.values());
     }
@@ -106,6 +136,20 @@ public class Almacen {
     public static ArrayList<Comentario> getComentariosFiltrados() {
         return comentariosFiltrados;
     }
+
+    public static int sizeUsuarios(){
+        return usuarioHashMap.size();
+    }
+    public static int sizeProyectos(){
+        return proyectoHashMap.size();
+    }
+    public static int sizeComentarios(){
+        return comentarioHashMap.size();
+    }
+    public static int sizeNotificaciones(){
+        return notificacionHashMap.size();
+    }
+
 
     /**
      * Busca un proyecto en el almacen, sino lo encuentra busca en el server
@@ -177,7 +221,7 @@ public class Almacen {
     }
     /**
      * Busca un conjunto de ids de usuarios en el almacen y sino los encuentra los busca en
-     * el servidor
+     * el servidor y los añado al almacen
      * @param idsUsuarios
      * @param usuarios
      */
@@ -199,11 +243,35 @@ public class Almacen {
             hPublicaciones.sethPublicaciones(hPublicaciones);
             hPublicaciones.setIdsPublicaciones(usuariosABuscarServer);
             hPublicaciones.setTipo(Constantes.USUARIO);
+            hPublicaciones.execute();
+        }
+    }
+
+    /**
+     * Busca un conjunto de ids de usuarios en el almacen y sino los encuentra los busca en
+     * el servidor y los añado al almacen
+     * @param idsUsuarios
+     */
+    public static void buscarUsuarios(ArrayList<Integer> idsUsuarios, Context context){
+        ArrayList<Integer> usuariosABuscarServer=new ArrayList<>();
+        for (int idUsuario: idsUsuarios) {
+            Usuario usuario = usuarioHashMap.get(idUsuario);
+            if(usuario==null)
+                usuariosABuscarServer.add(idUsuario);
+
+        }
+        //Significa que no he encontrado algunos elementos que tendré que buscar en el server
+        if(usuariosABuscarServer.size()>0){
+            HPublicaciones hPublicaciones = new HPublicaciones(context);
+            hPublicaciones.sethPublicaciones(hPublicaciones);
+            hPublicaciones.setIdsPublicaciones(usuariosABuscarServer);
+            hPublicaciones.setTipo(Constantes.USUARIO);
+            hPublicaciones.execute();
         }
     }
     /**
      * Busca un conjunto de ids de proyectos en el almacen y sino los encuentra los busca en
-     * el servidor
+     * el servidor y los añado al almacen
      * @param idsProyectos
      * @param proyectos
      */
@@ -225,12 +293,35 @@ public class Almacen {
             hPublicaciones.sethPublicaciones(hPublicaciones);
             hPublicaciones.setIdsPublicaciones(proyectosABuscarServer);
             hPublicaciones.setTipo(Constantes.PROYECTO);
+            hPublicaciones.execute();
+        }
+    }
+
+    /**
+     * Busca un conjunto de ids de proyectos en el almacen y sino los encuentra los busca en
+     * el servidor y los añado al almacen
+     * @param idsProyectos
+     */
+    public static void buscarProyectos(ArrayList<Integer> idsProyectos,Context context) throws ExecutionException, InterruptedException {
+        ArrayList<Integer> proyectosABuscarServer=new ArrayList<>();
+        for (int idProyecto: idsProyectos) {
+            Proyecto proyecto = proyectoHashMap.get(idProyecto);
+            if(proyecto==null)
+                proyectosABuscarServer.add(idProyecto);
+        }
+        //Significa que no he encontrado algunos elementos que tendré que buscar en el server
+        if(proyectosABuscarServer.size()>0){
+            HPublicaciones hPublicaciones = new HPublicaciones(context);
+            hPublicaciones.sethPublicaciones(hPublicaciones);
+            hPublicaciones.setIdsPublicaciones(proyectosABuscarServer);
+            hPublicaciones.setTipo(Constantes.PROYECTO);
+            hPublicaciones.execute().get();
         }
     }
 
     /**
      * Busca un conjunto de ids de notificaciones en el almacen y sino las encuentra los busca en
-     * el servidor
+     * el servidor y los añado al almacen
      * @param idsNotificaciones
      * @param notificacions
      */
@@ -252,11 +343,12 @@ public class Almacen {
             hPublicaciones.sethPublicaciones(hPublicaciones);
             hPublicaciones.setIdsPublicaciones(notificacionesABuscarServer);
             hPublicaciones.setTipo(Constantes.NOTIFICACION);
+            hPublicaciones.execute();
         }
     }
     /**
      * Busca un conjunto de ids de comentarios en el almacen y sino los encuentra los busca en
-     * el servidor
+     * el servidor y los añado al almacen
      * @param idsComentarios
      * @param comentarios
      */
@@ -278,18 +370,108 @@ public class Almacen {
             hPublicaciones.sethPublicaciones(hPublicaciones);
             hPublicaciones.setIdsPublicaciones(comentariosABuscarServer);
             hPublicaciones.setTipo(Constantes.COMENTARIO);
+            hPublicaciones.execute();
         }
     }
 
     /**
+     * Fitra un proyecto para saber si esta en los intereses del usuario o pertenece a un usuario seguido
+     * si no esta devuelve false
+     * @param p
+     * @param usuarioSesion
+     * @return
+     */
+    public static boolean filtra(Proyecto p, Usuario usuarioSesion){
+        //Sino tengo proyectos o gente que siga y areas de interes devuelvo null
+        if (usuarioSesion==null || proyectoHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisAreasInteres() == null || (usuarioSesion.getMisSeguidos().isEmpty() && usuarioSesion.getMisAreasInteres().isEmpty()))
+            return false;
+        boolean present = StreamSupport.stream(p.getMisAreas())
+                .filter(area -> StreamSupport.stream(usuarioSesion.getMisAreasInteres())
+                        .filter(areaU -> areaU.getNombre().compareTo(area.getNombre()) == 0).findAny().isPresent()).findAny().isPresent();
+        if(present)
+            return true;
+
+        present = StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == p.getIdPropietario()).findAny().isPresent();
+
+        return present;
+
+    }
+
+    /**
+     * Fitra un usuario para saber si esta en los seguidos del usuario
+     * si no esta devuelve false
+     * @param u
+     * @param usuarioSesion
+     * @return
+     */
+    public static boolean filtra(Usuario u, Usuario usuarioSesion){
+        //Sino tengo proyectos o gente que siga y areas de interes devuelvo null
+        if (usuarioSesion==null ||usuarioHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
+            return false;
+        boolean  present = StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == u.getId()).findAny().isPresent();
+        return present;
+    }
+
+    /**
+     * Fitra un comentario para saber si esta en las areas de interes
+     * o pertenece a un usuario que sigo
+     * si no esta devuelve false
+     * @param c
+     * @param usuarioSesion
+     * @return
+     */
+    public static boolean filtra(Comentario c, Usuario usuarioSesion){
+        //Sino tengo proyectos o gente que siga y areas de interes devuelvo null
+        if (usuarioSesion==null ||usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
+            return false;
+        boolean present = StreamSupport.stream(proyectosFiltrados)
+                .filter(proyecto -> proyecto.getId() == c.getIdProyecto()).findAny().isPresent();
+
+        if(present)
+            return true;
+
+        present =  StreamSupport.stream(usuarioSesion.getMisSeguidos())
+                .filter(usuario1 -> usuario1 == c.getIdUsuario()).findAny().isPresent();
+
+        return present;
+
+    }
+
+    /**
+     * Fitra una notificacion para saber si esta en los proyectos de las areas de interes
+     * o pertenece a un usuario que sigo
+     * si no esta devuelve false
+     * @param n
+     * @param usuarioSesion
+     * @return
+     */
+    public static boolean filtra(Notificacion n, Usuario usuarioSesion){
+        //Sino tengo proyectos o gente que siga y areas de interes devuelvo null
+        if (usuarioSesion==null ||usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
+            return false;
+        boolean present = StreamSupport.stream(proyectosFiltrados)
+                .filter(proyecto -> proyecto.getId() == n.getIdProyecto()).findAny().isPresent();
+
+        if(present)
+            return true;
+
+        present =  StreamSupport.stream(usuarioSesion.getMisSeguidos())
+                .filter(usuario1 -> usuario1 == n.getIdUsuario()).findAny().isPresent();
+
+       return present;
+
+    }
+
+    /**
      * Filtra los proyectos por intereses y por usuarios seguidos
+     * Se utiliza para la primera carga
      * @param usuarioSesion
      * @return
      */
     public static ArrayList<Proyecto> proyectosFiltrados(Usuario usuarioSesion) {
-        //Sino tengo proyectos o gente que siga y areas de interes devuelvo los proyectos como estan
-        if (proyectoHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisAreasInteres() == null || (usuarioSesion.getMisSeguidos().isEmpty() && usuarioSesion.getMisAreasInteres().isEmpty()))
-            return getProyectos();
+        //Sino tengo proyectos o gente que siga y areas de interes devuelvo un array vacio
+        if (usuarioSesion == null ||proyectoHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisAreasInteres() == null || (usuarioSesion.getMisSeguidos().isEmpty() && usuarioSesion.getMisAreasInteres().isEmpty()))
+            return new ArrayList<>();
 
         ArrayList<Proyecto> proyectosFilter = null;
 
@@ -318,13 +500,14 @@ public class Almacen {
 
     /**
      * Filtra las notificaciones por intereses y por usuarios a los que sigo
+     * Se utiliza para la primera carga
      * @param usuarioSesion
      * @return
      */
     public static ArrayList<Notificacion> notificacionsFiltradas(Usuario usuarioSesion) {
-        //Sino tengo proyectos o no tengo notificaciones gente que siga y areas de interes devuelvo los proyectos como estan
-        if (proyectosFiltrados.isEmpty() || notificacionHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
-            return getNotificaciones();
+        //Sino tengo proyectos o no tengo notificaciones gente que siga y areas de interes devuelvo un array vacio
+        if (usuarioSesion == null ||notificacionHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null )
+            return new ArrayList<>();
         ArrayList<Notificacion> nofiticacionesFilter = null;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             nofiticacionesFilter = new ArrayList<Notificacion>(Arrays.asList(notificacionHashMap.values().parallelStream()
@@ -338,11 +521,13 @@ public class Almacen {
             )
             );
         } else {
-            nofiticacionesFilter = new ArrayList<>(Arrays.asList(StreamSupport.stream(notificacionHashMap.values()).filter(notificacion -> StreamSupport.stream(proyectosFiltrados)
+            //Creo un array con las notificaciones de los proyectos que tengo como intereses
+            nofiticacionesFilter = new ArrayList<>(Arrays.asList(StreamSupport.stream(notificacionHashMap.values()).filter(
+                    notificacion -> StreamSupport.stream(proyectosFiltrados)
                     .filter(proyecto -> proyecto.getId() == notificacion.getIdProyecto()).findAny().isPresent()
                     ||
-                    StreamSupport.stream(usuarioSesion.getMisSeguidos())
-                            .filter(usuario1 -> usuario1 == notificacion.getIdUsuario()).findAny().isPresent()
+                            StreamSupport.stream(usuarioSesion.getMisSeguidos())
+                                    .filter(usuario1 -> usuario1 == notificacion.getIdUsuario()).findAny().isPresent()
             ).toArray(Notificacion[]::new)));
         }
         return nofiticacionesFilter;
@@ -350,13 +535,14 @@ public class Almacen {
 
     /**
      * Filtra los comentarios por intereses y por usuarios a los que sigo
+     * Se utiliza para la primera carga
       * @param usuarioSesion
      * @return
      */
     public static ArrayList<Comentario> comentariosFiltrados(Usuario usuarioSesion) {
-        //Sino tengo proyectos o no tengo notificaciones gente que siga y areas de interes devuelvo los proyectos como estan
-        if (proyectosFiltrados.isEmpty() || comentarioHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
-            return getComentarios();
+        //Sino tengo proyectos o no tengo notificaciones gente que siga y areas de interes devuelvo un array vacio
+        if (usuarioSesion == null ||comentarioHashMap.isEmpty() || usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
+            return new ArrayList<>();
         ArrayList<Comentario> comentariossFilter = null;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             comentariossFilter = new ArrayList<Comentario>(Arrays.asList(comentarioHashMap.values().parallelStream()
@@ -390,9 +576,9 @@ public class Almacen {
      * @param context
      */
     public static void usuariosFiltrados(Usuario usuarioSesion,ArrayList<Usuario> usuariosFiltrados,Context context) {
-        //Si no tengo gente a la que sigo devuelvo el array como esta
-        if (usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
-            usuariosFiltrados = new ArrayList<>(getUsuarios());
+        //Si no tengo gente a la que sigo devuelvo un array vacio
+        if (usuarioSesion == null ||usuarioSesion.getMisSeguidos() == null || usuarioSesion.getMisSeguidos().isEmpty())
+            usuariosFiltrados = new ArrayList<>();
         else
             buscarUsuarios(usuarioSesion.getMisSeguidos(),usuariosFiltrados,context);
     }

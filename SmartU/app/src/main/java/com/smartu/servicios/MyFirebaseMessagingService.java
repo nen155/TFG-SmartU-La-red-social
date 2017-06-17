@@ -21,6 +21,7 @@ import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.SolicitudUnion;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.Constantes;
+import com.smartu.utilidades.Sesion;
 import com.smartu.vistas.FragmentNotificaciones;
 import com.smartu.vistas.MainActivity;
 
@@ -53,7 +54,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }else {
             /// Si es de tipo inserción la muestro sino no.
             //Es una nueva notificación de que alguien ha creado algo
-            if(remoteMessage.getData().get("tipo").compareTo("insert")==0)
+            if(remoteMessage.getData().get("accion")!=null &&
+                    remoteMessage.getData().get("accion").compareTo("insert")==0)
                 displayNotification(remoteMessage.getNotification(), remoteMessage.getData());
             //Envío los datos al RecyclerView correspondiente para que se actualice
             addNotificacion(remoteMessage);
@@ -100,13 +102,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra("nombre", remoteMessage.getData().get("nombre"));
         intent.putExtra("descripcion", remoteMessage.getData().get("descripcion"));
         intent.putExtra("fecha", remoteMessage.getData().get("fecha"));
-        intent.putExtra("idusuario", remoteMessage.getData().get("idusuario"));
-        intent.putExtra("idproyecto", remoteMessage.getData().get("idproyecto"));
+        intent.putExtra("idusuario", remoteMessage.getData().get("idUsuario"));
+        intent.putExtra("idproyecto", remoteMessage.getData().get("idProyecto"));
         intent.putExtra("usuario", remoteMessage.getData().get("usuario"));
         intent.putExtra("proyecto", remoteMessage.getData().get("proyecto"));
-
+        Usuario usuarioSeion=Sesion.getUsuario(getBaseContext());
+        int idUsuario =Integer.parseInt(remoteMessage.getData().get("idUsuario"));
         //Actualizo el almacen con los datos de la notificacion
-        updateAlmacen(remoteMessage.getData());
+        //sino soy el usuario que la envió
+        if((usuarioSeion==null || usuarioSeion.getId() != idUsuario) &&
+                (remoteMessage.getData().get("tipo")!=null && remoteMessage.getData().get("accion")!=null))
+            updateAlmacen(remoteMessage.getData());
 
         //Creo la notificación
         Notificacion notificacion = new Notificacion();
@@ -256,6 +262,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         usuarioOptionalSeguir.get().getMisSeguidos().remove(usuarioOptionalSeguir.get().getMisSeguidos().indexOf(Integer.parseInt(datos.get("idUsuarioSeguido"))));
                     }
                 }
+                break;
+            default:
                 break;
         }
     }

@@ -10,17 +10,26 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartu.adaptadores.AdapterNotificacion;
+import com.smartu.almacenamiento.Almacen;
 import com.smartu.modelos.Multimedia;
 import com.smartu.modelos.Notificacion;
+import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.ConsultasBBDD;
+import com.smartu.utilidades.Sesion;
+import com.smartu.vistas.FragmentNotificaciones;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import java8.util.stream.StreamSupport;
 
 /**
  * Created by Emilio Chica Jiménez on 27/05/2017.
@@ -33,6 +42,10 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
     private HNotificaciones hNotificaciones;
     private SweetAlertDialog pDialog;
     private Context context;
+    private ArrayList<Notificacion> notificacions;
+    private boolean filtro=false;
+    private CallBackHebras callback;
+
 
     public HNotificaciones(AdapterNotificacion adapterNotificacion, int offset, Context context) {
         this.adapterNotificacion = adapterNotificacion;
@@ -42,7 +55,13 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("Cargando...");
         pDialog.setCancelable(false);
+        notificacions = new ArrayList<>();
     }
+
+    public void setCallback(CallBackHebras callback) {
+        this.callback = callback;
+    }
+
     @Override
     protected void onPreExecute() {
         pDialog.show();
@@ -54,12 +73,6 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
-        /*String resultado="{\"notificaciones\":{" +
-                "\"notificaciones\":[" +
-
-                "],"
-                + "\"totalserver\":\"15\"" +
-                "}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
         String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaNotificaciones,"{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
 
@@ -74,12 +87,7 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
                     {
                         JSONObject notificacion = notificacionesJSON.getJSONObject(i);
                         Notificacion n = mapper.readValue(notificacion.toString(), Notificacion.class);
-                        ((Activity)context).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapterNotificacion.addItem(n);
-                            }
-                        });
+                        notificacions.add(n);
                     }
                     adapterNotificacion.setTotalElementosServer(res.getInt("totalserver"));
                 }
@@ -101,6 +109,39 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         pDialog.dismissWithAnimation();
+        Set<Integer> set = new HashSet<>();
+        for (Notificacion n:notificacions)
+            //Si la notificacion no tiene que ver con proyectos no la añado
+            //puede que la notificacion perteneza a un usuario nuevo
+            if(n.getIdProyecto()!=0)
+                set.add(n.getIdProyecto());
+
+        ArrayList<Integer> idsProyectos = new ArrayList<Integer>();
+        idsProyectos.addAll(set);
+
+        try {
+            //Esta carga de proyectos si tiene que ir al server
+            //espera hasta que termina de traerse los proyectos
+            Almacen.buscarProyectos(idsProyectos,context);
+
+            //Busco los usuarios también por si no han sido cargados
+            //Esta hebra espera hasta que termine de traerse los usuarios del server sino estan en el Almacen
+            Usuario usuarioSesion =Sesion.getUsuario(context);
+
+            if(usuarioSesion!=null)
+                Almacen.buscarUsuarios(usuarioSesion.getMisSeguidos(),context);
+            //Ya que tengo los proyectos que podrían relacionarse
+            //con el las notificaciones
+            //Añado las notificaciones al adapter
+            for (Notificacion n:notificacions) {
+                adapterNotificacion.addItem(n);
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        callback.terminada();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hNotificaciones =null;
 

@@ -170,7 +170,9 @@ class ComentarioModel
 			$datos = array("nombre"=>"Nuevo comentario en ".$proyecto["proyecto"]."!",
 			"descripcion"=>"El usuario ".$usuario["usuario"]." ha hecho el siguiente comentario ".$descripcion."...",
 			 "idUsuario"=>$data['idUsuario'],
-			 "idProyecto"=>$data['idProyecto']);
+			 "idProyecto"=>$data['idProyecto'],
+			 "tipo"=>"comentario",
+			 "accion"=>"insert");
 			 
 			$pub = new NotificacionModel();
 			$pub->InsertNotificacion($datos);

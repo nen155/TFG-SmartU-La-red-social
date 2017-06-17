@@ -104,8 +104,8 @@ class ProyectoModel
 				$proyecto->integrantes=$stmSub->fetchAll(\PDO::FETCH_COLUMN, 0);
 	
 				//Recojo solicitudes
-				$stm = $this->db->prepare("SELECT id,fecha,descripcion,idUsuarioSolicitante FROM solicitudUnion idProyecto= ?");
-				$stm->execute(array($proyecto->id));
+				$stmSub = $this->db->prepare("SELECT id,fecha,descripcion,idUsuarioSolicitante FROM solicitudUnion WHERE idProyecto=?");
+				$stmSub->execute(array($proyecto->id));
 				// array(array()) resultado solicitudes:[{..},{..},..]
 				$proyecto->solicitudes=array();
 				while ($filaU =$stm->fetch(\PDO::FETCH_ASSOC))
@@ -159,8 +159,8 @@ class ProyectoModel
 		try
 		{	
 
-			$stm = $this->db->prepare("SELECT p.id,p.nombre,p.descripcion,p.fechaCreacion,p.fechaFinalizacion,m.url as imagenDestacada,p.localizacion,p.coordenadas,p.web,p.idPropietario,u.nombre as propietarioUser".
-			" FROM ". $this->table ." as p INNER JOIN usuario as u ON p.idPropietario=u.id LEFT JOIN multimedia as m ON m.id=p.idImagenDestacada WHERE p.id= ?");
+			$stm = $this->db->prepare("SELECT p.id,p.nombre,p.descripcion,p.fechaCreacion,p.fechaFinalizacion,m.url as imagenDestacada,p.localizacion,p.coordenadas,p.web,p.idUsuario,u.nombre as propietarioUser".
+			" FROM ". $this->table ." as p INNER JOIN usuario as u ON p.idUsuario=u.id LEFT JOIN multimedia as m ON m.id=p.idImagenDestacada WHERE p.id= ?");
 			$stm->execute(array($id));
 			
 			$this->response->setResponse(true);
@@ -192,7 +192,7 @@ class ProyectoModel
 					array_push($proyecto->vacantesProyecto,$filaE);
 				
 				//Recojo misArchivos TODO COMPROBAR QUE EL OFFSET Y EL LIMIT SON CORRECTOS!!!
-				$stm = $this->db->prepare("SELECT id,nombre,url,urlPreview,tipo,urlSubtitulos FROM multimedia as m WHERE m.idProyecto= ? LIMIT ".$offset.",".$limit);
+				$stm = $this->db->prepare("SELECT id,nombre,url,urlPreview,tipo,urlSubtitulos FROM multimedia as m WHERE m.idProyecto= ?");
 				$stm->execute(array($proyecto->id));
 				// array(array()) resultado misArchivos:[{..},{..},..]
 				$proyecto->misArchivos=array();
@@ -230,7 +230,7 @@ class ProyectoModel
 				$proyecto->integrantes=$stm->fetchAll(\PDO::FETCH_COLUMN, 0);
 				
 				//Recojo solicitudes
-				$stm = $this->db->prepare("SELECT id,fecha,descripcion,idUsuarioSolicitante FROM solicitudUnion idProyecto= ?");
+				$stm = $this->db->prepare("SELECT id,fecha,descripcion,idUsuarioSolicitante FROM solicitudUnion WHERE idProyecto= ?");
 				$stm->execute(array($proyecto->id));
 				// array(array()) resultado solicitudes:[{..},{..},..]
 				$proyecto->solicitudes=array();

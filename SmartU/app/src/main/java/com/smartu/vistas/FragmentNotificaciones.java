@@ -18,17 +18,20 @@ import android.widget.LinearLayout;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterNotificacion;
+import com.smartu.almacenamiento.Almacen;
+import com.smartu.hebras.CallBackHebras;
 import com.smartu.hebras.HNotificaciones;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
+import com.smartu.utilidades.Sesion;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -36,14 +39,17 @@ import java.util.ArrayList;
  * Usa el método factoría {@link FragmentNotificaciones#newInstance} para
  * crear una instancia de este fragmento.
  */
-public class FragmentNotificaciones extends Fragment {
+public class FragmentNotificaciones extends Fragment implements CallBackHebras {
     //Cuando se produzca una novedad utilizo el filtro ACTION_NOTIFY_NEW_NOTIFICACION
     public static final String ACTION_NOTIFY_NEW_NOTIFICACION = "NOTIFY_NEW_NOVEDAD";
     //ArrayList de notificaciones para cargar y pasar cuando se cambie de Fragment
     private ArrayList<Notificacion> notificaciones = new ArrayList<>();
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_NOTIFICACIONES = "notificaciones";
+    private static final String ARG_FITRO= "filtro";
+
     private RecyclerView recyclerViewNotificacion;
+    private boolean filtro=false;
 
 
     /**
@@ -99,6 +105,7 @@ public class FragmentNotificaciones extends Fragment {
         // Constructor vacío es necesario
     }
 
+
     /**
      * Usar este constructor para crear una instancia de
      * este fragment con parámetros
@@ -106,10 +113,11 @@ public class FragmentNotificaciones extends Fragment {
      * @param notificaciones Parametro 1.
      * @return A devuelve una nueva instancia del fragment.
      */
-    public static FragmentNotificaciones newInstance(ArrayList<Notificacion> notificaciones) {
+    public static FragmentNotificaciones newInstance(ArrayList<Notificacion> notificaciones,boolean filtro) {
         FragmentNotificaciones fragment = new FragmentNotificaciones();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_NOTIFICACIONES, notificaciones);
+        args.putBoolean(ARG_FITRO,filtro);
         fragment.setArguments(args);
         return fragment;
     }
@@ -119,6 +127,7 @@ public class FragmentNotificaciones extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             notificaciones = getArguments().getParcelableArrayList(ARG_NOTIFICACIONES);
+            filtro =getArguments().getBoolean(ARG_FITRO);
         }
 
     }
@@ -152,17 +161,43 @@ public class FragmentNotificaciones extends Fragment {
      * @param offset
      */
     public void cargarMasNotificaciones(int offset) {
+
+        //Establezco el número de elmentos que deberia contener en total
+        scrollListener.setTotalServer(adapterNotificacion.getTotalElementosServer());
+        //Esto es solamente en el caso de que el usuario no sea anonimo
+        //Se hace una precarga porque puede que las primeras notificaciones no pertenezcan
+        //a su filtro por lo que vamos cargando hasta que tenga notificaciones
+        //de su filtro
+        //Para cargar a partir del tamaño del map
+        //por si uso filtros
+        if(offset< Almacen.sizeNotificaciones())
+            offset=Almacen.sizeNotificaciones();
+
         HNotificaciones hNotificaciones = new HNotificaciones(adapterNotificacion,offset,getActivity());
         hNotificaciones.sethNotificaciones(hNotificaciones);
+        hNotificaciones.setCallback(this);
         hNotificaciones.execute();
+
+
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         adapterNotificacion = new AdapterNotificacion(getContext(), notificaciones);
+        adapterNotificacion.setFiltro(filtro);
+
         recyclerViewNotificacion.setAdapter(adapterNotificacion);
+
         // Adds the scroll listener to RecyclerView
         recyclerViewNotificacion.addOnScrollListener(scrollListener);
+        //Esto es solamente en el caso de que el usuario no sea anonimo
+        //Se hace una precarga porque puede que las primeras notificaciones no pertenezcan
+        //a su filtro por lo que vamos cargando hasta que tenga notificaciones
+        //de su filtro
+        if(notificaciones.size()==0 && Sesion.getUsuario(getContext())!=null)
+            cargarMasNotificaciones(0);
+
     }
 
     @Override
@@ -172,6 +207,7 @@ public class FragmentNotificaciones extends Fragment {
         start();
         //Escucho los Intents que me llegan con el filtro novedad
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mNotificationsReceiver, new IntentFilter(ACTION_NOTIFY_NEW_NOTIFICACION));
+
     }
 
     @Override
@@ -257,4 +293,20 @@ public class FragmentNotificaciones extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void terminada() {
+        //Establezo el número por el que va el contenedor del Almacen
+        scrollListener.setTamAlmacen(Almacen.sizeNotificaciones());
+        //Por si lo que cargo durante los filtros no es sufiente continuo cargando
+        //para buscar todas las notificaciones posibles que coincidan con el filtro del usuario
+        if(filtro && !scrollListener.isFin() && Almacen.sizeNotificaciones() < adapterNotificacion.getTotalElementosServer()
+                && scrollListener.getLastVisibleItemPosition()+scrollListener.getVisibleThreshold() >adapterNotificacion.getItemCount()){
+            cargarMasNotificaciones(0);
+            scrollListener.setLoading(true);
+        }
+        if(adapterNotificacion.getItemCount()==0 && Almacen.sizeNotificaciones() < adapterNotificacion.getTotalElementosServer())
+            cargarMasNotificaciones(0);
+        else
+            muestraSinNotificaciones(adapterNotificacion.getItemCount()==0);
+    }
 }

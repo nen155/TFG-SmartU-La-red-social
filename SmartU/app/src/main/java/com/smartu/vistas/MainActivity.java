@@ -59,12 +59,12 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
         if(bundle!=null)
         {
             if (bundle.containsKey("notificacion"))
-                transaction.replace(R.id.content_frame, FragmentNotificaciones.newInstance(Almacen.getNotificaciones()));
+                transaction.replace(R.id.content_frame, FragmentNotificaciones.newInstance(Almacen.getNotificaciones(),false));
             else//Cargo el fragment por defecto
-                transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(Almacen.getProyectos()));
+                transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(Almacen.getProyectos(),false));
         }
         else//Cargo el fragment por defecto
-            transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(Almacen.getProyectos()));
+            transaction.replace(R.id.content_frame, FragmentProyectos.newInstance(Almacen.getProyectos(),false));
 
 
         transaction.commit();
@@ -117,47 +117,33 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
             case R.id.filtro_notificaciones:
                 //Si estoy en intereses muestro las notificaciones filtradas
                 if (itemMenuSeleccionado == R.id.navigation_intereses) {
-                    if (usuarioSesion != null)
-                        swicthTo = FragmentNotificaciones.newInstance(Almacen.getNotificacionesFiltradas());
-                    else
-                        swicthTo = FragmentNotificaciones.newInstance(Almacen.getNotificaciones());
+                    swicthTo = FragmentNotificaciones.newInstance(Almacen.getNotificacionesFiltradas(),true);
                 }else
-                    swicthTo = FragmentNotificaciones.newInstance(Almacen.getNotificaciones());
+                    swicthTo = FragmentNotificaciones.newInstance(Almacen.getNotificaciones(),false);
                 Toast.makeText(getApplicationContext(), "Novedades", Toast.LENGTH_SHORT).show();
-                /*Intent intent = new Intent(MainActivity.this,MapsActivity.class);
-                startActivity(intent);*/
                 break;
             case R.id.filtro_comentarios:
                 //Si estoy en intereses muestro las comentarios filtrados
                 if (itemMenuSeleccionado == R.id.navigation_intereses) {
-                    if (usuarioSesion != null)
-                        swicthTo = FragmentComentarios.newInstance(Almacen.getComentariosFiltrados());
-                    else
-                        swicthTo = FragmentComentarios.newInstance(Almacen.getComentarios());
+                    swicthTo = FragmentComentarios.newInstance(Almacen.getComentariosFiltrados(),true);
                 }else
-                    swicthTo = FragmentComentarios.newInstance(Almacen.getComentarios());
+                    swicthTo = FragmentComentarios.newInstance(Almacen.getComentarios(),false);
                 Toast.makeText(getApplicationContext(), "Comentarios", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.filtro_proyectos:
                 //Si estoy en intereses muestro los proyectos filtrados
                 if (itemMenuSeleccionado == R.id.navigation_intereses) {
-                    if (usuarioSesion != null)
-                        swicthTo = FragmentProyectos.newInstance(Almacen.getProyectosFiltrados());
-                    else
-                        swicthTo = FragmentProyectos.newInstance(Almacen.getProyectos());
+                    swicthTo = FragmentProyectos.newInstance(Almacen.getProyectosFiltrados(),true);
                 }else
-                    swicthTo = FragmentProyectos.newInstance(Almacen.getProyectos());
+                    swicthTo = FragmentProyectos.newInstance(Almacen.getProyectos(),false);
                 Toast.makeText(getApplicationContext(), "Proyectos", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.filtro_usuarios:
                 //Si estoy en intereses muestro las usuarios filtrados
                 if (itemMenuSeleccionado == R.id.navigation_intereses) {
-                    if (usuarioSesion != null)
-                        swicthTo = FragmentUsuarios.newInstance(Almacen.getUsuariosFiltrados());
-                    else
-                        swicthTo = FragmentUsuarios.newInstance(Almacen.getUsuarios());
+                    swicthTo = FragmentUsuarios.newInstance(Almacen.getUsuariosFiltrados(),true);
                 }else
-                    swicthTo = FragmentUsuarios.newInstance(Almacen.getUsuarios());
+                    swicthTo = FragmentUsuarios.newInstance(Almacen.getUsuarios(),false);
                 Toast.makeText(getApplicationContext(), "Usuarios", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -184,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
                     //Guardo el item por el que estoy para luego comparar
                     itemMenuSeleccionado = R.id.navigation_muro;
                     //Cargo el fragment con los proyectos
-                    swicthTo = FragmentProyectos.newInstance(Almacen.getProyectos());
+                    swicthTo = FragmentProyectos.newInstance(Almacen.getProyectos(),false);
                     break;
                 case R.id.navigation_map:
                     //Oculto los filtros
@@ -200,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
                     //Guardo el item por el que estoy para luego comparar
                     itemMenuSeleccionado = R.id.navigation_intereses;
                     //Cargo el fragment con los filtros
-                    swicthTo = FragmentProyectos.newInstance(Almacen.getProyectosFiltrados());
+                    swicthTo = FragmentProyectos.newInstance(Almacen.getProyectosFiltrados(),true);
                     break;
 
             }

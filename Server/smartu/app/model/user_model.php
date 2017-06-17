@@ -148,7 +148,6 @@ class UserModel
 		{	
 
 			$stm = $this->db->prepare("SELECT id,nombre,apellidos,verificado,user,email,nPuntos,biografia,web,imagenPerfil,uid,firebaseToken FROM ". $this->table ." WHERE id= ?");
-			$stm->execute();
 
 			$stm->execute(array($id));
 			
@@ -579,36 +578,33 @@ class UserModel
 		
 		try 
 		{
-			for($i=0;$i<count($data["idsAreas"]);++$i){
-				$sql = "SELECT idUsuario FROM usuarioInteresaArea WHERE idUsuario=? AND idArea=?";
+			$sql = "DELETE FROM usuarioInteresaArea WHERE idUsuario=? ";
                
-                 $stm = $this->db->prepare($sql);
-				 $stm->execute(
-                        array(
-                            $data['idUsuario'],
-                            $data['idsAreas'][$i]
+           $stm = $this->db->prepare($sql);
+			$stm->execute(
+					array(
+						$data['idUsuario']
                         )
                     );
-				
-				if($stm->rowCount()==0){
-					$sql = "INSERT INTO usuarioInteresaArea
+			for($i=0;$i<count($data["idsAreas"]);++$i){
+				$sql = "INSERT INTO usuarioInteresaArea
 								(id, idUsuario, idArea)
 								VALUES (NULL,?,?)";
 					
-					$this->db->prepare($sql)
+				$this->db->prepare($sql)
 						 ->execute(
 							array(
 								$data['idUsuario'],
 								$data['idsAreas'][$i]
 							)
-						); 
-				}
+					); 
+				
             }
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
 			//Inserto notificacion
-			if($stm->rowCount()==0)
+			if(count($data["idsAreas"])>0)
 				$this->InsertaNotificacionInteres($data);
 			
             return $this->response->result;
@@ -641,7 +637,7 @@ class UserModel
 			//Obtengo los puntos y el status del usuario
 			$sql = "SELECT u.id as idUsuario,u.nombre,u.user,u.nPuntos,u.idStatus,s.nombre as estatus, (SELECT count(*) FROM seguidor as e WHERE e.idUsuarioSeguido=?) as numSeguidores FROM usuario as u LEFT JOIN status as s ON u.idStatus=s.id  WHERE u.id=?";
 			$stm = $this->db->prepare($sql);
-			$stm->execute(array($id));
+			$stm->execute(array($id,$id));
 			$fila =$stm->fetch(\PDO::FETCH_ASSOC);
 
 			
@@ -726,7 +722,9 @@ class UserModel
 			
 			$datos=array("nombre"=>"Nuevo usuario en la red!",
 			"descripcion"=>"El usuario ".$data["user"]." ahora está en SmartU",
-			 "idUsuario"=>$data['idUsuario'],"idProyecto"=>"0");
+			 "idUsuario"=>$data['idUsuario'],"idProyecto"=>"0",
+			 "tipo"=>"usuario",
+			 "accion"=>"insert");
 			 
 			$pub = new NotificacionModel();
 			$pub->InsertNotificacion($datos);

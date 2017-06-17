@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -35,8 +36,16 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
     private HUsuarios hUsuarios;
     private SweetAlertDialog pDialog;
     private Context context;
+    private ArrayList<Usuario> usuarios;
+    private CallBackHebras callBackHebras;
+
+    public void setCallBackHebras(CallBackHebras callBackHebras) {
+        this.callBackHebras = callBackHebras;
+    }
+
     @Override
     protected void onPreExecute() {
+        usuarios=new ArrayList<>();
         pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("Cargando...");
@@ -47,6 +56,8 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
         this.adapterIntegrante = adapterIntegrante;
         this.offset = offset;
         this.context=context;
+
+
     }
     public HUsuarios(AdapterUsuario adapterUsuario, int offset,Context context) {
         this.adapterUsuario = adapterUsuario;
@@ -65,32 +76,6 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
-            /*String resultado="{\"usuarios\":{\"usuarios\":[{\"id\":\"1\",\"nombre\":\"Emilio\",\"apellidos\":\"Chica Jiménez\",\"verificado\":\"true\",\"user\":\"emiliocj\",\"email\":\"emiliocj@correo.ugr.es\",\"nPuntos\":\"100\",\"localizacion\":\"C/Poeta Manuel\",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada y es Graduado en Ingeniería Informática\", \"web\":\"http://coloremoon.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/foto-buena.jpg\",\"misProyectos\":[\"1\"],\"misAreasInteres\":[{\"id\":\"1\",\"nombre\":\"Informática\"}],\n" +
-                    "\"misEspecialidades\":[{\"id\":\"1\",\"nombre\":\"Informática\"}], \n" +
-                    "\"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"1\"},\n" +
-                    "\"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}]\n" +
-                    "}, \n" +
-                    "\n" +
-                    "{\"id\":\"2\",\"nombre\":\"Juanjo\",\"apellidos\":\"Jiménez\",\"verificado\":\"true\",\"user\":\"juanjo\",\"email\":\"juanji@gmail.com\",\"nPuntos\":\"150\",\"localizacion\":\"C/Armilla \",\"biografia\":\"Estudiante universitario de la ETSIIT que vive en Granada, en Armilla y es Graduado en Ingeniería Informática\", \"web\":\"http://juanjo.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/AtBE7.png\",\n" +
-                    "\"misProyectos\":[\"1\"],\"misAreasInteres\":[{\"id\":\"1\",\"nombre\":\"Informática\"}],\n" +
-                    "\"misEspecialidades\":[{\"id\":\"1\",\"nombre\":\"Informática\"}], \n" +
-                    "\"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"2\"},\n" +
-                    "\"misRedesSociales\":[{\"id\":\"1\",\"nombre\":\"facebook\",\"url\":\"https://www.facebook.com/\"}],\n" +
-                    "\"uid\":\"qJG5OgYElpajoNcMLMRr1M022g02\","+
-                    "\"firebaseToken\":\"f-R46MZAWX4:APA91bHpMWEfmjmcJQXgtEvDrvacEDReiLhO0ErEvjldGFobof0xbn8LJqqECIPqGzsvtVjkrx6Ew2Koky-u_YX41mBvIThe4glvT-x70s89o2dXvzptsPrMXych6ugQYHGRQ2LtxJ7L\""+
-                    "},\n" +
-                    "{\"id\":\"3\",\"nombre\":\"German\",\"apellidos\":\"Zayas Cabrera\",\"verificado\":\"true\",\"user\":\"german\",\"email\":\"german@gmail.com\",\"nPuntos\":\"150\",\"localizacion\":\"C/Ceballos \",\"biografia\":\"Estudiante universitario de la UGR que vive en Granada, en Peligros con el Grado en Bellas Artes\", \"web\":\"http://german.com\",\"imagenPerfil\":\"wp-content/uploads/2017/05/j5xrbugqkkalex-avatar.png\",\n" +
-                    "\"misProyectos\":[\"1\"],\"misAreasInteres\":[{\"id\":\"2\",\"nombre\":\"Bellas artes\"}],\n" +
-                    "\"misEspecialidades\":[{\"id\":\"2\",\"nombre\":\"Diseño gráfico\"}], \n" +
-                    "\"miStatus\":{\"id\":\"1\",\"nombre\":\"creador\",\"puntos\":\"100\",\"numSeguidores\":\"2\"},\n" +
-                    "\"misRedesSociales\":[{\"id\":\"2\",\"nombre\":\"twitter\",\"url\":\"https://www.twitter.com/\"}],\n" +
-                    "\"uid\":\"KEKtOZy4mbd42LygAUgOp2ZVr3M2\","+
-                    "\"firebaseToken\":\"f-R46MZAWX4:APA91bHpMWEfmjmcJQXgtEvDrvacEDReiLhO0ErEvjldGFobof0xbn8LJqqECIPqGzsvtVjkrx6Ew2Koky-u_YX41mBvIThe4glvT-x70s89o2dXvzptsPrMXych6ugQYHGRQ2LtxJ7L\""+
-                    "}\n" +
-                    "\n" +
-                    "]                      \n" +
-                    " \n" +
-                    "},\"totalserver\":\"3\"}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
         String resultado="";
         if(adapterUsuario==null)
@@ -103,27 +88,12 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
             if(resultado !=null) {
                 res = new JSONObject(resultado);
                 if (!res.isNull("usuarios")) {
-                   // JSONObject usuJSON = res.getJSONObject("usuarios");
                     JSONArray usuariosJSON = res.getJSONArray("usuarios");
                     for(int i=0;i<usuariosJSON.length();++i)
                     {
                         JSONObject usuario = usuariosJSON.getJSONObject(i);
                         Usuario u = mapper.readValue(usuario.toString(), Usuario.class);
-                        if(adapterUsuario ==null)
-                            ((Activity)context).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    adapterIntegrante.addItem(u);
-                                }
-                            });
-                        else
-                            ((Activity)context).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    adapterUsuario.addItem(u);
-                                }
-                            });
-
+                        usuarios.add(u);
                     }
                     //Digo a los adapter cual es el total de comentarios que tienen
                     if(adapterUsuario ==null)
@@ -149,6 +119,17 @@ public class HUsuarios extends AsyncTask<Void,Void,Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         pDialog.dismissWithAnimation();
+        if(adapterUsuario ==null) {
+            for (Usuario u : usuarios) {
+                adapterIntegrante.addItem(u);
+            }
+        }else {
+            for (Usuario u : usuarios) {
+                adapterUsuario.addItem(u);
+            }
+            callBackHebras.terminada();
+        }
+
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hUsuarios =null;
 

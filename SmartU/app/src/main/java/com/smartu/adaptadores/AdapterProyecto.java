@@ -42,6 +42,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
     private FragmentProyectos.OnProyectoSelectedListener onProyectoSelectedListener;
     private Proyecto proyecto;
     private Usuario usuarioSesion;
+    private boolean filtro=false;
 
     //Es el número total de elementos que hay en el server
     //tengo que recogerlo de las hebras de consulta
@@ -54,6 +55,14 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
 
     public void setTotalElementosServer(int totalElementosServer) {
         this.totalElementosServer = totalElementosServer;
+    }
+
+    public int getTotalElementosServer() {
+        return totalElementosServer;
+    }
+
+    public void setFiltro(boolean filtro) {
+        this.filtro = filtro;
     }
 
     public AdapterProyecto(Context context, ArrayList<Proyecto> items, FragmentProyectos.OnProyectoSelectedListener onProyectoSelectedListener) {
@@ -257,9 +266,24 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
         Proyecto proyecto = (Proyecto) publicacion;
         boolean esta = StreamSupport.stream(proyectos).filter(usuario1 -> usuario1.getId() == proyecto.getId()).findAny().isPresent();
         if (!esta) {
-            proyectos.add(proyecto);
             Almacen.add(proyecto);
-            notifyItemInserted(proyectos.size() - 1);
+            //Compruebo si tengo que filtrar
+            if(filtro) {
+                //Si tengo que mostrarla porque es perteneciente al filtro
+                if (Almacen.filtra(proyecto, Sesion.getUsuario(context))) {
+                    //Compruebo sino la he añadido antes
+                    esta = Almacen.isFiltradaPresent(proyecto);
+                    //Sino la he añadido la añado al ArrayList
+                    if (!esta)
+                        Almacen.addFiltro(proyecto);
+
+                    notifyItemInserted(proyectos.size()-1);
+                }
+            }else {
+                proyectos.add(proyecto);
+                notifyItemInserted(proyectos.size() - 1);
+            }
+
         }
     }
 

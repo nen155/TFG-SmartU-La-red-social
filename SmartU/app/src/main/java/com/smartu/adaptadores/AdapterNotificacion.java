@@ -15,6 +15,7 @@ import com.smartu.almacenamiento.Almacen;
 import com.smartu.modelos.Publicacion;
 import com.smartu.modelos.Notificacion;
 import com.smartu.utilidades.Comparador;
+import com.smartu.utilidades.Sesion;
 import com.smartu.vistas.ProyectoActivity;
 import com.smartu.vistas.UsuarioActivity;
 
@@ -29,10 +30,11 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 	private Context context;
 	private ArrayList<Notificacion> notificaciones;
 	private Notificacion notificacion;
+	private boolean filtro;
 
 	//Es el número total de elementos que hay en el server
 	//tengo que recogerlo de las hebras de consulta
-	private int totalElementosServer = -1;
+	private int totalElementosServer = 0;
 
 	// Tres tipos de vistas para saber si es un ProgressBar lo que muestro o la vista normal
 	public static final int VIEW_TYPE_LOADING = 0;
@@ -42,6 +44,14 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 
 	public void setTotalElementosServer(int totalElementosServer) {
 		this.totalElementosServer = totalElementosServer;
+	}
+
+	public int getTotalElementosServer() {
+		return totalElementosServer;
+	}
+
+	public void setFiltro(boolean filtro) {
+		this.filtro = filtro;
 	}
 
 	public AdapterNotificacion(Context context, ArrayList<Notificacion> items) {
@@ -223,20 +233,58 @@ public class AdapterNotificacion extends RecyclerView.Adapter<AdapterNotificacio
 
 		boolean esta = StreamSupport.stream(notificaciones).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
 		if(!esta) {
-			notificaciones.add(0, notificacion);
+			//La añado al almacen
 			Almacen.add(notificacion);
-			notifyItemInserted(0);
+			//Compruebo si tengo que filtrar
+			if(filtro) {
+				//Si tengo que mostrarla porque es perteneciente al filtro
+				if (Almacen.filtra(notificacion, Sesion.getUsuario(context))) {
+					//Compruebo sino la he añadido antes
+					esta = Almacen.isFiltradaPresent(notificacion);
+					//Sino la he añadido la añado al ArrayList
+					if (!esta)
+						Almacen.addFiltro(notificacion);
+
+					notificaciones.add(0, notificacion);
+					notifyItemInserted(0);
+				}
+			}else {
+				notificaciones.add(0, notificacion);
+				notifyItemInserted(0);
+			}
 		}
 	}
 	@Override
 	public void addItem(Publicacion publicacion) {
 		Notificacion notificacion =(Notificacion) publicacion;
-
+		//Compruebo si esta en el array del adapater
 		boolean esta = StreamSupport.stream(notificaciones).filter(usuario1 -> usuario1.getId() == notificacion.getId()).findAny().isPresent();
+		boolean add=false;
+		//Sino esta
 		if(!esta) {
-			notificaciones.add(notificacion);
+			//La añado al almacen
 			Almacen.add(notificacion);
-			notifyItemInserted(notificaciones.size()-1);
+			//Añado las notificaciones filtradas igualmente pero no notifico al adapter
+			//Si tengo que mostrarla porque es perteneciente al filtro
+			if (Almacen.filtra(notificacion, Sesion.getUsuario(context))) {
+				//Compruebo sino la he añadido antes
+				esta = Almacen.isFiltradaPresent(notificacion);
+				//Sino la he añadido la añado al ArrayList
+				if (!esta) {
+					Almacen.addFiltro(notificacion);
+					add=true;
+				}
+			}
+			//Compruebo si tengo que filtrar
+			if(filtro) {
+				//Si estoy en al adpater con filtro y he añadido una
+				//lo notifico
+				if(add)
+					notifyItemInserted(notificaciones.size()-1);
+			}else {
+				notificaciones.add(notificacion);
+				notifyItemInserted(notificaciones.size() - 1);
+			}
 		}
 	}
 }

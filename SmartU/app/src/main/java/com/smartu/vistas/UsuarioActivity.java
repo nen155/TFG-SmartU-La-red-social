@@ -139,7 +139,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                     swicthTo = FragmentUsuario.newInstance(usuario);
                     break;
                 case R.id.navigation_proyectos:
-                    swicthTo = FragmentProyectos.newInstance(misProyectos);
+                    swicthTo = FragmentProyectos.newInstance(misProyectos,false);
                     ((FragmentProyectos)swicthTo).setIdUsuario(usuario.getId());
                     break;
                 /*case R.id.navigation_notifications:

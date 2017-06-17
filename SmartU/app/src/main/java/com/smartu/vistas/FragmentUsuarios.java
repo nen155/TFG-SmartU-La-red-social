@@ -9,9 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterUsuario;
+import com.smartu.almacenamiento.Almacen;
+import com.smartu.hebras.CallBackHebras;
 import com.smartu.hebras.HUsuarios;
 import com.smartu.modelos.Usuario;
 import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
@@ -27,12 +30,17 @@ import java.util.ArrayList;
  * Usa el método factoría {@link FragmentUsuarios#newInstance} para
  * crear una instancia de este fragmento.
  */
-public class FragmentUsuarios extends Fragment {
+public class FragmentUsuarios extends Fragment implements CallBackHebras {
     //ArrayList de obras para cargar y pasar cuando se cambie de Fragment
     private ArrayList<Usuario> usuarios = new ArrayList<>();
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_USUARIOS = "usuarios";
+    //El argumento que tienen que pasarme o que tengo que pasar en los Intent
+    private static final String ARG_FILTRO = "filtro";
+    private boolean filtro=false;
     private RecyclerView recyclerViewUsuarios;
+    //Muestra el mensaje de que no hay notificaciones
+    private LinearLayout mNoNotificacionView;
 
     private OnUsuarioSelectedListener mListener;
     //Va hacer de listener para cuando llegue al final del RecyclerView
@@ -51,10 +59,11 @@ public class FragmentUsuarios extends Fragment {
      * @param usuarios Parametro 1.
      * @return A devuelve una nueva instancia del fragment.
      */
-    public static FragmentUsuarios newInstance(ArrayList<Usuario> usuarios) {
+    public static FragmentUsuarios newInstance(ArrayList<Usuario> usuarios,boolean filtro) {
         FragmentUsuarios fragment = new FragmentUsuarios();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_USUARIOS, usuarios);
+        args.putBoolean(ARG_FILTRO,filtro);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,6 +73,7 @@ public class FragmentUsuarios extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             usuarios = getArguments().getParcelableArrayList(ARG_USUARIOS);
+            filtro = getArguments().getBoolean(ARG_FILTRO);
         }
 
     }
@@ -75,6 +85,7 @@ public class FragmentUsuarios extends Fragment {
         View fragmen =inflater.inflate(R.layout.fragment_usuarios_recientes, container, false);
 
         recyclerViewUsuarios = (RecyclerView) fragmen.findViewById(R.id.recyclerUsuarios);
+        mNoNotificacionView = (LinearLayout) fragmen.findViewById(R.id.noMessages);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewUsuarios.setLayoutManager(llm);
@@ -91,6 +102,14 @@ public class FragmentUsuarios extends Fragment {
 
         return fragmen;
     }
+    /**
+     * Cambia la visibilidad del mensaje de qeu NO hay notificaciones en el RecyclerView
+     * @param empty
+     */
+    public void muestraSinNotificaciones(boolean empty) {
+        recyclerViewUsuarios.setVisibility(empty ? View.GONE : View.VISIBLE);
+        mNoNotificacionView.setVisibility(empty ? View.VISIBLE : View.GONE);
+    }
 
     /**
      * Carga hasta 10 comentarios si hubiese a partir del offset
@@ -98,8 +117,16 @@ public class FragmentUsuarios extends Fragment {
      * @param offset
      */
     public void cargarMasUsuarios(int offset) {
+        //Establezco el número de elmentos que deberia contener en total
+        scrollListener.setTotalServer(adapterUsuario.getTotalElementosServer());
+        //Para cargar a partir del tamaño del map
+        //por si uso filtros
+        if(offset< Almacen.sizeUsuarios())
+            offset=Almacen.sizeUsuarios();
+
         HUsuarios hUsuarios = new HUsuarios(adapterUsuario,offset,getActivity());
         hUsuarios.sethUsuarios(hUsuarios);
+        hUsuarios.setCallBackHebras(this);
         hUsuarios.execute();
     }
 
@@ -110,12 +137,20 @@ public class FragmentUsuarios extends Fragment {
         recyclerViewUsuarios.setAdapter(adapterUsuario);
         // Adds the scroll listener to RecyclerView
         recyclerViewUsuarios.addOnScrollListener(scrollListener);
-        //La primera vez le pongo el tamaño del Array por si no son más de 10
-        //que son lo que me traigo
-        //adapterUsuario.setTotalElementosServer(usuarios.size());
+
+        if(usuarios.size()==0)
+            cargarMasUsuarios(0);
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(usuarios!=null)
+            muestraSinNotificaciones(usuarios.size()<=0);
+        else
+            muestraSinNotificaciones(true);
+    }
 
     public void onButtonPressed(int idUsuario) {
         if (mListener != null) {
@@ -138,6 +173,25 @@ public class FragmentUsuarios extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void terminada() {
+        //Establezo el número por el que va el contenedor del Almacen
+        scrollListener.setTamAlmacen(Almacen.sizeNotificaciones());
+        //Por si lo que cargo durante los filtros no es sufiente continuo cargando
+        //para buscar todas las notificaciones posibles que coincidan con el filtro del usuario
+        if(filtro && !scrollListener.isFin() && Almacen.sizeNotificaciones() < adapterUsuario.getTotalElementosServer()
+                && scrollListener.getLastVisibleItemPosition()+scrollListener.getVisibleThreshold() >adapterUsuario.getItemCount()){
+            cargarMasUsuarios(0);
+            scrollListener.setLoading(true);
+        }
+
+
+        if(adapterUsuario.getItemCount()==0 && Almacen.sizeUsuarios() < adapterUsuario.getTotalElementosServer())
+            cargarMasUsuarios(0);
+        else
+            muestraSinNotificaciones(adapterUsuario.getItemCount()==0);
     }
 
     /**

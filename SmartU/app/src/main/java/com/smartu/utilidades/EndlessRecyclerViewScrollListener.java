@@ -22,6 +22,15 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     private boolean loading = true;
     // Sets the starting page index
     private int startingPageIndex = 0;
+    //Total server
+    private int totalServer=0;
+    //Tamaño actual
+    private int tamAlmacen=0;
+    //La ultima posicion visible
+    private int lastVisibleItemPosition = 0;
+
+
+    private boolean fin=false;
 
     RecyclerView.LayoutManager mLayoutManager;
 
@@ -52,12 +61,41 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         return maxSize;
     }
 
+    public int getVisibleThreshold() {
+        return visibleThreshold;
+    }
+
+    public int getLastVisibleItemPosition() {
+        return lastVisibleItemPosition;
+    }
+
+    public void setTotalServer(int totalServer) {
+        this.totalServer = totalServer;
+    }
+
+    public void setTamAlmacen(int tamAlmacen) {
+        this.tamAlmacen = tamAlmacen;
+    }
+
+    public boolean isLoading() {
+        return loading;
+    }
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
+    }
+
+    public boolean isFin() {
+        return fin;
+    }
+
+
     // This happens many times a second during a scroll, so be wary of the code you place here.
     // We are given a few useful parameters to help us work out if we need to load some more data,
     // but first we check if we are waiting for the previous load to finish.
     @Override
     public void onScrolled(RecyclerView view, int dx, int dy) {
-        int lastVisibleItemPosition = 0;
+
         int totalItemCount = mLayoutManager.getItemCount();
 
         if (mLayoutManager instanceof StaggeredGridLayoutManager) {
@@ -91,7 +129,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         // the visibleThreshold and need to reload more data.
         // If we do need to reload some more data, we execute onLoadMore to fetch the data.
         // threshold should reflect how many total columns there are too
-        if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
+        if (!loading && (((lastVisibleItemPosition + visibleThreshold) > totalItemCount) /*|| (totalServer!=0 && previousTotalItemCount==totalItemCount && tamAlmacen<totalServer)*/)) {
             //Antes era currentPage++;
             //Lo he cambiado al totalItemCount para que la proxima view empiece desde el total
             //que llevo cargado pues lo almaceno en el Almacen y no debo empezar desde 0,sino desde
@@ -99,7 +137,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             currentPage=totalItemCount-1;
             onLoadMore(currentPage, totalItemCount, view);
             loading = true;
+            if(totalServer!=0 && tamAlmacen==totalServer)
+                fin=true;
         }
+        if(totalServer!=0 && tamAlmacen==totalServer)
+            fin=true;
     }
 
     // Call this method whenever performing new searches
