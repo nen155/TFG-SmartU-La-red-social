@@ -261,24 +261,29 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     @Override
     public void addItem(Publicacion publicacion) {
         Usuario usuario = (Usuario) publicacion;
-
         boolean esta = StreamSupport.stream(usuarios).filter(usuario1 -> usuario1.getId() == usuario.getId()).findAny().isPresent();
+        boolean add=false;
         if (!esta)
         {
             Almacen.add(usuario);
 
+            //Añado las notificaciones filtradas igualmente pero no notifico al adapter
+            //Si tengo que mostrarla porque es perteneciente al filtro
+            if (Almacen.filtra(usuario, Sesion.getUsuario(context))) {
+                //Compruebo sino la he añadido antes
+                esta = Almacen.isFiltradaPresent(usuario);
+                //Sino la he añadido la añado al ArrayList
+                if (!esta) {
+                    Almacen.addFiltro(usuario);
+                    add=true;
+                }
+            }
             //Compruebo si tengo que filtrar
             if(filtro) {
-                //Si tengo que mostrarla porque es perteneciente al filtro
-                if (Almacen.filtra(usuario, Sesion.getUsuario(context))) {
-                    //Compruebo sino la he añadido antes
-                    esta = Almacen.isFiltradaPresent(usuario);
-                    //Sino la he añadido la añado al ArrayList
-                    if (!esta)
-                        Almacen.addFiltro(usuario);
-
+                //Si estoy en al adpater con filtro y he añadido una
+                //lo notifico
+                if(add)
                     notifyItemInserted(usuarios.size()-1);
-                }
             }else {
                 usuarios.add(usuario);
                 notifyItemInserted(usuarios.size() - 1);

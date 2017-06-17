@@ -265,20 +265,29 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
     public void addItem(Publicacion publicacion) {
         Proyecto proyecto = (Proyecto) publicacion;
         boolean esta = StreamSupport.stream(proyectos).filter(usuario1 -> usuario1.getId() == proyecto.getId()).findAny().isPresent();
+        boolean add=false;
         if (!esta) {
             Almacen.add(proyecto);
+
+
+            //Añado las notificaciones filtradas igualmente pero no notifico al adapter
+            //Si tengo que mostrarla porque es perteneciente al filtro
+            if (Almacen.filtra(proyecto, Sesion.getUsuario(context))) {
+                //Compruebo sino la he añadido antes
+                esta = Almacen.isFiltradaPresent(proyecto);
+                //Sino la he añadido la añado al ArrayList
+                if (!esta) {
+                    Almacen.addFiltro(proyecto);
+                    add=true;
+                }
+            }
             //Compruebo si tengo que filtrar
             if(filtro) {
-                //Si tengo que mostrarla porque es perteneciente al filtro
-                if (Almacen.filtra(proyecto, Sesion.getUsuario(context))) {
-                    //Compruebo sino la he añadido antes
-                    esta = Almacen.isFiltradaPresent(proyecto);
-                    //Sino la he añadido la añado al ArrayList
-                    if (!esta)
-                        Almacen.addFiltro(proyecto);
-
+                //Si estoy en al adpater con filtro y he añadido una
+                //lo notifico
+                if(add)
                     notifyItemInserted(proyectos.size()-1);
-                }
+
             }else {
                 proyectos.add(proyecto);
                 notifyItemInserted(proyectos.size() - 1);

@@ -209,23 +209,29 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
     public void addItem(Publicacion publicacion) {
         Comentario comentario=(Comentario) publicacion;
         boolean esta = StreamSupport.stream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
+        boolean add=false;
         if (!esta) {
 
             Almacen.add(comentario);
 
+            //Añado las notificaciones filtradas igualmente pero no notifico al adapter
+            //Si tengo que mostrarla porque es perteneciente al filtro
+            if (Almacen.filtra(comentario, Sesion.getUsuario(context))) {
+                //Compruebo sino la he añadido antes
+                esta = Almacen.isFiltradaPresent(comentario);
+                //Sino la he añadido la añado al ArrayList
+                if (!esta) {
+                    Almacen.addFiltro(comentario);
+                    add=true;
+                }
+            }
             //Compruebo si tengo que filtrar
             if(filtro) {
-                //Si tengo que mostrarla porque es perteneciente al filtro
-                if (Almacen.filtra(comentario, Sesion.getUsuario(context))) {
-                    //Compruebo sino la he añadido antes
-                    esta = Almacen.isFiltradaPresent(comentario);
-                    //Sino la he añadido la añado al ArrayList
-                    if (!esta)
-                        Almacen.addFiltro(comentario);
-
-
+                //Si estoy en al adpater con filtro y he añadido una
+                //lo notifico
+                if(add)
                     notifyItemInserted(comentarios.size()-1);
-                }
+
             }else {
                 comentarios.add(comentario);
                 notifyItemInserted(comentarios.size() - 1);
