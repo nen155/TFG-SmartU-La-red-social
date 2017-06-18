@@ -19,4 +19,9 @@
         android:icon="@drawable/image_multiple"
         android:title="@string/multimedia" />
 
+    <item
+        android:id="@+id/navigation_avances"
+        android:icon="@drawable/avances"
+        android:title="@string/avances" />
+
 </menu>

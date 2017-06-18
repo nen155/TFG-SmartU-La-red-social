@@ -178,10 +178,10 @@ public class FragmentUsuarios extends Fragment implements CallBackHebras {
     @Override
     public void terminada() {
         //Establezo el número por el que va el contenedor del Almacen
-        scrollListener.setTamAlmacen(Almacen.sizeNotificaciones());
+        scrollListener.setTamAlmacen(Almacen.sizeUsuarios());
         //Por si lo que cargo durante los filtros no es sufiente continuo cargando
         //para buscar todas las notificaciones posibles que coincidan con el filtro del usuario
-        if(filtro && !scrollListener.isFin() && Almacen.sizeNotificaciones() < adapterUsuario.getTotalElementosServer()
+        if(filtro && !scrollListener.isFin() && Almacen.sizeUsuarios() < adapterUsuario.getTotalElementosServer()
                 && scrollListener.getLastVisibleItemPosition()+scrollListener.getVisibleThreshold() >adapterUsuario.getItemCount()){
             cargarMasUsuarios(0);
             scrollListener.setLoading(true);

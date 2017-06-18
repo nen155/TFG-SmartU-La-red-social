@@ -154,10 +154,10 @@ public class FragmentComentarios extends Fragment implements CallBackHebras{
     public void terminada() {
 
         //Establezo el número por el que va el contenedor del Almacen
-        scrollListener.setTamAlmacen(Almacen.sizeNotificaciones());
+        scrollListener.setTamAlmacen(Almacen.sizeComentarios());
         //Por si lo que cargo durante los filtros no es sufiente continuo cargando
         //para buscar todas las notificaciones posibles que coincidan con el filtro del usuario
-        if(filtro && !scrollListener.isFin() && Almacen.sizeNotificaciones() < adapterComentario.getTotalElementosServer()
+        if(filtro && !scrollListener.isFin() && Almacen.sizeComentarios() < adapterComentario.getTotalElementosServer()
                 && scrollListener.getLastVisibleItemPosition()+scrollListener.getVisibleThreshold() >adapterComentario.getItemCount()){
             cargarMasComentarios(0);
             scrollListener.setLoading(true);

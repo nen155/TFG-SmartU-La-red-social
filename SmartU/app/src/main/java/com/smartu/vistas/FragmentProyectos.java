@@ -196,10 +196,10 @@ public class FragmentProyectos extends Fragment implements CallBackHebras {
     @Override
     public void terminada() {
         //Establezo el número por el que va el contenedor del Almacen
-        scrollListener.setTamAlmacen(Almacen.sizeNotificaciones());
+        scrollListener.setTamAlmacen(Almacen.sizeProyectos());
         //Por si lo que cargo durante los filtros no es sufiente continuo cargando
         //para buscar todas las notificaciones posibles que coincidan con el filtro del usuario
-        if(filtro && !scrollListener.isFin() && Almacen.sizeNotificaciones() < adapterProyecto.getTotalElementosServer()
+        if(filtro && !scrollListener.isFin() && Almacen.sizeProyectos() < adapterProyecto.getTotalElementosServer()
                 && scrollListener.getLastVisibleItemPosition()+scrollListener.getVisibleThreshold() >adapterProyecto.getItemCount()){
             cargarMasProyectos(0);
             scrollListener.setLoading(true);

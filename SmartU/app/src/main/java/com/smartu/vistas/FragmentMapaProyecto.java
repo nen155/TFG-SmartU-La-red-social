@@ -43,7 +43,7 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
 
-    private LatLng miPosicion =null;
+    private LatLng miPosicion = null;
     private Bundle mBundle;
     private LatLng posicionProyecto;
 
@@ -96,6 +96,7 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
         mMapView.getMapAsync(this);
         return inflatedView;
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -147,19 +148,22 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
     public void onConnected(@Nullable Bundle bundle) {
         //Compruebo los permisos de la localización
         //si no los tengo me salgo del método
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            //Pongo mi localización en el mapa
+            mMap.setMyLocationEnabled(true);
+        }else
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
         //Obtengo la última localización conocida
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-            miPosicion = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
-            if(mMap!=null)
-                if(posicionProyecto!=null)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicionProyecto,12));
+            miPosicion = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            if (mMap != null)
+                if (posicionProyecto != null)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicionProyecto, 12));
                 else
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion,12));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion, 12));
         }
     }
 
@@ -178,33 +182,38 @@ public class FragmentMapaProyecto extends Fragment implements OnMapReadyCallback
         //Inicializo el mapa
         MapsInitializer.initialize(getContext());
         mMap = googleMap;
-        //Compruebo los permisos de la localización
-        //si no los tengo me salgo del método
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-        //Pongo mi localización en el mapa
-        googleMap.setMyLocationEnabled(true);
+
         //Si tengo proyectos los muestro en el mapa
-        if (proyecto.getCoordenadas().compareTo("")!=0) {
-                String[]coordenadas=proyecto.getCoordenadas().split(",");
-                double lat = Double.parseDouble(coordenadas[0]);
-                double lon = Double.parseDouble(coordenadas[1]);
-                posicionProyecto = new LatLng(lat, lon);
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.title(proyecto.getNombre());
-                //Pongo la descripción en el infowindow solo con 10 caracteres
-                if(proyecto.getDescripcion().length()>50)
-                    markerOptions.snippet(proyecto.getDescripcion().substring(0,50));
-                else
-                    markerOptions.snippet(proyecto.getDescripcion());
-                markerOptions.position(posicionProyecto);
-                mMap.addMarker(markerOptions);
+        if (proyecto.getCoordenadas().compareTo("") != 0) {
+            String[] coordenadas = proyecto.getCoordenadas().split(",");
+            double lat = Double.parseDouble(coordenadas[0]);
+            double lon = Double.parseDouble(coordenadas[1]);
+            posicionProyecto = new LatLng(lat, lon);
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.title(proyecto.getNombre());
+            //Pongo la descripción en el infowindow solo con 10 caracteres
+            if (proyecto.getDescripcion().length() > 50)
+                markerOptions.snippet(proyecto.getDescripcion().substring(0, 50));
+            else
+                markerOptions.snippet(proyecto.getDescripcion());
+            markerOptions.position(posicionProyecto);
+            mMap.addMarker(markerOptions);
         }
 
         // Movemos la camara a la posicion del usuario
-        if(miPosicion!=null)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion,3));
+        if (miPosicion != null)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(miPosicion, 3));
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 1) {
+            if (permissions.length == 1 && permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+            } else {
+                // Permission was denied. Display an error message.
+            }
+        }
     }
 }

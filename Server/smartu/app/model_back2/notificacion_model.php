@@ -157,10 +157,8 @@ class NotificacionModel
 				case "interes":
 					$datos["idsAreas"]=$data["idsAreas"];
 				break;
-				case "ocupar":
-					$datos["idVacante"]=$data["idVacante"];
-					break;
-				default:
+				case "idea":
+				case "solicitud":
 				break;	
 			}
 			//Envío notificación a FCM
@@ -214,11 +212,9 @@ class NotificacionModel
 				case "interes":
 					$map["idsAreas"]=$data["idsAreas"];
 				break;
-				case "ocupar":
-					$map["idVacante"]=$data["idVacante"];
-					break;
-				default:
-				break;
+				case "idea":
+				case "solicitud":
+				break;	
 		}
 		
 		$fields = array(

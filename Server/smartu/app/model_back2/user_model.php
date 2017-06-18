@@ -509,8 +509,8 @@ class UserModel
 				//Sino la he insertado antes
 			if($stm->rowCount()==0){
 					$sql = "INSERT INTO solicitudUnion
-								(id, idUsuarioSolicitante, idProyecto,fecha,descripcion,idVacante)
-								VALUES (NULL,?,?,?,?,?)";
+								(id, idUsuarioSolicitante, idProyecto,fecha,descripcion)
+								VALUES (NULL,?,?,?,?)";
 					
 					$this->db->prepare($sql)
 						 ->execute(
@@ -518,8 +518,7 @@ class UserModel
 								$data['idUsuario'],
 								$data['idProyecto'],
 								date("Y-m-d H:i:s"),
-								$data['descripcion'],
-								$data['idVacante']
+								$data['descripcion']
 							)
 						); 
 			}
@@ -549,14 +548,13 @@ class UserModel
 		
 		try 
 		{
-                $sql = "DELETE FROM solicitudUnion WHERE idUsuarioSolicitante=? AND idProyecto=? AND idVacante=?";
+                $sql = "DELETE FROM solicitudUnion WHERE idUsuarioSolicitante=? AND idProyecto=?";
                 
                 $this->db->prepare($sql)
                      ->execute(
                         array(
                             $data['idUsuario'],
-                            $data['idProyecto'],
-							$data['idVacante']
+                            $data['idProyecto']
                         )
                     ); 
 			$datos = array("idUsuario"=>$data['idUsuario'],"idProyecto"=>$data['idProyecto'],"tipo"=>"union","operacion"=>"minus");

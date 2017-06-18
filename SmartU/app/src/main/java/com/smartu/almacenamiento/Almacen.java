@@ -16,6 +16,7 @@ import com.smartu.utilidades.Sesion;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -219,6 +220,7 @@ public class Almacen {
             hPublicacion.execute();
         }
     }
+
     /**
      * Busca un conjunto de ids de usuarios en el almacen y sino los encuentra los busca en
      * el servidor y los añado al almacen

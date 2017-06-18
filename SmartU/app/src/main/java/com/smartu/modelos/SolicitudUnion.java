@@ -24,12 +24,14 @@ public class SolicitudUnion implements Parcelable,Serializable {
     private int idProyecto;
     private String descripcion;
     private int idUsuarioSolicitante;
+    private int idVacante;
 
     public SolicitudUnion(){}
-    public SolicitudUnion(Date fecha, String proyecto,int idProyecto) {
+    public SolicitudUnion(Date fecha, String proyecto,int idProyecto,int idVacante) {
         this.fecha = fecha;
         this.proyecto = proyecto;
         this.idProyecto = idProyecto;
+        this.idVacante = idVacante;
     }
     public SolicitudUnion(Date fecha, int idUsuarioSolicitante,String descripcion) {
         this.fecha = fecha;
@@ -42,6 +44,7 @@ public class SolicitudUnion implements Parcelable,Serializable {
         idProyecto = in.readInt();
         idUsuarioSolicitante=in.readInt();
         descripcion = in.readString();
+        idVacante = in.readInt();
     }
 
     @Override
@@ -54,6 +57,7 @@ public class SolicitudUnion implements Parcelable,Serializable {
         dest.writeInt(idProyecto);
         dest.writeInt(idUsuarioSolicitante);
         dest.writeString(descripcion);
+        dest.writeInt(idVacante);
     }
 
     @Override
@@ -111,5 +115,13 @@ public class SolicitudUnion implements Parcelable,Serializable {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public int getIdVacante() {
+        return idVacante;
+    }
+
+    public void setIdVacante(int idVacante) {
+        this.idVacante = idVacante;
     }
 }

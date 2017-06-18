@@ -33,6 +33,7 @@ public class ConsultasBBDD {
     public static final String consultaLogin = grupoUsuarios+"login";
     public static final String consultaProyectos =grupoProyectos+"proyectos";
     public static final String consultaMultimedia =grupoProyectos+"multimedia";
+    public static final String ocuparVacante =grupoProyectos+"ocuparvacante";
     public static final String consultaComentarios =grupoComentarios+"comentarios";
     public static final String consultaComentariosProyecto =grupoComentarios+"comentariosproyecto";
     public static final String consultaNotificaciones =grupoNotificaciones+"notificaciones";

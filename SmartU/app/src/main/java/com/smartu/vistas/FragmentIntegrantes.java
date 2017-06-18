@@ -145,6 +145,8 @@ public class FragmentIntegrantes extends Fragment {
             usuario.setNombre("Únete al proyecto");
             usuario.setMiStatus(new Status(-1,"Vacante",0,0));
             usuario.setMisEspecialidades(v.getEspecialidades());
+            //Paso el id de la vacante a traves de los puntos
+            usuario.setnPuntos(v.getId());
             integrantesConVacantes.add(usuario);
         }
         return integrantesConVacantes;

@@ -20,6 +20,7 @@ import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
 import com.smartu.modelos.SolicitudUnion;
 import com.smartu.modelos.Usuario;
+import com.smartu.modelos.Vacante;
 import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.Sesion;
 import com.smartu.vistas.FragmentNotificaciones;
@@ -148,7 +149,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         int idUsuario = Integer.parseInt(datos.get("idUsuario"));
         //Dependiendo del tipo tendré que actualizar uno u otro
         switch (datos.get("tipo")){
-            case "idea":
+            case "idea": //Sincroniza las buenas ideas dadas a un proyecot
                 int idProyectoIdea= Integer.parseInt(datos.get("idProyecto"));
                 //Dependiendo de la acción quito o añado
                 if(datos.get("accion").compareTo("insert")==0) {
@@ -168,7 +169,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
                 }
                 break;
-            case "solicitud":
+            case "solicitud": //Sincroniza las solicitudes de union
                 int idProyecto= Integer.parseInt(datos.get("idProyecto"));
                 //Dependiendo de la acción quito o añado
                 if(datos.get("accion").compareTo("insert")==0) {
@@ -177,12 +178,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     if(proyectoOptional.isPresent()){
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         try {
-                            proyectoOptional.get().getSolicitudes().add(new SolicitudUnion(sdf.parse(datos.get("fecha")),Integer.parseInt(datos.get("idUsuario")),datos.get("descripcion")));
+                            SolicitudUnion solicitudUnion = new SolicitudUnion(sdf.parse(datos.get("fecha")),Integer.parseInt(datos.get("idUsuario")),datos.get("descripcion"));
+                            solicitudUnion.setIdProyecto(idProyecto);
+                            solicitudUnion.setIdVacante(Integer.parseInt(datos.get("idVacante")));
+                            proyectoOptional.get().getSolicitudes().add(solicitudUnion);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                     }
-                }else //Es eliminar la idea
+                }else //Es eliminar la solicitud
                 {
                     Optional<Proyecto> proyectoOptional = StreamSupport.stream(Almacen.getProyectos()).filter(proyecto -> proyecto.getId() == idProyecto).findAny();
                     //Si lo tengo en el almacen lo actualizo
@@ -193,7 +197,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
                 }
                 break;
-            case "interes":
+            case "interes": //Sincroniza los intereses de un usuario
                 //Dependiendo de la acción quito o añado
                 if(datos.get("accion").compareTo("insert")==0) {
                     Optional<Usuario> usuarioOptional = StreamSupport.stream(Almacen.getUsuarios()).filter(usuario -> usuario.getId() == idUsuario).findAny();
@@ -234,7 +238,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
                 }
                 break;
-            case "status":
+            case "status": //Sincroniza el status al subir de status de un usuario
                 Optional<Usuario> usuarioOptional = StreamSupport.stream(Almacen.getUsuarios()).filter(usuario -> usuario.getId() == idUsuario).findAny();
                 //Si lo tengo en el almacen lo actualizo
                 if(usuarioOptional.isPresent()) {
@@ -244,7 +248,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
 
                 break;
-            case "seguir":
+            case "seguir": //Sincroniza el numero de seguidores de un usuario
                 //Dependiendo de la acción quito o añado
                 if(datos.get("accion").compareTo("insert")==0) {
                     Optional<Usuario> usuarioOptionalSeguir = StreamSupport.stream(Almacen.getUsuarios()).filter(usuario -> usuario.getId() == idUsuario).findAny();
@@ -261,6 +265,34 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         usuarioOptionalSeguir.get().getMiStatus().setNumSeguidores(Integer.parseInt(datos.get("numSeguidores")));
                         usuarioOptionalSeguir.get().getMisSeguidos().remove(usuarioOptionalSeguir.get().getMisSeguidos().indexOf(Integer.parseInt(datos.get("idUsuarioSeguido"))));
                     }
+                }
+                break;
+            case "ocupar": //Sincroniza vacantes al ocupar un proyecto
+                if(datos.get("accion").compareTo("insert")==0) {
+                    int idProyectoO= Integer.parseInt(datos.get("idProyecto"));
+                    int idVacante = Integer.parseInt(datos.get("idVacante"));
+                    Optional<Proyecto> proyectoOptional = StreamSupport.stream(Almacen.getProyectos()).filter(proyecto -> proyecto.getId() == idProyectoO).findAny();
+                    //Si lo tengo en el almacen lo actualizo
+                    if(proyectoOptional.isPresent())
+                    {
+                        Proyecto p = proyectoOptional.get();
+                        Optional<Vacante> vacanteOptional = StreamSupport.stream(p.getVacantesProyecto()).filter(vacante -> vacante.getId() == idVacante).findAny();
+                        boolean esta = StreamSupport.stream(p.getIntegrantes()).filter(integer -> idUsuario == integer).findAny().isPresent();
+                        if(!esta)
+                            p.getIntegrantes().add(idUsuario);
+
+                        if(vacanteOptional.isPresent()){
+                            p.getVacantesProyecto().remove(vacanteOptional.get());
+                        }
+                    }
+                    Optional<Usuario> usuarioOptional1 = StreamSupport.stream(Almacen.getUsuarios()).filter(usuario -> usuario.getId() == idUsuario).findAny();
+                    //Si lo tengo en el almacen lo actualizo
+                    if(usuarioOptional1.isPresent()){
+                        boolean esta = StreamSupport.stream(usuarioOptional1.get().getMisProyectos()).filter(integer -> idProyectoO == integer).findAny().isPresent();
+                        if(!esta)
+                            usuarioOptional1.get().getMisProyectos().add(idProyectoO);
+                    }
+
                 }
                 break;
             default:

@@ -34,4 +34,42 @@ $app->group('/project/', function () {
         );
     });
 	
+	$this->post('eliminavacante', function ($req, $res, $args) {
+        $um = new ProyectoModel();
+        $data= $req->getParsedBody();
+        return $res
+           ->withHeader('Content-type', 'application/json')
+           ->getBody()
+           ->write(
+            json_encode(
+                $um->DeleteVacante($data["id"])
+            )
+        );
+    });
+	
+	$this->post('guardarcolaborador', function ($req, $res, $args) {
+        $um = new ProyectoModel();
+        $data= $req->getParsedBody();
+        return $res
+           ->withHeader('Content-type', 'application/json')
+           ->getBody()
+           ->write(
+            json_encode(
+                $um->InsertColaborador($data)
+            )
+        );
+    });
+	
+	$this->post('ocuparvacante', function ($req, $res, $args) {
+        $um = new ProyectoModel();
+        $data= $req->getParsedBody();
+        return $res
+           ->withHeader('Content-type', 'application/json')
+           ->getBody()
+           ->write(
+            json_encode(
+                $um->OcuparVacante($data)
+            )
+        );
+    });
 });

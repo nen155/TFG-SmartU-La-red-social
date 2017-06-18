@@ -57,20 +57,13 @@ class ProyectoModel
 					array_push($proyecto->misAreas,$filaA);
 				
 				//Recojo vacantesProyecto
-				$stmV = $this->db->prepare("SELECT id FROM vacanteProyecto WHERE idProyecto= ?");
-				$stmV->execute(array($proyecto->id));
+				$stmSub = $this->db->prepare("SELECT e.id,e.nombre,e.descripcion,v.experienciaNecesaria FROM vacanteProyecto as vp".
+				" INNER JOIN vacante as v ON v.idVacante=vp.id INNER JOIN especialidad as e ON v.idEspecialidad=e.id WHERE vp.idProyecto= ?");
+				$stmSub->execute(array($proyecto->id));
+				// array(array()) resultado vacantesProyecto:[{..},{..},..]
 				$proyecto->vacantesProyecto=array();
-				$cont=0;
-				while ($filaV =$stmV->fetch(\PDO::FETCH_ASSOC)){
-					$stmSub = $this->db->prepare("SELECT e.id,e.nombre,e.descripcion,v.experienciaNecesaria FROM vacanteProyecto as vp".
-					" INNER JOIN vacante as v ON v.idVacante=vp.id INNER JOIN especialidad as e ON v.idEspecialidad=e.id WHERE vp.id= ?");
-					$stmSub->execute(array($filaV["id"]));
-					// array(array()) resultado vacantesProyecto:[{..},{..},..]
-					array_push($proyecto->vacantesProyecto,array("id"=>$filaV["id"],"especialidades"=>array()));
-					while($filaE =$stmSub->fetch(\PDO::FETCH_ASSOC))
-						array_push($proyecto->vacantesProyecto[$cont]["especialidades"],$filaE);
-					$cont++;
-				}
+				while ($filaE =$stmSub->fetch(\PDO::FETCH_ASSOC))
+					array_push($proyecto->vacantesProyecto,$filaE);
 				
 				//Recojo misArchivos TODO COMPROBAR QUE EL OFFSET Y EL LIMIT SON CORRECTOS!!!
 				$stmSub = $this->db->prepare("SELECT id,nombre,url,urlPreview,tipo,urlSubtitulos FROM multimedia as m WHERE m.idProyecto= ? LIMIT ".$offset.",".$limit);
@@ -111,12 +104,11 @@ class ProyectoModel
 				$proyecto->integrantes=$stmSub->fetchAll(\PDO::FETCH_COLUMN, 0);
 	
 				//Recojo solicitudes
-				$stmSub = $this->db->prepare("SELECT s.id,s.fecha,s.descripcion,s.idUsuarioSolicitante,s.idProyecto,s.idVacante,p.nombre as proyecto".
-				" FROM solicitudUnion as s LEFT JOIN proyecto as p ON s.idProyecto=p.id WHERE idProyecto= ?");
+				$stmSub = $this->db->prepare("SELECT id,fecha,descripcion,idUsuarioSolicitante FROM solicitudUnion WHERE idProyecto=?");
 				$stmSub->execute(array($proyecto->id));
 				// array(array()) resultado solicitudes:[{..},{..},..]
 				$proyecto->solicitudes=array();
-				while ($filaU =$stmSub->fetch(\PDO::FETCH_ASSOC))
+				while ($filaU =$stm->fetch(\PDO::FETCH_ASSOC))
 					array_push($proyecto->solicitudes,$filaU);
 
 				
@@ -191,20 +183,13 @@ class ProyectoModel
 					array_push($proyecto->misAreas,$filaA);
 				
 				//Recojo vacantesProyecto
-				$stmV = $this->db->prepare("SELECT id FROM vacanteProyecto WHERE idProyecto= ?");
-				$stmV->execute(array($proyecto->id));
+				$stm = $this->db->prepare("SELECT e.id,e.nombre,e.descripcion,v.experienciaNecesaria FROM vacanteProyecto as vp".
+				" INNER JOIN vacante as v ON v.idVacante=vp.id INNER JOIN especialidad as e ON v.idEspecialidad=e.id WHERE vp.idProyecto= ?");
+				$stm->execute(array($proyecto->id));
+				// array(array()) resultado vacantesProyecto:[{..},{..},..]
 				$proyecto->vacantesProyecto=array();
-				$cont=0;
-				while ($filaV =$stmV->fetch(\PDO::FETCH_ASSOC)){
-					$stmSub = $this->db->prepare("SELECT e.id,e.nombre,e.descripcion,v.experienciaNecesaria FROM vacanteProyecto as vp".
-					" INNER JOIN vacante as v ON v.idVacante=vp.id INNER JOIN especialidad as e ON v.idEspecialidad=e.id WHERE vp.id= ?");
-					$stmSub->execute(array($filaV["id"]));
-					// array(array()) resultado vacantesProyecto:[{..},{..},..]
-					array_push($proyecto->vacantesProyecto,array("id"=>$filaV["id"],"especialidades"=>array()));
-					while($filaE =$stmSub->fetch(\PDO::FETCH_ASSOC))
-						array_push($proyecto->vacantesProyecto[$cont]["especialidades"],$filaE);
-					$cont++;
-				}
+				while ($filaE =$stm->fetch(\PDO::FETCH_ASSOC))
+					array_push($proyecto->vacantesProyecto,$filaE);
 				
 				//Recojo misArchivos TODO COMPROBAR QUE EL OFFSET Y EL LIMIT SON CORRECTOS!!!
 				$stm = $this->db->prepare("SELECT id,nombre,url,urlPreview,tipo,urlSubtitulos FROM multimedia as m WHERE m.idProyecto= ?");
@@ -245,8 +230,7 @@ class ProyectoModel
 				$proyecto->integrantes=$stm->fetchAll(\PDO::FETCH_COLUMN, 0);
 				
 				//Recojo solicitudes
-				$stm = $this->db->prepare("SELECT s.id,s.fecha,s.descripcion,s.idUsuarioSolicitante,s.idProyecto,s.idVacante,p.nombre as proyecto".
-				" FROM solicitudUnion as s LEFT JOIN proyecto as p ON s.idProyecto=p.id WHERE idProyecto= ?");
+				$stm = $this->db->prepare("SELECT id,fecha,descripcion,idUsuarioSolicitante FROM solicitudUnion WHERE idProyecto= ?");
 				$stm->execute(array($proyecto->id));
 				// array(array()) resultado solicitudes:[{..},{..},..]
 				$proyecto->solicitudes=array();
@@ -297,142 +281,6 @@ class ProyectoModel
 		{
 			$this->response->setResponse(false, $e->getMessage());
             return $this->response;
-		}
-    }
-	public function InsertColaborador($data)
-	{
-		
-		try 
-		{
-                $sql = "INSERT INTO usuarioColaboradorProyecto
-                            (id, idUsuario, idProyecto,idEspecialidad)
-                            VALUES (NULL,?,?,?)";
-                
-                $this->db->prepare($sql)
-                     ->execute(
-                        array(
-                            $data['idUsuario'],
-                            $data['idProyecto'],
-							$data['idEspecialidad']
-                        )
-                    ); 
-					
-			$this->response->setResponse(true);
-			$this->response->result=array("resultado" =>"ok" );
-			
-            return $this->response->result;
-		}catch (Exception $e) 
-		{
-            $this->response->setResponse(false, $e->getMessage());
-			 return $this->response;
-		}
-    }
-    public function DeleteVacante($id)
-    {
-		try 
-		{
-			$stm = $this->db->prepare("DELETE FROM vacante WHERE idVacante = ?");			          
-			$stm->execute(array($id));
-			
-			$stm = $this->db->prepare("SELECT count(*) as filas FROM vacante WHERE idVacante = ?");			          
-			$stm->execute(array($id));
-			$fila =$stm->fetch(\PDO::FETCH_ASSOC);
-			
-			//Sino hay más vacantes con el mismo id
-			if($fila["filas"]==0){
-				$stm = $this->db->prepare("DELETE FROM vacanteProyecto WHERE id = ?");			          
-				$stm->execute(array($id));
-			}
-			
-            
-			$this->response->setResponse(true);
-			$this->response->result=array("resultado" =>"ok" );
-            return $this->response->result;
-		} catch (Exception $e) 
-		{
-			$this->response->setResponse(false, $e->getMessage());
-		}
-    }
-	
-	public function OcuparVacante($data)
-    {
-		try 
-		{
-			$stm = $this->db->prepare("DELETE FROM vacante WHERE idVacante = ?");			          
-			$stm->execute(array($data["id"]));
-			
-			$stm = $this->db->prepare("SELECT count(*) as filas FROM vacante WHERE idVacante = ?");			          
-			$stm->execute(array($data["id"]));
-			$fila =$stm->fetch(\PDO::FETCH_ASSOC);
-			
-			//Sino hay más vacantes con el mismo id
-			if($fila["filas"]==0){
-				$stm = $this->db->prepare("DELETE FROM vacanteProyecto WHERE id = ?");			          
-				$stm->execute(array($data["id"]));
-			}
-			
-			$this->response->setResponse(true);
-			$this->response->result=array("resultado" =>"ok" );
-			
-			$this->InsertColaborador($data);
-			
-			$this->DeleteSolicitudUnion($data);
-			
-			$this->InsertaNotificacionSolicitud($data);
-			
-            return $this->response->result;
-		} catch (Exception $e) 
-		{
-			$this->response->setResponse(false, $e->getMessage());
-		}
-    }
-	public function InsertaNotificacionSolicitud($data){
-			
-			//Busco el proyecto
-			$stm = $this->db->prepare("SELECT nombre as proyecto FROM  proyecto WHERE id=?");
-			$stm->execute(array($data["idProyecto"]));
-			$proyecto = $stm->fetch(\PDO::FETCH_ASSOC);
-			
-			//Busco el usuario
-			$stm = $this->db->prepare("SELECT user as usuario FROM  usuario WHERE id=?");
-			$stm->execute(array($data["idUsuario"]));
-			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
-			
-			$datos=array("nombre"=>"Nuevo colaborador en ".$proyecto["proyecto"]."!",
-			"descripcion"=>"El usuario ".$usuario["usuario"]." ahora es colaborador en ".$proyecto["proyecto"],
-			 "idUsuario"=>$data['idUsuario'],
-			 "idProyecto"=>$data['idProyecto'],
-			 "idVacante"=>$data['idVacante'],
-			 "tipo"=>"ocupar",
-			 "accion"=>"insert");
-			 
-			$pub = new NotificacionModel();
-			$pub->InsertNotificacion($datos);
-	}
-	public function DeleteSolicitudUnion($data)
-	{
-		
-		try 
-		{
-                $sql = "DELETE FROM solicitudUnion WHERE idUsuarioSolicitante=? AND idProyecto=? AND idVacante=?";
-                
-                $this->db->prepare($sql)
-                     ->execute(
-                        array(
-							$data['idUsuario'],
-                            $data['idProyecto'],
-                            $data['id']
-                        )
-                    ); 
-            
-			$this->response->setResponse(true);
-			$this->response->result=array("resultado" =>"ok" );
-			
-            return $this->response->result;
-		}catch (Exception $e) 
-		{
-            $this->response->setResponse(false, $e->getMessage());
-			 return $this->response;
 		}
     }
 	

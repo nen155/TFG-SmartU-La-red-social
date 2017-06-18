@@ -137,7 +137,7 @@
                 android:drawableStart="@drawable/seguir_accent"
                 android:padding="16dp"
                 android:text="@string/seguir"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
         </RelativeLayout>
 

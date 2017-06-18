@@ -37,17 +37,18 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
     private Button solicitarUnion;
     private HSolicitud hSolicitud;
     private boolean eliminar;
-    private Date fechaActual;
-    private SweetAlertDialog pDialog;
 
-    public HSolicitud(boolean eliminar, Proyecto proyecto, int idUsuario, ArrayList<Especialidad> especialidades, Context context, Button solicitarUnion) {
+    private SweetAlertDialog pDialog;
+    private int idVacante;
+
+    public HSolicitud(boolean eliminar, Proyecto proyecto, int idUsuario, ArrayList<Especialidad> especialidades, Context context, Button solicitarUnion, int idVacante) {
         this.proyecto = proyecto;
         this.idUsuario = idUsuario;
+        this.idVacante = idVacante;
         this.especialidades = especialidades;
         this.context = context;
         this.solicitarUnion = solicitarUnion;
         this.eliminar = eliminar;
-        this.fechaActual = new Date();
         pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("Cargando...");
@@ -77,16 +78,16 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
         //Construyo el JSON
         String unirse = "";
         if (eliminar)
-            unirse = "{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + proyecto.getId() + "\"}";
+            unirse = "{\"idUsuario\":\"" + idUsuario + "\",\"idVacante\":\"" + idVacante + "\",\"idProyecto\":\"" + proyecto.getId() + "\"}";
         else
-            unirse = "{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + proyecto.getId() + "\",\"fecha\":\"" + fechaActual + "\"" +
-                    ",\"descripcion\":\"" + descripcion + "\"}";
+            unirse = "{\"idUsuario\":\"" + idUsuario + "\",\"idProyecto\":\"" + proyecto.getId() + "\",\"idVacante\":\"" + idVacante + "\",\"descripcion\":\"" + descripcion + "\"}";
 
         if (eliminar)
+            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarUnion, unirse, "POST");
+        else
             //Recojo el resultado en un String
             resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.insertaUnion, unirse, "POST");
-        else
-            resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.eliminarUnion, unirse, "POST");
+
 
         return resultado;
     }
@@ -118,8 +119,9 @@ public class HSolicitud extends AsyncTask<Void, Void, String> {
                         else
                             usuario.getMisSolicitudes().remove(StreamSupport.stream(usuario.getMisSolicitudes()).filter(solicitudUnion -> solicitudUnion.getIdProyecto() == proyecto.getId()).findFirst().get());
                     else
-                        usuario.getMisSolicitudes().add(new SolicitudUnion(fechaActual, proyecto.getNombre(),proyecto.getId()));
+                        usuario.getMisSolicitudes().add(new SolicitudUnion(new Date(), proyecto.getNombre(),proyecto.getId(),idVacante));
                 }
+
 
             } catch (JSONException e) {
                 e.printStackTrace();

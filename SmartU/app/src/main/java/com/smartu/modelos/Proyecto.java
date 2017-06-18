@@ -5,7 +5,9 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
