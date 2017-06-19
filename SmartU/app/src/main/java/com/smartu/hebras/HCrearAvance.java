@@ -46,6 +46,7 @@ public class HCrearAvance extends AsyncTask<Void, Void, String> {
     private HCrearAvance hAvances;
     private SweetAlertDialog pDialog;
     private Context context;
+    private CallBackHebras callBackHebras;
 
     public HCrearAvance(Context context, int idProyecto, int idUsuario, int idImagenDestacada, String descripcion, String nombre) {
         this.idProyecto = idProyecto;
@@ -56,6 +57,9 @@ public class HCrearAvance extends AsyncTask<Void, Void, String> {
         this.context = context;
     }
 
+    public void setCallBackHebras(CallBackHebras callBackHebras) {
+        this.callBackHebras = callBackHebras;
+    }
 
     public void sethAvances(HCrearAvance hAvances) {
         this.hAvances = hAvances;
@@ -105,7 +109,7 @@ public class HCrearAvance extends AsyncTask<Void, Void, String> {
                     Avance avance = mapper.readValue(result, Avance.class);
                     proyectoOptional.get().getMisAvances().add(avance);
                 }
-
+                callBackHebras.terminada();
             } catch (JsonParseException e) {
                 e.printStackTrace();
             } catch (JsonMappingException e) {

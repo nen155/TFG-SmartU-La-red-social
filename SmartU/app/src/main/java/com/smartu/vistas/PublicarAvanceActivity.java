@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mvc.imagepicker.ImagePicker;
 import com.smartu.R;
@@ -38,12 +39,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class PublicarAvanceActivity extends AppCompatActivity implements CallBackImagen {
+public class PublicarAvanceActivity extends AppCompatActivity implements CallBackImagen,CallBackHebras {
 
     private Proyecto proyecto;
     private Bitmap imagen = null;
     private Usuario usuarioSesion=null;
     private String descripcion,nombre;
+    private EditText editTextDescripcion,editTextNombre;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +53,8 @@ public class PublicarAvanceActivity extends AppCompatActivity implements CallBac
         setContentView(R.layout.activity_publicar_avance);
         Bundle bundle = getIntent().getExtras();
         proyecto = new Proyecto();
-        EditText editTextDescripcion = (EditText) findViewById(R.id.textoAvance);
-        EditText editTextNombre = (EditText) findViewById(R.id.nombreAvance);
+        editTextDescripcion = (EditText) findViewById(R.id.textoAvance);
+        editTextNombre = (EditText) findViewById(R.id.nombreAvance);
         //Obtengo el proyecto que me han pasado
         if (bundle != null) {
             int id = bundle.getInt("idProyecto");
@@ -70,12 +72,14 @@ public class PublicarAvanceActivity extends AppCompatActivity implements CallBac
         guardarAvance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                descripcion = editTextDescripcion.getText().toString();
-                nombre = editTextNombre.getText().toString();
-                if (imagen != null)
-                    enviarImagen();
-                else
-                    terminada(0);
+                if(editTextDescripcion.getText().length()>0 &&  editTextNombre.getText().length()>0) {
+                    descripcion = editTextDescripcion.getText().toString();
+                    nombre = editTextNombre.getText().toString();
+                    if (imagen != null)
+                        enviarImagen();
+                    else
+                        terminada(0);
+                }
             }
         });
     }
@@ -115,11 +119,19 @@ public class PublicarAvanceActivity extends AppCompatActivity implements CallBac
         imagen = ImagePicker.getImageFromResult(this, requestCode, resultCode, data);
     }
 
-
+    //Termina la hebra de subir una imagen
     @Override
     public void terminada(int id) {
         HCrearAvance hCrearAvance = new HCrearAvance(this,proyecto.getId(),usuarioSesion.getId(),id,descripcion,nombre);
         hCrearAvance.sethAvances(hCrearAvance);
         hCrearAvance.execute();
+    }
+    //Termina la hebra de crear avance
+    @Override
+    public void terminada() {
+        editTextDescripcion.setText("");
+        editTextNombre.setText("");
+        imagen=null;
+        Toast.makeText(this,"Has creado un nuevo avance en el proyecto!",Toast.LENGTH_SHORT).show();
     }
 }

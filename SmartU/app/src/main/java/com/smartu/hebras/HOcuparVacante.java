@@ -30,7 +30,7 @@ import java8.util.stream.StreamSupport;
  * Created by Emilio Chica Jiménez on 27/05/2017.
  */
 
-public class HOcuparVacante extends AsyncTask<Void, Void, String> {
+public class    HOcuparVacante extends AsyncTask<Void, Void, String> {
 
 
 
