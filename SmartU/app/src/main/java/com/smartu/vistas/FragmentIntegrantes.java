@@ -22,6 +22,8 @@ import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
+import java8.util.stream.StreamSupport;
+
 
 /**
  * Una subclase simple {@link Fragment}.
@@ -82,6 +84,11 @@ public class FragmentIntegrantes extends Fragment {
         }
         if(proyecto.getIntegrantes()!=null)
             Almacen.buscarUsuarios(proyecto.getIntegrantes(),integrantes,getContext());
+        Usuario u = new Usuario();
+        Almacen.buscar(proyecto.getIdPropietario(),u,getContext());
+        boolean esta = StreamSupport.stream(integrantes).filter(usuario -> usuario.getId()==u.getId()).findAny().isPresent();
+        if(!esta)
+            integrantes.add(u);
     }
 
     @Override
