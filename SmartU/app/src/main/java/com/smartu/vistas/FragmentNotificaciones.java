@@ -47,8 +47,9 @@ public class FragmentNotificaciones extends Fragment implements CallBackHebras {
     //El argumento que tienen que pasarme o que tengo que pasar en los Intent
     private static final String ARG_NOTIFICACIONES = "notificaciones";
     private static final String ARG_FITRO= "filtro";
-
+    private int count=2;
     private RecyclerView recyclerViewNotificacion;
+    private Usuario usuarioSesion;
     private boolean filtro=false;
 
 
@@ -137,7 +138,7 @@ public class FragmentNotificaciones extends Fragment implements CallBackHebras {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmen =inflater.inflate(R.layout.fragment_notificaciones, container, false);
-
+        usuarioSesion = Sesion.getUsuario(getContext());
         recyclerViewNotificacion = (RecyclerView) fragmen.findViewById(R.id.recyclerNotificaciones);
         mNoNotificacionView = (LinearLayout) fragmen.findViewById(R.id.noMessages);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
@@ -175,6 +176,12 @@ public class FragmentNotificaciones extends Fragment implements CallBackHebras {
 
         HNotificaciones hNotificaciones = new HNotificaciones(adapterNotificacion,offset,getActivity());
         hNotificaciones.sethNotificaciones(hNotificaciones);
+        //Para reducir el número de cargas que realiza,
+        //pido más de una sola vez
+        if(Almacen.sizeNotificaciones()==0){
+            hNotificaciones.setLimit(count*10);
+            count*=2;
+        }
         hNotificaciones.setCallback(this);
         hNotificaciones.execute();
 
@@ -299,12 +306,13 @@ public class FragmentNotificaciones extends Fragment implements CallBackHebras {
         scrollListener.setTamAlmacen(Almacen.sizeNotificaciones());
         //Por si lo que cargo durante los filtros no es sufiente continuo cargando
         //para buscar todas las notificaciones posibles que coincidan con el filtro del usuario
-        if(filtro && !scrollListener.isFin() && Almacen.sizeNotificaciones() < adapterNotificacion.getTotalElementosServer()
-                && scrollListener.getLastVisibleItemPosition()+scrollListener.getVisibleThreshold() >adapterNotificacion.getItemCount()){
-            cargarMasNotificaciones(0);
-            scrollListener.setLoading(true);
-        }
-        if(adapterNotificacion.getItemCount()==0 && Almacen.sizeNotificaciones() < adapterNotificacion.getTotalElementosServer())
+        if(filtro && usuarioSesion!=null && (usuarioSesion.getMisAreasInteres().size()>0 || usuarioSesion.getMisSeguidos().size()>0))
+            if(filtro && !scrollListener.isFin() && Almacen.sizeNotificaciones() < adapterNotificacion.getTotalElementosServer()
+                    && scrollListener.getLastVisibleItemPosition()+scrollListener.getVisibleThreshold() >adapterNotificacion.getItemCount()){
+                cargarMasNotificaciones(0);
+                scrollListener.setLoading(true);
+            }
+        if(!filtro && adapterNotificacion.getItemCount()==0 && Almacen.sizeNotificaciones() < adapterNotificacion.getTotalElementosServer())
             cargarMasNotificaciones(0);
         else
             muestraSinNotificaciones(adapterNotificacion.getItemCount()==0);

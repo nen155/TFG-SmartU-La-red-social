@@ -248,19 +248,21 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
                     //Si es propietario o es colaborador puede publicar un avance
-                    boolean colaborador = StreamSupport.stream(proyecto.getIntegrantes()).filter(idPro->idPro==usuarioSesion.getId()).findAny().isPresent();
-                    if(usuarioSesion!=null && (usuarioSesion.getId()==proyecto.getIdPropietario() || colaborador)) {
-                        comentarios.setImageResource(R.drawable.publicar_avance);
-                        comentarios.setOnClickListener(
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent(ProyectoActivity.this, PublicarAvanceActivity.class);
-                                        intent.putExtra("idProyecto", proyecto.getId());
-                                        startActivity(intent);
+                    if(usuarioSesion!=null) {
+                        boolean colaborador = StreamSupport.stream(proyecto.getIntegrantes()).filter(idPro -> idPro == usuarioSesion.getId()).findAny().isPresent();
+                        if ((usuarioSesion.getId() == proyecto.getIdPropietario() || colaborador)) {
+                            comentarios.setImageResource(R.drawable.publicar_avance);
+                            comentarios.setOnClickListener(
+                                    new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent intent = new Intent(ProyectoActivity.this, PublicarAvanceActivity.class);
+                                            intent.putExtra("idProyecto", proyecto.getId());
+                                            startActivity(intent);
+                                        }
                                     }
-                                }
-                        );
+                            );
+                        }
                     }
                     swicthTo = FragmentAvances.newInstance(proyecto.getMisAvances(),proyecto.getId());
                     break;

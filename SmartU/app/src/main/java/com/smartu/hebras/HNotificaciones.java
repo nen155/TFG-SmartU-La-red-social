@@ -45,6 +45,7 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
     private ArrayList<Notificacion> notificacions;
     private boolean filtro=false;
     private CallBackHebras callback;
+    private int limit=10;
 
 
     public HNotificaciones(AdapterNotificacion adapterNotificacion, int offset, Context context) {
@@ -56,6 +57,10 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
         pDialog.setTitleText("Cargando...");
         pDialog.setCancelable(false);
         notificacions = new ArrayList<>();
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
     }
 
     public void setCallback(CallBackHebras callback) {
@@ -74,7 +79,7 @@ public class HNotificaciones extends AsyncTask<Void,Void,Void> {
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
-        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaNotificaciones,"{\"limit\":\"10\",\"offset\":\""+offset+"\"}","POST");
+        String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaNotificaciones,"{\"limit\":\""+limit+"\",\"offset\":\""+offset+"\"}","POST");
 
         JSONObject res =null;
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
