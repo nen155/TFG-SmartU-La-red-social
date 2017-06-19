@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.smartu.vistas.PublicarAvanceActivity"
+    tools:showIn="@layout/activity_publicar_avance"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/nombreAvance"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:hint="@string/nombre_del_avance"
+        android:inputType="textPersonName"
+        android:padding="5dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/divider"
+        android:layout_marginTop="8dp"/>
+    <EditText
+        android:id="@+id/textoAvance"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:padding="5dp"
+        android:scrollIndicators="right"
+        android:hint="@string/descripci_n_del_avance"
+        android:gravity="top"
+        android:background="@android:color/transparent"
+        android:scrollbarAlwaysDrawVerticalTrack="true" />
+</LinearLayout>

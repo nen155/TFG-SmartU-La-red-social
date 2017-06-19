@@ -6,6 +6,7 @@ import android.os.Build;
 import com.smartu.hebras.HPublicacion;
 import com.smartu.hebras.HPublicaciones;
 import com.smartu.modelos.Area;
+import com.smartu.modelos.Avance;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
@@ -63,6 +64,7 @@ public class Almacen {
         comentarioHashMap.put(c.getId(),c);
     }
 
+
     public static void removeArea(int id){
         areasHashMap.remove(id);
     }
@@ -78,6 +80,7 @@ public class Almacen {
     public static void removeComentario(int id){
         comentarioHashMap.remove(id);
     }
+
 
     public static void addFiltro(Proyecto p){
         proyectosFiltrados.add(p);
@@ -106,6 +109,7 @@ public class Almacen {
         return StreamSupport.stream(Almacen.getComentariosFiltrados()).filter(notificacion1 -> notificacion1.getId() == c.getId()).findAny().isPresent();
     }
 
+
     public static ArrayList<Proyecto> getProyectos(){
         return new ArrayList<Proyecto>(proyectoHashMap.values());
     }
@@ -118,6 +122,7 @@ public class Almacen {
     public static ArrayList<Comentario> getComentarios(){
         return new ArrayList<Comentario>(comentarioHashMap.values());
     }
+
     public static ArrayList<Area> getAreas(){
         return new ArrayList<Area>(areasHashMap.values());
     }

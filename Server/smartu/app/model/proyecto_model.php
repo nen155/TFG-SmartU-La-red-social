@@ -327,6 +327,81 @@ class ProyectoModel
 			 return $this->response;
 		}
     }
+	public function InsertAvance($data)
+	{
+		
+		try 
+		{
+                $sql = "INSERT INTO avance
+                            (id, idUsuario, idProyecto,nombre,descripcion,idImagenDestacada,fecha)
+                            VALUES (NULL,?,?,?,?,?,?)";
+							
+				$stm = $this->db->prepare("SELECT url FROM multimedia WHERE id= ?");
+				$stm->execute(array($data['idImagenDestacada']));
+				
+				$fila =$stm->fetch(\PDO::FETCH_ASSOC);
+				
+                $avance=array(
+                            "idUsuario"=>$data['idUsuario'],
+                            "idProyecto"=>$data['idProyecto'],
+							"nombre"=>$data['nombre'],
+							"descripcion"=>$data['descripcion'],
+							"imagenDestacada"=>$fila['url'],
+							"fecha"=>date("Y-m-d H:i:s")
+                        );
+                $this->db->prepare($sql)
+                     ->execute(
+                        array(
+                            $data['idUsuario'],
+                            $data['idProyecto'],
+							$data['nombre'],
+							$data['descripcion'],
+							$data['idImagenDestacada'],
+							date("Y-m-d H:i:s")
+                        )
+                    ); 
+					
+			$avance["id"]=$this->db->lastInsertId();
+			
+			$this->response->setResponse(true);
+			$this->response->result=$avance;
+			
+            return $this->response->result;
+		}catch (Exception $e) 
+		{
+            $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
+		}
+    }
+	public function InsertMultimedia($data)
+	{
+		
+		try 
+		{
+                $sql = "INSERT INTO multimedia
+                            (id, nombre, tipo,url)
+                            VALUES (NULL,?,?,?)";
+                
+                $this->db->prepare($sql)
+                     ->execute(
+                        array(
+                            $data['nombre'],
+                            "imagen",
+							$data['url']
+                        )
+                    ); 
+					
+			$this->response->setResponse(true);
+			$id =$this->db->lastInsertId();
+			$this->response->result=array("id" =>$id );
+			
+            return $this->response->result;
+		}catch (Exception $e) 
+		{
+            $this->response->setResponse(false, $e->getMessage());
+			 return $this->response;
+		}
+    }
     public function DeleteVacante($id)
     {
 		try 

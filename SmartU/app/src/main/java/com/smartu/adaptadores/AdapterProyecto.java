@@ -144,7 +144,7 @@ public class AdapterProyecto extends RecyclerView.Adapter<AdapterProyecto.ViewHo
             holder.contadorBuenaIdea.setText(String.valueOf(proyecto.getBuenaIdea().size()));
 
             //TODO Para cuando cargue usuarios
-            //holder.nombreUsuario.setTexto(proyecto.getUsuario());
+            //holder.nombreUsuario.setTexto(proyecto.getNombreUsuario());
 
             holder.imgProyecto.setOnClickListener(cargaProyecto(proyecto.getId()));
             holder.descripcionProyecto.setOnClickListener(cargaProyecto(proyecto.getId()));

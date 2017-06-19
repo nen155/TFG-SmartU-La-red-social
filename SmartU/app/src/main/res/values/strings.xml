@@ -5,8 +5,8 @@
     <string name="descripcion_instrucciones_filtro">El botón flotante circular que se encuentra abajo a la derecha le permitirá filtrar el contenido que está visualizando en su muro, por notificaciones, comentarios, usuarios y proyectos</string>
     <string name="descripcion_instrucciones_elemento">Los elementos del muro como proyectos o usuarios están enlazados a su elemento con más información, puede pulsar en la descripción en el título o en la imágen del mismo para ver más información</string>
     <string name="descripcion_instrucciones_buenaidea">Los usuarios disponen de un botón por el cual se les puede seguir, por lo que recibirá notificaciones de los mismos y los proyectos tienen un botón en forma de lámpara que será equivalente a Me Gusta de Facebook</string>
-    <string name="descripcion_instrucciones_informacion">Un usuario y un proyecto disponen de un menú propio por el que podrá navegar, entre sus archivos, su localización, los integrantes del proyecto o proyectos asociados en el caso de usuarios</string>
-    <string name="descripcion_instrucciones_comentarios">Si usted está registrado, podrá ahcer comentarios en los proyectos, podrá enviar mensajes a los integrantes de sus proyectos y podrá darle a BuenaIdea y a seguir un usuario, a parte recibirá notificaciones de las áres de un proyecto que elija, por ejemplo Informática.</string>
+    <string name="descripcion_instrucciones_informacion">Un nombreUsuario y un proyecto disponen de un menú propio por el que podrá navegar, entre sus archivos, su localización, los integrantes del proyecto o proyectos asociados en el caso de usuarios</string>
+    <string name="descripcion_instrucciones_comentarios">Si usted está registrado, podrá ahcer comentarios en los proyectos, podrá enviar mensajes a los integrantes de sus proyectos y podrá darle a BuenaIdea y a seguir un nombreUsuario, a parte recibirá notificaciones de las áres de un proyecto que elija, por ejemplo Informática.</string>
     <string name="descripcion_instrucciones_menu">Pulsando en el icono del menú en la esquina superior izquierda o deslizando el dedo desde el lateral izquierdo hacia el centro de la pantalla podrás abrir el menú lateral en cualquier sección de la aplicación.</string>
     <string name="descripcion_instrucciones_chat">La mensajería instántanea es similar a la de la aplicación Whatsapp, dispone de un campo de texto para rellenar un botón de enviar y un botón para adjuntar imágenes.</string>
     <string name="instructions_description">Instrucciones. Opción para volver a visualizar las instrucciones de la aplicación. Botón.</string>
@@ -66,9 +66,13 @@
     <string name="elementos">Elementos</string>
     <string name="chat">Mensajería Instantánea</string>
     <string name="reg_strate">Regístrate</string>
-    <string name="nombre_de_usuario">Nombre de usuario</string>
+    <string name="nombre_de_usuario">Nombre de nombreUsuario</string>
     <string name="nombre_y_apellidos">Nombre y apellidos</string>
     <string name="eres_colaborador">Eres colaborador</string>
     <string name="avances">Avances</string>
+    <string name="title_activity_publicar_avance">PublicarAvanceActivity</string>
+    <string name="nombre_del_avance">Nombre del avance</string>
+    <string name="descripci_n_del_avance">Descripción del avance</string>
+    <string name="adjuntar">Adjuntar</string>
 
 </resources>

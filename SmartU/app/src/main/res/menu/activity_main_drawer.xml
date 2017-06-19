@@ -8,7 +8,7 @@
             android:title="Inicio" />
         <item
             android:id="@+id/nav_cuenta"
-            android:icon="@drawable/usuario"
+            android:icon="@drawable/usuario_perfil"
             android:title="Mi cuenta" />
         <item
             android:id="@+id/nav_proyectos"

@@ -189,25 +189,50 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
+                    comentarios.setImageResource(R.drawable.comentar);
                     swicthTo = FragmentProyecto.newInstance(proyecto);
                     break;
                 case R.id.navigation_integrantes:
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
+                    comentarios.setImageResource(R.drawable.comentar);
                     swicthTo = FragmentIntegrantes.newInstance(integrantes, proyecto.getVacantesProyecto(), proyecto);
                     break;
                 case R.id.navigation_map_proyecto:
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
+                    comentarios.setImageResource(R.drawable.comentar);
                     swicthTo = FragmentMapaProyecto.newInstance(proyecto);
                     break;
                 case R.id.navigation_multimedia:
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
+                    comentarios.setImageResource(R.drawable.comentar);
                     swicthTo = FragmentMultimedia.newInstance(proyecto.getMisArchivos(), proyecto.getId());
+                    break;
+                case R.id.navigation_avances:
+                    buenaidea.setVisibility(View.VISIBLE);
+                    buenaidea_contador.setVisibility(View.VISIBLE);
+                    comentarios.setVisibility(View.VISIBLE);
+                    //Si es propietario o es colaborador puede publicar un avance
+                    boolean colaborador = StreamSupport.stream(proyecto.getIntegrantes()).filter(idPro->idPro==usuarioSesion.getId()).findAny().isPresent();
+                    if(usuarioSesion.getId()==proyecto.getIdPropietario() || colaborador) {
+                        comentarios.setImageResource(R.drawable.publicar_avance);
+                        comentarios.setOnClickListener(
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(ProyectoActivity.this, PublicarAvanceActivity.class);
+                                        intent.putExtra("idProyecto", proyecto.getId());
+                                        startActivity(intent);
+                                    }
+                                }
+                        );
+                    }
+                    swicthTo = FragmentAvances.newInstance(proyecto.getMisAvances(),proyecto.getId());
                     break;
             }
             if (swicthTo != null) {

@@ -1,5 +1,6 @@
 package com.smartu.utilidades;
 
+import com.smartu.modelos.Avance;
 import com.smartu.modelos.Comentario;
 import com.smartu.modelos.Notificacion;
 import com.smartu.modelos.Proyecto;
@@ -14,6 +15,16 @@ public class Comparador {
     public static class ComparaComentarios implements Comparator<Comentario>
     {
         public int compare(Comentario left, Comentario right) {
+            if(left.getFecha().getTime()<right.getFecha().getTime())
+                return 1;
+            else
+                return -1;
+        }
+    }
+
+    public static class ComparaAvances implements Comparator<Avance>
+    {
+        public int compare(Avance left, Avance right) {
             if(left.getFecha().getTime()<right.getFecha().getTime())
                 return 1;
             else

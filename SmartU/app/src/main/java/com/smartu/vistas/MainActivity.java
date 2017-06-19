@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements FragmentProyectos
                 filtrar(v);
             }
         });
+
         //Asigno el escuchador al navigationbottom
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
