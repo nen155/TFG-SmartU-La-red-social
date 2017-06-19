@@ -23,7 +23,8 @@
         android:roundIcon="@mipmap/ic_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon">
+        tools:replace="android:icon"
+        android:largeHeap="true">
 
         <!--
         El splash lo establezco a portrait para que durante la carga no haya problemas de

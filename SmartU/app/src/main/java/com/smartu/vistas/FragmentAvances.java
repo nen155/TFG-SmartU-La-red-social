@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import com.smartu.R;
 import com.smartu.adaptadores.AdapterAvances;
 import com.smartu.modelos.Avance;
+import com.smartu.modelos.Proyecto;
 import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class FragmentAvances extends Fragment {
     //y necesite cargar más elementos
     //private EndlessRecyclerViewScrollListener scrollListener;
 
-    private AdapterAvances adapterAvances;
+    private static AdapterAvances adapterAvances;
 
     public FragmentAvances() {
         // Constructor vacío es necesario
@@ -122,13 +123,17 @@ public class FragmentAvances extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         adapterAvances = new AdapterAvances(getContext(), avances);
         recyclerViewAvances.setAdapter(adapterAvances);
+        recyclerViewAvances.setNestedScrollingEnabled(false);
         // Adds the scroll listener to RecyclerView
        // recyclerViewAvances.addOnScrollListener(scrollListener);
 
        /* if(avances.size()==0)
             cargarMasAvances(0);*/
     }
-
+    public static void refrescar(Proyecto p){
+        adapterAvances.notifyDataSetChanged();
+        adapterAvances.setAvances(p.getMisAvances());
+    }
     @Override
     public void onResume() {
         super.onResume();

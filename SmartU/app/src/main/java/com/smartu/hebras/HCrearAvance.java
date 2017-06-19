@@ -17,6 +17,7 @@ import com.smartu.modelos.Proyecto;
 import com.smartu.utilidades.ConsultasBBDD;
 import com.smartu.utilidades.MultipartUtility;
 import com.smartu.utilidades.Sesion;
+import com.smartu.vistas.FragmentAvances;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -108,6 +109,8 @@ public class HCrearAvance extends AsyncTask<Void, Void, String> {
                 {
                     Avance avance = mapper.readValue(result, Avance.class);
                     proyectoOptional.get().getMisAvances().add(avance);
+                    //Refresco los avances
+                    FragmentAvances.refrescar(proyectoOptional.get());
                 }
                 callBackHebras.terminada();
             } catch (JsonParseException e) {

@@ -124,6 +124,7 @@ public class PublicarAvanceActivity extends AppCompatActivity implements CallBac
     public void terminada(int id) {
         HCrearAvance hCrearAvance = new HCrearAvance(this,proyecto.getId(),usuarioSesion.getId(),id,descripcion,nombre);
         hCrearAvance.sethAvances(hCrearAvance);
+        hCrearAvance.setCallBackHebras(this);
         hCrearAvance.execute();
     }
     //Termina la hebra de crear avance

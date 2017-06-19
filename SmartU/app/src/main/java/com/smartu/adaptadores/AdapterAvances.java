@@ -42,6 +42,11 @@ public class AdapterAvances extends RecyclerView.Adapter<AdapterAvances.ViewHold
         this.totalElementosServer = totalElementosServer;
     }
 
+    public void setAvances(ArrayList<Avance> avances) {
+        this.avances = avances;
+        Collections.sort(this.avances , new Comparador.ComparaAvances());
+    }
+
     public AdapterAvances(Context context, ArrayList<Avance> items) {
         super();
         this.context = context;
