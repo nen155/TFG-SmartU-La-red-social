@@ -43,6 +43,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     private Button seguirUsuarioEditable;
     private TextView seguidoresUsuarioEditable;
     private Proyecto proyecto;
+    private Usuario usuario;
     //Es el número total de elementos que hay en el server
     //tengo que recogerlo de las hebras de consulta
     private int totalElementosServer = -1;
@@ -122,7 +123,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     public void onBindViewHolder(final AdapterIntegrante.ViewHolder holder, int position) {
         //Sino es el último elemento ni es un progress bar pues muestro el elemento que me toca
         if (holder.tipoView == 1) {
-            Usuario usuario = (Usuario) this.usuarios.get(position);
+            usuario = this.usuarios.get(position);
 
             //Compruebo que no sean los usuarios que he metido como vacantes
             //para dejar la imagen por defecto.

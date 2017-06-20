@@ -250,7 +250,13 @@ public class Almacen {
             hPublicaciones.sethPublicaciones(hPublicaciones);
             hPublicaciones.setIdsPublicaciones(usuariosABuscarServer);
             hPublicaciones.setTipo(Constantes.USUARIO);
-            hPublicaciones.execute();
+            try {
+                hPublicaciones.execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -273,7 +279,13 @@ public class Almacen {
             hPublicaciones.sethPublicaciones(hPublicaciones);
             hPublicaciones.setIdsPublicaciones(usuariosABuscarServer);
             hPublicaciones.setTipo(Constantes.USUARIO);
-            hPublicaciones.execute();
+            try {
+                hPublicaciones.execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
     /**
@@ -300,7 +312,13 @@ public class Almacen {
             hPublicaciones.sethPublicaciones(hPublicaciones);
             hPublicaciones.setIdsPublicaciones(proyectosABuscarServer);
             hPublicaciones.setTipo(Constantes.PROYECTO);
-            hPublicaciones.execute();
+            try {
+                hPublicaciones.execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -350,7 +368,13 @@ public class Almacen {
             hPublicaciones.sethPublicaciones(hPublicaciones);
             hPublicaciones.setIdsPublicaciones(notificacionesABuscarServer);
             hPublicaciones.setTipo(Constantes.NOTIFICACION);
-            hPublicaciones.execute();
+            try {
+                hPublicaciones.execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
     /**
@@ -377,7 +401,13 @@ public class Almacen {
             hPublicaciones.sethPublicaciones(hPublicaciones);
             hPublicaciones.setIdsPublicaciones(comentariosABuscarServer);
             hPublicaciones.setTipo(Constantes.COMENTARIO);
-            hPublicaciones.execute();
+            try {
+                hPublicaciones.execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 

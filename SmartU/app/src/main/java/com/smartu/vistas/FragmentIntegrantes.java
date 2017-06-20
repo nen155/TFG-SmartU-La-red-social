@@ -91,6 +91,8 @@ public class FragmentIntegrantes extends Fragment {
             integrantes.add(u);
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -178,25 +180,18 @@ public class FragmentIntegrantes extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onDetach() {
-        // 1. First, clear the array of data
-        integrantes.clear();
-        // 2. Notify the adapter of the update
-        adapterIntegrante.notifyDataSetChanged(); // or notifyItemRangeRemoved
-        // 3. Reset endless scroll listener when performing a new search
-        scrollListener.resetState();
         super.onDetach();
         mListener = null;
     }
 
     @Override
     public void onPause() {
-        // 1. First, clear the array of data
-        integrantes.clear();
-        // 2. Notify the adapter of the update
-        adapterIntegrante.notifyDataSetChanged(); // or notifyItemRangeRemoved
-        // 3. Reset endless scroll listener when performing a new search
-        scrollListener.resetState();
         super.onPause();
     }
 

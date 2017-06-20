@@ -213,6 +213,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                             comentar();
                         }
                     });
+
                     swicthTo = FragmentIntegrantes.newInstance(integrantes, proyecto.getVacantesProyecto(), proyecto);
                     break;
                 case R.id.navigation_map_proyecto:
