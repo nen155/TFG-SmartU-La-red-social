@@ -75,7 +75,6 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                cambiarSesion();
             }
 
             @Override
@@ -217,6 +216,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
                 navigationView.getMenu().setGroupVisible(R.id.anonimo,true);
                 intent1=new Intent(context, MainActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                cambiarSesion();
                 context.startActivity(intent1);
                 break;
             case R.id.nav_log:
