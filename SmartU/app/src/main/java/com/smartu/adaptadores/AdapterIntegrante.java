@@ -3,6 +3,7 @@ package com.smartu.adaptadores;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,11 +39,11 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     private Context context;
     private ArrayList<Usuario> usuarios;
     private FragmentIntegrantes.OnIntegranteSelectedListener onIntegranteSelectedListener;
-    private Usuario usuario;
     private Usuario usuarioSesion;
     private Button seguirUsuarioEditable;
     private TextView seguidoresUsuarioEditable;
     private Proyecto proyecto;
+    private Usuario usuario;
     //Es el número total de elementos que hay en el server
     //tengo que recogerlo de las hebras de consulta
     private int totalElementosServer = -1;
@@ -122,13 +123,14 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
     public void onBindViewHolder(final AdapterIntegrante.ViewHolder holder, int position) {
         //Sino es el último elemento ni es un progress bar pues muestro el elemento que me toca
         if (holder.tipoView == 1) {
-            usuario = (Usuario) this.usuarios.get(position);
+            usuario = this.usuarios.get(position);
 
             //Compruebo que no sean los usuarios que he metido como vacantes
             //para dejar la imagen por defecto.
             if (usuario.getId() != -1 && usuario.getImagenPerfil()!=null)
                 Picasso.with(context).load(ConsultasBBDD.server + ConsultasBBDD.imagenes + usuario.getImagenPerfil()).into(holder.imgUsuario);
-
+            else
+                holder.imgUsuario.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.usuario_perfil));
             holder.nombreUsuario.setText(usuario.getNombre());
 
             if (usuario.getMisEspecialidades() != null) {
@@ -251,6 +253,7 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                 usuarioSigue = StreamSupport.stream(usuarioSesion.getMisSeguidos()).filter(usuario1 -> usuario1 == usuario.getId()).findAny().isPresent();
             //Si es así lo dejo presionado
             seguirUsuarioEditable.setPressed(usuarioSigue);
+            seguirUsuarioEditable.setEnabled(true);
             if (usuarioSigue)
                 seguirUsuarioEditable.setText(R.string.no_seguir);
             else
@@ -334,7 +337,8 @@ public class AdapterIntegrante extends RecyclerView.Adapter<AdapterIntegrante.Vi
                     seguirUsuarioEditable.setText(R.string.solicitado_unio_proyecto);
                     seguirUsuarioEditable.setPressed(true);
                     seguirUsuarioEditable.setEnabled(false);
-                    hSolicitud = new HSolicitud(false, proyecto, usuarioSesion.getId(), usuario.getMisEspecialidades(), context, seguirUsuarioEditable);
+                    //Los puntos son el ID DE LA VACANTE
+                    hSolicitud = new HSolicitud(false, proyecto, usuarioSesion.getId(), usuario.getMisEspecialidades(), context, seguirUsuarioEditable,usuario.getnPuntos());
                     hSolicitud.sethSolicitud(hSolicitud);
                     hSolicitud.execute();
                 } else {

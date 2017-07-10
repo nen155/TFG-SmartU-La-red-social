@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -34,15 +35,22 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
     private SweetAlertDialog pDialog;
     private Context context;
     private int idUsuario=-1;
+    private ArrayList<Proyecto> proyectos;
+    private CallBackHebras callback;
 
     public HProyectos(AdapterProyecto adapterProyecto, int offset, Context context) {
         this.adapterProyecto = adapterProyecto;
         this.offset = offset;
         this.context=context;
+        proyectos = new ArrayList<>();
         pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("Cargando...");
         pDialog.setCancelable(false);
+    }
+
+    public void setCallback(CallBackHebras callback) {
+        this.callback = callback;
     }
 
     public void setIdUsuario(int idUsuario) {
@@ -61,13 +69,6 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
-        /*String resultado="{\"proyectos\":{" +
-                "\"proyectos\":[" +
-
-                "],"
-                + "\"totalserver\":\"1\"" +
-                "}"+
-                "}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
         String resultado="";
         if(idUsuario==-1)
@@ -81,18 +82,12 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
             if(resultado !=null) {
                 res = new JSONObject(resultado);
                 if (!res.isNull("proyectos")) {
-                    //JSONObject proyectJSON = res.getJSONObject("proyectos");
                     JSONArray proyectosJSON = res.getJSONArray("proyectos");
                     for(int i=0;i<proyectosJSON.length();++i)
                     {
                         JSONObject proyecto = proyectosJSON.getJSONObject(i);
                         Proyecto p = mapper.readValue(proyecto.toString(), Proyecto.class);
-                        ((Activity)context).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapterProyecto.addItem(p);
-                            }
-                        });
+                        proyectos.add(p);
                     }
                     adapterProyecto.setTotalElementosServer(res.getInt("totalserver"));
                 }
@@ -114,6 +109,10 @@ public class HProyectos extends AsyncTask<Void,Void,Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         pDialog.dismissWithAnimation();
+        for (Proyecto p: proyectos) {
+            adapterProyecto.addItem(p);
+        }
+        callback.terminada();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
         hProyectos =null;
 

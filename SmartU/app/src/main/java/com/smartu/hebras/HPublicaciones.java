@@ -42,7 +42,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * Para cargar otras 10 se haría en el evento onScroll del RecyclerView
  * de cada tipo de publicación, para no llenar la memoria del smartphone
  */
-public class HPublicaciones extends AsyncTask<Void,Void,Void> {
+public class HPublicaciones extends AsyncTask<Boolean,Void,Boolean> {
 
     private HPublicaciones hPublicaciones;
     private long start;
@@ -85,7 +85,7 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
         pDialog.show();
     }
     @Override
-    protected Void doInBackground(Void... params) {
+    protected Boolean doInBackground(Boolean... params) {
         //Miro el momento en el que comienzo a cargar
         start = System.currentTimeMillis();
         ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).disable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
@@ -174,11 +174,11 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
             e.printStackTrace();
         }
 
-        return null;
+        return true;
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
+    protected void onPostExecute(Boolean aVoid) {
         super.onPostExecute(aVoid);
         pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria
@@ -252,7 +252,7 @@ public class HPublicaciones extends AsyncTask<Void,Void,Void> {
     }
 
     @Override
-    protected void onCancelled(Void aVoid) {
+    protected void onCancelled(Boolean aVoid) {
         super.onCancelled(aVoid);
         pDialog.dismissWithAnimation();
         //Elimino la referencia a la hebra para que el recolector de basura la elimine de la memoria

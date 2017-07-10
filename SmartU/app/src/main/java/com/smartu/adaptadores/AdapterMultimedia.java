@@ -157,16 +157,18 @@ public class AdapterMultimedia extends RecyclerView.Adapter<AdapterMultimedia.Vi
         Intent intent=null;
         switch(multimedia.getTipo()) {
             case "video":
-                intent.putExtra("multimedia",(Parcelable) multimedia);
                 intent=new Intent(context, VideoActivity.class);
+                intent.putExtra("multimedia",(Parcelable) multimedia);
+
                 break;
             case "imagen":
-                intent.putExtra("multimedia",(Parcelable) multimedia);
                 intent=new Intent(context, ImagenActivity.class);
+                intent.putExtra("multimedia",(Parcelable) multimedia);
+
                 break;
             case "imagen360":
-                intent.putExtra("multimedia",(Parcelable) multimedia);
                 intent=new Intent(context, Imagen360Activity.class);
+                intent.putExtra("multimedia",(Parcelable) multimedia);
                 break;
             case "pdf":
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConsultasBBDD.server+ConsultasBBDD.imagenes+multimedia.getUrl()));

@@ -3,12 +3,20 @@ import android.os.Build;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 
 
 /**
@@ -31,8 +39,12 @@ public class ConsultasBBDD {
     public static final String consultaUsuarios =grupoUsuarios+"usuarios";
     public static final String consultaIntegrantes =grupoUsuarios+"integrantes";
     public static final String consultaLogin = grupoUsuarios+"login";
+
     public static final String consultaProyectos =grupoProyectos+"proyectos";
     public static final String consultaMultimedia =grupoProyectos+"multimedia";
+    //Ahora mismo no se usa porque se cargan con el proyecto pero puede cambiarse
+    public static final String consultaAvances =grupoProyectos+"avances";
+
     public static final String consultaComentarios =grupoComentarios+"comentarios";
     public static final String consultaComentariosProyecto =grupoComentarios+"comentariosproyecto";
     public static final String consultaNotificaciones =grupoNotificaciones+"notificaciones";
@@ -43,6 +55,10 @@ public class ConsultasBBDD {
 
 
     //Inserciones y eliminaciones
+    public static final String ocuparVacante =grupoProyectos+"ocuparvacante";
+    public static final String crearAvance =grupoProyectos+"crearavance";
+    public static final String imagenAvance =grupoProyectos+"imagenavance";
+
     public static final String insertaUsuario =grupoUsuarios+"guardausuario";
     public static final String insertaSeguidor =grupoUsuarios+"seguir";
     public static final String eliminarSeguidor =grupoUsuarios+"dejarseguir";
@@ -51,6 +67,7 @@ public class ConsultasBBDD {
     public static final String insertaUnion =grupoUsuarios+"solicitudunion";
     public static final String eliminarUnion =grupoUsuarios+"eliminasolicitudunion";
     public static final String insertaOEliminaInteres =grupoUsuarios+"interes";
+
     public static final String insertaComentario =grupoComentarios+"guardar";
 
     public static String hacerConsulta(String urlREST, String parameters, String metodo) {
@@ -123,5 +140,6 @@ public class ConsultasBBDD {
 
             return null;
     }
+
 
 }

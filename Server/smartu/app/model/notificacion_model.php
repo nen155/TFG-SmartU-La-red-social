@@ -139,8 +139,30 @@ class NotificacionModel
                             "descripcion"=>$data['descripcion'],
                             "fecha"=>date("Y-m-d H:i:s"),
 							"idUsuario"=>$data['idUsuario'],
-							"idProyecto"=>$data['idProyecto']
+							"idProyecto"=>$data['idProyecto'],
+							"tipo"=>$data["tipo"],
+							"accion"=>$data["accion"]
                         );
+			//Dependiendo del tipo de dato añado más o menos valores
+			switch($data["tipo"]){
+				case "status":
+					$datos["estatus"]=$data["estatus"];
+					$datos["numSeguidores"]=$data["numSeguidores"];
+					$datos["nPuntos"]=$data["nPuntos"];
+				break;
+				case "seguir":
+					$datos["numSeguidores"]=$data["numSeguidores"];
+					$datos["idUsuarioSeguido"]=$data["idUsuarioSeguido"];
+				break;
+				case "interes":
+					$datos["idsAreas"]=$data["idsAreas"];
+				break;
+				case "ocupar":
+					$datos["idVacante"]=$data["idVacante"];
+					break;
+				default:
+				break;	
+			}
 			//Envío notificación a FCM
 			$this->send_notification($datos);
 			
@@ -165,18 +187,44 @@ class NotificacionModel
 			
 		$path_to_firebase_cm = 'https://fcm.googleapis.com/fcm/send';
 		$token="/topics/notificaciones";
-		$fields = array(
-            'to' => $token,
-            'notification' => array('title' => $data['nombre'], 'body' => $data['descripcion']),
-            'data' =>  array("id"=>$data['id'],
+		//Creo de nuevo el array para modificarlo
+		$map = array("id"=>$data['id'],
 							"nombre"=>$data['nombre'],
                             "descripcion"=>$data['descripcion'],
                             "fecha"=>date("Y-m-d H:i:s"),
 							"idUsuario"=>$data['idUsuario'],
 							"idProyecto"=>$data['idProyecto'],
 							"usuario"=>$usuario["usuario"],
-							"proyecto"=>$proyecto["proyecto"]
-                        )
+							"proyecto"=>$proyecto["proyecto"],
+							"tipo"=>$data["tipo"],
+							"accion"=>$data["accion"]
+                        );
+		//Vuelvo a comprobar para modificar el map dependiendo del tipo de dato añado más o menos valores
+		switch($data["tipo"]){
+				case "status":
+					$map["estatus"]=$data["estatus"];
+					$map["numSeguidores"]=$data["numSeguidores"];
+					$map["nPuntos"]=$data["nPuntos"];
+					
+				break;
+				case "seguir":
+					$map["numSeguidores"]=$data["numSeguidores"];
+					$map["idUsuarioSeguido"]=$data["idUsuarioSeguido"];
+				break;
+				case "interes":
+					$map["idsAreas"]=$data["idsAreas"];
+				break;
+				case "ocupar":
+					$map["idVacante"]=$data["idVacante"];
+					break;
+				default:
+				break;
+		}
+		
+		$fields = array(
+            'to' => $token,
+            'notification' => array('title' => $data['nombre'], 'body' => $data['descripcion']),
+            'data' =>  $map
         );
  
         $headers = array(

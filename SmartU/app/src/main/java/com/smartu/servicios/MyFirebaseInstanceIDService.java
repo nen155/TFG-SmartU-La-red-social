@@ -10,7 +10,7 @@ import com.smartu.utilidades.Constantes;
 import com.smartu.utilidades.ControladorPreferencias;
 
 /**
- * Created by NeN on 21/05/2017.
+ * Created by Emilio Chica Jiménez on 21/05/2017.
  */
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {

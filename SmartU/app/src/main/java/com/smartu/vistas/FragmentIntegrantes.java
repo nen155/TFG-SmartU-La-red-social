@@ -22,6 +22,8 @@ import com.smartu.utilidades.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
+import java8.util.stream.StreamSupport;
+
 
 /**
  * Una subclase simple {@link Fragment}.
@@ -82,7 +84,14 @@ public class FragmentIntegrantes extends Fragment {
         }
         if(proyecto.getIntegrantes()!=null)
             Almacen.buscarUsuarios(proyecto.getIntegrantes(),integrantes,getContext());
+        Usuario u = new Usuario();
+        Almacen.buscar(proyecto.getIdPropietario(),u,getContext());
+        boolean esta = StreamSupport.stream(integrantes).filter(usuario -> usuario.getId()==u.getId()).findAny().isPresent();
+        if(!esta)
+            integrantes.add(u);
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -145,6 +154,8 @@ public class FragmentIntegrantes extends Fragment {
             usuario.setNombre("Únete al proyecto");
             usuario.setMiStatus(new Status(-1,"Vacante",0,0));
             usuario.setMisEspecialidades(v.getEspecialidades());
+            //Paso el id de la vacante a traves de los puntos
+            usuario.setnPuntos(v.getId());
             integrantesConVacantes.add(usuario);
         }
         return integrantesConVacantes;
@@ -169,25 +180,18 @@ public class FragmentIntegrantes extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onDetach() {
-        // 1. First, clear the array of data
-        integrantes.clear();
-        // 2. Notify the adapter of the update
-        adapterIntegrante.notifyDataSetChanged(); // or notifyItemRangeRemoved
-        // 3. Reset endless scroll listener when performing a new search
-        scrollListener.resetState();
         super.onDetach();
         mListener = null;
     }
 
     @Override
     public void onPause() {
-        // 1. First, clear the array of data
-        integrantes.clear();
-        // 2. Notify the adapter of the update
-        adapterIntegrante.notifyDataSetChanged(); // or notifyItemRangeRemoved
-        // 3. Reset endless scroll listener when performing a new search
-        scrollListener.resetState();
         super.onPause();
     }
 

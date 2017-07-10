@@ -55,12 +55,6 @@ public class HMultimedia extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         //Recojo el resultado en un String
-       /* String resultado="{\"multimedia\":{" +
-                "\"multimedia\":[" +
-
-                "],"
-                + "\"totalserver\":\"15\"" +
-                "}";*/
         //TODO: PARA CUANDO ESTE EL SERVIDOR ACTIVO LE PASO EL LIMITE(LIMIT) Y EL INICIO(OFFSET)
         String resultado = ConsultasBBDD.hacerConsulta(ConsultasBBDD.consultaMultimedia,"{\"limit\":\"10\",\"offset\":\""+offset+"\",\"idProyecto\":\""+idProyecto+"\"}","POST");
 

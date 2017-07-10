@@ -8,7 +8,7 @@
             android:title="Inicio" />
         <item
             android:id="@+id/nav_cuenta"
-            android:icon="@drawable/usuario"
+            android:icon="@drawable/usuario_perfil"
             android:title="Mi cuenta" />
         <item
             android:id="@+id/nav_proyectos"
@@ -18,6 +18,10 @@
             android:id="@+id/nav_areas"
             android:icon="@drawable/intereses"
             android:title="Mis Intereses" />
+        <item
+            android:id="@+id/nav_solicitudes"
+            android:icon="@drawable/unirse"
+            android:title="Solicitudes" />
         <item
             android:id="@+id/nav_contacto"
             android:icon="@android:drawable/ic_menu_help"

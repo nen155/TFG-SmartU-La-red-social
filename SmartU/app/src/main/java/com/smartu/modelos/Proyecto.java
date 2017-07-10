@@ -5,7 +5,9 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * Created by Emilio Chica Jiménez on 18/05/2017.
@@ -32,6 +34,7 @@ public class Proyecto implements Parcelable,Serializable,Publicacion {
     private ArrayList<Hashtag> misHashtag=null;
     private ArrayList<Avance> misAvances=null;
     private ArrayList<Integer> integrantes=null;
+    private ArrayList<SolicitudUnion> solicitudes=null;
 
 
     public void clonar(Proyecto p){
@@ -78,6 +81,10 @@ public class Proyecto implements Parcelable,Serializable,Publicacion {
             integrantes = new ArrayList<>(p.getIntegrantes());
         else
             integrantes =new ArrayList<>();
+        if(p.getSolicitudes()!=null)
+            solicitudes = new ArrayList<>(p.getSolicitudes());
+        else
+            solicitudes =new ArrayList<>();
     }
 
     public Proyecto(){
@@ -89,6 +96,7 @@ public class Proyecto implements Parcelable,Serializable,Publicacion {
         misAvances =new ArrayList<>();
         buenaIdea = new ArrayList<>();
         integrantes = new ArrayList<>();
+        solicitudes  =new ArrayList<>();
     }
     public Proyecto(int id, String nombre, String descripcion, Date fechaCreacion, String imagenDestacada, Date fechaFinalizacion, String localizacion, String web, Integer idPropietario) {
         this.id = id;
@@ -108,6 +116,7 @@ public class Proyecto implements Parcelable,Serializable,Publicacion {
         misAvances =new ArrayList<>();
         buenaIdea = new ArrayList<>();
         integrantes = new ArrayList<>();
+        solicitudes  =new ArrayList<>();
     }
 
 
@@ -131,6 +140,7 @@ public class Proyecto implements Parcelable,Serializable,Publicacion {
         fechaCreacion = new Date(in.readLong());
         fechaFinalizacion = new Date(in.readLong());
         propietarioUser = in.readString();
+        solicitudes = in.createTypedArrayList(SolicitudUnion.CREATOR);
     }
 
     public static final Creator<Proyecto> CREATOR = new Creator<Proyecto>() {
@@ -298,6 +308,14 @@ public class Proyecto implements Parcelable,Serializable,Publicacion {
         this.propietarioUser = propietarioUser;
     }
 
+    public ArrayList<SolicitudUnion> getSolicitudes() {
+        return solicitudes;
+    }
+
+    public void setSolicitudes(ArrayList<SolicitudUnion> solicitudes) {
+        this.solicitudes = solicitudes;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -324,5 +342,6 @@ public class Proyecto implements Parcelable,Serializable,Publicacion {
         dest.writeLong(fechaCreacion.getTime());
         dest.writeLong(fechaFinalizacion.getTime());
         dest.writeString(propietarioUser);
+        dest.writeList(solicitudes);
     }
 }

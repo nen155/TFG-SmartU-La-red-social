@@ -11,7 +11,7 @@ android {
         applicationId "com.smartu"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 13
+        versionCode 18
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         jackOptions {
@@ -61,8 +61,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.google.android.exoplayer:exoplayer:r2.1.1'
     // Firebase UI
+    // https://mvnrepository.com/artifact/org.mockito/mockito-all
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+
+    //okhttp
+    compile 'com.google.android.exoplayer:exoplayer:r2.1.1'
     compile 'com.google.android.exoplayer:exoplayer:r2.1.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -97,11 +101,8 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'cn.pedant.sweetalert:library:1.3'
     compile 'commons-codec:commons-codec:1.10'
-// https://mvnrepository.com/artifact/org.mockito/mockito-all
-    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
-
-    //okhttp
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.github.Mariovc:ImagePicker:1.1.1'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

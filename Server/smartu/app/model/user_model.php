@@ -148,7 +148,6 @@ class UserModel
 		{	
 
 			$stm = $this->db->prepare("SELECT id,nombre,apellidos,verificado,user,email,nPuntos,biografia,web,imagenPerfil,uid,firebaseToken FROM ". $this->table ." WHERE id= ?");
-			$stm->execute();
 
 			$stm->execute(array($id));
 			
@@ -510,8 +509,8 @@ class UserModel
 				//Sino la he insertado antes
 			if($stm->rowCount()==0){
 					$sql = "INSERT INTO solicitudUnion
-								(id, idUsuarioSolicitante, idProyecto,fecha,descripcion)
-								VALUES (NULL,?,?,?,?)";
+								(id, idUsuarioSolicitante, idProyecto,fecha,descripcion,idVacante)
+								VALUES (NULL,?,?,?,?,?)";
 					
 					$this->db->prepare($sql)
 						 ->execute(
@@ -519,7 +518,8 @@ class UserModel
 								$data['idUsuario'],
 								$data['idProyecto'],
 								date("Y-m-d H:i:s"),
-								$data['descripcion']
+								$data['descripcion'],
+								$data['idVacante']
 							)
 						); 
 			}
@@ -549,13 +549,14 @@ class UserModel
 		
 		try 
 		{
-                $sql = "DELETE FROM solicitudUnion WHERE idUsuarioSolicitante=? AND idProyecto=?";
+                $sql = "DELETE FROM solicitudUnion WHERE idUsuarioSolicitante=? AND idProyecto=? AND idVacante=?";
                 
                 $this->db->prepare($sql)
                      ->execute(
                         array(
                             $data['idUsuario'],
-                            $data['idProyecto']
+                            $data['idProyecto'],
+							$data['idVacante']
                         )
                     ); 
 			$datos = array("idUsuario"=>$data['idUsuario'],"idProyecto"=>$data['idProyecto'],"tipo"=>"union","operacion"=>"minus");
@@ -579,36 +580,33 @@ class UserModel
 		
 		try 
 		{
-			for($i=0;$i<count($data["idsAreas"]);++$i){
-				$sql = "SELECT idUsuario FROM usuarioInteresaArea WHERE idUsuario=? AND idArea=?";
+			$sql = "DELETE FROM usuarioInteresaArea WHERE idUsuario=? ";
                
-                 $stm = $this->db->prepare($sql);
-				 $stm->execute(
-                        array(
-                            $data['idUsuario'],
-                            $data['idsAreas'][$i]
+           $stm = $this->db->prepare($sql);
+			$stm->execute(
+					array(
+						$data['idUsuario']
                         )
                     );
-				
-				if($stm->rowCount()==0){
-					$sql = "INSERT INTO usuarioInteresaArea
+			for($i=0;$i<count($data["idsAreas"]);++$i){
+				$sql = "INSERT INTO usuarioInteresaArea
 								(id, idUsuario, idArea)
 								VALUES (NULL,?,?)";
 					
-					$this->db->prepare($sql)
+				$this->db->prepare($sql)
 						 ->execute(
 							array(
 								$data['idUsuario'],
 								$data['idsAreas'][$i]
 							)
-						); 
-				}
+					); 
+				
             }
             
 			$this->response->setResponse(true);
 			$this->response->result=array("resultado" =>"ok" );
 			//Inserto notificacion
-			if($stm->rowCount()==0)
+			if(count($data["idsAreas"])>0)
 				$this->InsertaNotificacionInteres($data);
 			
             return $this->response->result;
@@ -639,9 +637,9 @@ class UserModel
 			}
 
 			//Obtengo los puntos y el status del usuario
-			$sql = "SELECT u.id as idUsuario,u.nombre,u.nPuntos,u.idStatus,s.nombre as estatus FROM usuario as u LEFT JOIN status as s ON u.idStatus=s.id  WHERE u.id=?";
+			$sql = "SELECT u.id as idUsuario,u.nombre,u.user,u.nPuntos,u.idStatus,s.nombre as estatus, (SELECT count(*) FROM seguidor as e WHERE e.idUsuarioSeguido=?) as numSeguidores FROM usuario as u LEFT JOIN status as s ON u.idStatus=s.id  WHERE u.id=?";
 			$stm = $this->db->prepare($sql);
-			$stm->execute(array($id));
+			$stm->execute(array($id,$id));
 			$fila =$stm->fetch(\PDO::FETCH_ASSOC);
 
 			
@@ -709,10 +707,14 @@ class UserModel
 	*/
 	public function InsertaNotificacionStatus($data){
 			
-			$datos=array("nombre"=>"El usuario ".$data["nombre"]." ha subido de status!",
+			$datos=array("nombre"=>"El usuario ".$data["user"]." ha subido de status!",
 			"descripcion"=>"El usuario ".$data["nombre"]." ahora es ".$data["estatus"],
-			 "idUsuario"=>$data['idUsuario'],
-			 0);
+			 "idUsuario"=>$data['idUsuario'],"idProyecto"=>"0",
+			 "tipo"=>"status",
+			 "accion"=>"insert",
+			 "estatus"=>$data["estatus"],
+			 "numSeguidores"=>$data["numSeguidores"],
+			 "nPuntos"=>$data["nPuntos"]);
 			 
 			$pub = new NotificacionModel();
 			$pub->InsertNotificacion($datos);
@@ -721,9 +723,10 @@ class UserModel
 	public function InsertaNotificacionUsuario($data){
 			
 			$datos=array("nombre"=>"Nuevo usuario en la red!",
-			"descripcion"=>"El usuario ".$data["nombre"]." ahora está en SmartU",
-			 "idUsuario"=>$data['idUsuario'],
-			 0);
+			"descripcion"=>"El usuario ".$data["user"]." ahora está en SmartU",
+			 "idUsuario"=>$data['idUsuario'],"idProyecto"=>"0",
+			 "tipo"=>"usuario",
+			 "accion"=>"insert");
 			 
 			$pub = new NotificacionModel();
 			$pub->InsertNotificacion($datos);
@@ -731,19 +734,28 @@ class UserModel
 	public function InsertaNotificacionSeguir($data){
 			
 			//Busco el proyecto
-			$stm = $this->db->prepare("SELECT nombre as seguido FROM usuario WHERE id=?");
+			$stm = $this->db->prepare("SELECT user as seguido FROM usuario WHERE id=?");
 			$stm->execute(array($data["idUsuarioSeguido"]));
 			$seguido = $stm->fetch(\PDO::FETCH_ASSOC);
 			
 			//Busco el usuario
-			$stm = $this->db->prepare("SELECT nombre as usuario FROM  usuario WHERE id=?");
+			$stm = $this->db->prepare("SELECT user as usuario FROM  usuario WHERE id=?");
 			$stm->execute(array($data["idUsuario"]));
 			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
 			
+			//Cuento el numero de usuarios para actualizarlo durante la notificacion
+			$stm = $this->db->prepare("SELECT count(*) as numSeguidores FROM seguidor as e WHERE e.idUsuarioSeguido=?");
+			$stm->execute(array($data["idUsuarioSeguido"]));
+			$numSeguidores = $stm->fetch(\PDO::FETCH_ASSOC);
+			
+			
 			$datos=array("nombre"=>"El usuario ".$usuario["usuario"]." ha seguido a alguien!",
 			"descripcion"=>"El usuario ".$usuario["usuario"]." ahora está siguiendo a ".$seguido["seguido"],
-			 "idUsuario"=>$data['idUsuario'],
-			 0);
+			 "idUsuario"=>$data['idUsuario'],"idProyecto"=>"0",
+			 "numSeguidores"=>$numSeguidores['numSeguidores'],
+			 "idUsuarioSeguido"=>$data["idUsuarioSeguido"],
+			 "tipo"=>"seguir",
+			 "accion"=>"insert");
 			 
 			$pub = new NotificacionModel();
 			$pub->InsertNotificacion($datos);
@@ -757,14 +769,16 @@ class UserModel
 			$proyecto = $stm->fetch(\PDO::FETCH_ASSOC);
 			
 			//Busco el usuario
-			$stm = $this->db->prepare("SELECT nombre as usuario FROM  usuario WHERE id=?");
+			$stm = $this->db->prepare("SELECT user as usuario FROM  usuario WHERE id=?");
 			$stm->execute(array($data["idUsuario"]));
 			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
 			
 			$datos=array("nombre"=>"El proyecto ".$proyecto["proyecto"]." es una buena idea!",
 			"descripcion"=>"El usuario ".$usuario["usuario"]." ha dado una buena idea al proyecto ".$proyecto["proyecto"],
 			 "idUsuario"=>$data['idUsuario'],
-			 "idProyecto"=>$data['idProyecto']);
+			 "idProyecto"=>$data['idProyecto'],
+			 "tipo"=>"idea",
+			 "accion"=>"insert");
 			 
 			$pub = new NotificacionModel();
 			$pub->InsertNotificacion($datos);
@@ -780,14 +794,16 @@ class UserModel
 			$proyecto = $stm->fetch(\PDO::FETCH_ASSOC);
 			
 			//Busco el usuario
-			$stm = $this->db->prepare("SELECT nombre as usuario FROM  usuario WHERE id=?");
+			$stm = $this->db->prepare("SELECT user as usuario FROM  usuario WHERE id=?");
 			$stm->execute(array($data["idUsuario"]));
 			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
 			
 			$datos=array("nombre"=>"Nueva solicitud de unión en ".$proyecto["proyecto"]."!",
 			"descripcion"=>"El usuario ".$usuario["usuario"]." quiere unirse al proyecto ",
 			 "idUsuario"=>$data['idUsuario'],
-			 "idProyecto"=>$data['idProyecto']);
+			 "idProyecto"=>$data['idProyecto'],
+			 "tipo"=>"solicitud",
+			 "accion"=>"insert");
 			 
 			$pub = new NotificacionModel();
 			$pub->InsertNotificacion($datos);
@@ -807,14 +823,16 @@ class UserModel
 			}
 			
 			//Busco el usuario
-			$stm = $this->db->prepare("SELECT nombre as usuario FROM  usuario WHERE id=?");
+			$stm = $this->db->prepare("SELECT user as usuario FROM  usuario WHERE id=?");
 			$stm->execute(array($data["idUsuario"]));
 			$usuario = $stm->fetch(\PDO::FETCH_ASSOC);
 			
 			$datos=array("nombre"=>"El usuario ". $usuario["usuario"] . " tiene nuevos intereses!",
 			"descripcion"=>"Al usuario ".$usuario["usuario"]." ahora le interesan ".$areas,
-			 "idUsuario"=>$data['idUsuario'],
-			 0);
+			 "idUsuario"=>$data['idUsuario'],"idProyecto"=>"0",
+			 "tipo"=>"interes",
+			 "accion"=>"insert",
+			 "idsAreas"=>$data["idsAreas"]);
 			 
 			$pub = new NotificacionModel();
 			$pub->InsertNotificacion($datos);

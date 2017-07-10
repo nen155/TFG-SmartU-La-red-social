@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class Vacante implements Parcelable,Serializable {
 
+    private int id;
     private ArrayList<Especialidad> especialidades=null;
 
     public Vacante(ArrayList<Especialidad> especialidades) {
@@ -24,6 +25,7 @@ public class Vacante implements Parcelable,Serializable {
 
     protected Vacante(Parcel in) {
         especialidades = in.createTypedArrayList(Especialidad.CREATOR);
+        id = in.readInt();
     }
 
     public static final Creator<Vacante> CREATOR = new Creator<Vacante>() {
@@ -46,6 +48,14 @@ public class Vacante implements Parcelable,Serializable {
         this.especialidades = especialidades;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -55,5 +65,6 @@ public class Vacante implements Parcelable,Serializable {
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeTypedList(especialidades);
+        dest.writeInt(id);
     }
 }

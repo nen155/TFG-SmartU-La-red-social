@@ -22,25 +22,42 @@ public class SolicitudUnion implements Parcelable,Serializable {
     private Date fecha;
     private String proyecto;
     private int idProyecto;
+    private String descripcion;
+    private int idUsuarioSolicitante;
+    private int idVacante;
 
     public SolicitudUnion(){}
-    public SolicitudUnion(Date fecha, String proyecto,int idProyecto) {
+    public SolicitudUnion(Date fecha, String proyecto,int idProyecto,int idVacante) {
         this.fecha = fecha;
         this.proyecto = proyecto;
         this.idProyecto = idProyecto;
+        this.idVacante = idVacante;
     }
-
+    public SolicitudUnion(Date fecha, int idUsuarioSolicitante,String descripcion) {
+        this.fecha = fecha;
+        this.idUsuarioSolicitante=idUsuarioSolicitante;
+        this.descripcion = descripcion;
+    }
     protected SolicitudUnion(Parcel in) {
         proyecto = in.readString();
         fecha = new Date(in.readLong());
         idProyecto = in.readInt();
+        idUsuarioSolicitante=in.readInt();
+        descripcion = in.readString();
+        idVacante = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(proyecto);
-        dest.writeLong(fecha.getTime());
+        if(fecha!=null)
+            dest.writeLong(fecha.getTime());
+        else
+            dest.writeLong(new Date().getTime());
         dest.writeInt(idProyecto);
+        dest.writeInt(idUsuarioSolicitante);
+        dest.writeString(descripcion);
+        dest.writeInt(idVacante);
     }
 
     @Override
@@ -82,5 +99,29 @@ public class SolicitudUnion implements Parcelable,Serializable {
 
     public void setIdProyecto(int idProyecto) {
         this.idProyecto = idProyecto;
+    }
+
+    public int getIdUsuarioSolicitante() {
+        return idUsuarioSolicitante;
+    }
+
+    public void setIdUsuarioSolicitante(int idUsuarioSolicitante) {
+        this.idUsuarioSolicitante = idUsuarioSolicitante;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public int getIdVacante() {
+        return idVacante;
+    }
+
+    public void setIdVacante(int idVacante) {
+        this.idVacante = idVacante;
     }
 }

@@ -39,6 +39,7 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     private Usuario usuario;
     private HSeguir hSeguir;
     private Usuario usuarioSesion;
+    private boolean filtro=false;
 
     //Es el número total de elementos que hay en el server
     //tengo que recogerlo de las hebras de consulta
@@ -49,6 +50,14 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     public static final int VIEW_TYPE_ACTIVITY = 1;
     public static final int VIEW_TYPE_FINAL = 2;
 
+
+    public void setFiltro(boolean filtro) {
+        this.filtro = filtro;
+    }
+
+    public int getTotalElementosServer() {
+        return totalElementosServer;
+    }
 
     public void setTotalElementosServer(int totalElementosServer) {
         this.totalElementosServer = totalElementosServer;
@@ -252,13 +261,34 @@ public class AdapterUsuario extends RecyclerView.Adapter<AdapterUsuario.ViewHold
     @Override
     public void addItem(Publicacion publicacion) {
         Usuario usuario = (Usuario) publicacion;
-
         boolean esta = StreamSupport.stream(usuarios).filter(usuario1 -> usuario1.getId() == usuario.getId()).findAny().isPresent();
+        boolean add=false;
         if (!esta)
         {
-            usuarios.add(usuario);
             Almacen.add(usuario);
-            notifyItemInserted(usuarios.size()-1);
+
+            //Añado las notificaciones filtradas igualmente pero no notifico al adapter
+            //Si tengo que mostrarla porque es perteneciente al filtro
+            if (Almacen.filtra(usuario, Sesion.getUsuario(context))) {
+                //Compruebo sino la he añadido antes
+                esta = Almacen.isFiltradaPresent(usuario);
+                //Sino la he añadido la añado al ArrayList
+                if (!esta) {
+                    Almacen.addFiltro(usuario);
+                    add=true;
+                }
+            }
+            //Compruebo si tengo que filtrar
+            if(filtro) {
+                //Si estoy en al adpater con filtro y he añadido una
+                //lo notifico
+                if(add)
+                    notifyItemInserted(usuarios.size()-1);
+            }else {
+                usuarios.add(usuario);
+                notifyItemInserted(usuarios.size() - 1);
+            }
+
         }
     }
 

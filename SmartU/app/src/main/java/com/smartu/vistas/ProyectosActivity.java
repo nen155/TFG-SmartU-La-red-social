@@ -30,8 +30,15 @@ public class ProyectosActivity extends AppCompatActivity implements FragmentProy
         //Cargo el fragment por defecto
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Almacen.buscarProyectos(usuarioSesion.getMisProyectos(),proyectos,this);
-        transaction.replace(R.id.content_proyectos, FragmentProyectos.newInstance(proyectos));
+        FragmentProyectos fragmentProyectos=FragmentProyectos.newInstance(proyectos,false);
+        fragmentProyectos.setIdUsuario(usuarioSesion.getId());
+        transaction.replace(R.id.content_proyectos, fragmentProyectos);
         transaction.commit();
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override

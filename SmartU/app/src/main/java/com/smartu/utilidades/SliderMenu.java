@@ -29,6 +29,7 @@ import com.smartu.vistas.ContactoActivity;
 import com.smartu.vistas.LoginActivity;
 import com.smartu.vistas.MainActivity;
 import com.smartu.vistas.ProyectosActivity;
+import com.smartu.vistas.SolicitadosActivity;
 import com.squareup.picasso.Picasso;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
@@ -74,7 +75,6 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                cambiarSesion();
             }
 
             @Override
@@ -108,6 +108,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
             // Poner ícono del drawer toggle
             // ab.setHomeAsUpIndicator(R.drawable.ic_menu);
             ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowHomeEnabled(true);
         }
 
     }
@@ -187,6 +188,11 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent1);
                 break;
+            case  R.id.nav_solicitudes:
+                intent1=new Intent(context, SolicitadosActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent1);
+                break;
             case R.id.nav_contacto:
                 intent1=new Intent(context, ContactoActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -210,6 +216,7 @@ public class SliderMenu extends AppCompatActivity implements NavigationView.OnNa
                 navigationView.getMenu().setGroupVisible(R.id.anonimo,true);
                 intent1=new Intent(context, MainActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                cambiarSesion();
                 context.startActivity(intent1);
                 break;
             case R.id.nav_log:

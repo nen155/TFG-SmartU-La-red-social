@@ -16,6 +16,7 @@ import com.smartu.almacenamiento.Almacen;
 import com.smartu.modelos.Publicacion;
 import com.smartu.modelos.Comentario;
 import com.smartu.utilidades.Comparador;
+import com.smartu.utilidades.Sesion;
 import com.smartu.vistas.ProyectoActivity;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
     private Context context;
     private ArrayList<Comentario> comentarios;
     private Comentario comentario;
+    private boolean filtro=false;
 
     //Es el número total de elementos que hay en el server
     //tengo que recogerlo de las hebras de consulta
@@ -39,6 +41,16 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
     public static final int VIEW_TYPE_LOADING = 0;
     public static final int VIEW_TYPE_ACTIVITY = 1;
     public static final int VIEW_TYPE_FINAL = 2;
+
+
+
+    public void setFiltro(boolean filtro) {
+        this.filtro = filtro;
+    }
+
+    public int getTotalElementosServer() {
+        return totalElementosServer;
+    }
 
     public void setTotalElementosServer(int totalElementosServer) {
         this.totalElementosServer = totalElementosServer;
@@ -197,15 +209,33 @@ public class AdapterComentario extends RecyclerView.Adapter<AdapterComentario.Vi
     public void addItem(Publicacion publicacion) {
         Comentario comentario=(Comentario) publicacion;
         boolean esta = StreamSupport.stream(comentarios).filter(usuario1 -> usuario1.getId() == comentario.getId()).findAny().isPresent();
+        boolean add=false;
         if (!esta) {
-            comentarios.add(comentario);
+
             Almacen.add(comentario);
-            ((Activity)context).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemInserted(comentarios.size() - 1);
+
+            //Añado las notificaciones filtradas igualmente pero no notifico al adapter
+            //Si tengo que mostrarla porque es perteneciente al filtro
+            if (Almacen.filtra(comentario, Sesion.getUsuario(context))) {
+                //Compruebo sino la he añadido antes
+                esta = Almacen.isFiltradaPresent(comentario);
+                //Sino la he añadido la añado al ArrayList
+                if (!esta) {
+                    Almacen.addFiltro(comentario);
+                    add=true;
                 }
-            });
+            }
+            //Compruebo si tengo que filtrar
+            if(filtro) {
+                //Si estoy en al adpater con filtro y he añadido una
+                //lo notifico
+                if(add)
+                    notifyItemInserted(comentarios.size()-1);
+
+            }else {
+                comentarios.add(comentario);
+                notifyItemInserted(comentarios.size() - 1);
+            }
         }
     }
 }

@@ -122,6 +122,11 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -134,7 +139,7 @@ public class UsuarioActivity extends AppCompatActivity implements FragmentProyec
                     swicthTo = FragmentUsuario.newInstance(usuario);
                     break;
                 case R.id.navigation_proyectos:
-                    swicthTo = FragmentProyectos.newInstance(misProyectos);
+                    swicthTo = FragmentProyectos.newInstance(misProyectos,false);
                     ((FragmentProyectos)swicthTo).setIdUsuario(usuario.getId());
                     break;
                 /*case R.id.navigation_notifications:

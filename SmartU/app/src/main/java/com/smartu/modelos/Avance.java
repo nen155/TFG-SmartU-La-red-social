@@ -4,6 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.smartu.utilidades.ConversoresJSON;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,12 +19,35 @@ import java.util.Date;
 
 public class Avance implements Parcelable,Serializable{
     private int id;
+    @JsonProperty
+    @JsonSerialize(using=ConversoresJSON.DateTimeSerializer.class)
+    @JsonDeserialize(using=ConversoresJSON.DateTimeDeserializer.class)
     private Date fecha;
     private String nombre;
     private String descripcion;
     private ArrayList<Multimedia> misArchivos;
+    private int idUsuario;
+    private String nombreUsuario;
+    private String imagenDestacada;
 
-    public Avance(){}
+    public void clonar(Avance c){
+        id=c.getId();
+        descripcion=c.getDescripcion();
+        nombre=c.getNombre();
+        fecha=c.getFecha();
+        idUsuario=c.getIdUsuario();
+        nombreUsuario =c.getNombreUsuario();
+        imagenDestacada =c.getImagenDestacada();
+        if(c.getMisArchivos()!=null)
+            misArchivos = new ArrayList<>(c.getMisArchivos());
+        else
+            misArchivos =new ArrayList<>();
+
+    }
+
+    public Avance(){
+        this.misArchivos = new ArrayList<>();
+    }
     public Avance(int id, Date fecha, String nombre, String descripcion) {
         this.id = id;
         this.fecha = fecha;
@@ -34,6 +62,9 @@ public class Avance implements Parcelable,Serializable{
         descripcion = in.readString();
         misArchivos = in.createTypedArrayList(Multimedia.CREATOR);
         fecha = new Date(in.readLong());
+        idUsuario = in.readInt();
+        nombreUsuario = in.readString();
+        imagenDestacada=in.readString();
     }
 
     public static final Creator<Avance> CREATOR = new Creator<Avance>() {
@@ -88,6 +119,30 @@ public class Avance implements Parcelable,Serializable{
         this.misArchivos = misArchivos;
     }
 
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+
+    public String getImagenDestacada() {
+        return imagenDestacada;
+    }
+
+    public void setImagenDestacada(String imagenDestacada) {
+        this.imagenDestacada = imagenDestacada;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -100,5 +155,8 @@ public class Avance implements Parcelable,Serializable{
         dest.writeString(descripcion);
         dest.writeTypedList(misArchivos);
         dest.writeLong(fecha.getTime());
+        dest.writeInt(idUsuario);
+        dest.writeString(nombreUsuario);
+        dest.writeString(imagenDestacada);
     }
 }

@@ -11,6 +11,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="android.support.multidex.MultiDexApplication"
@@ -22,7 +23,8 @@
         android:roundIcon="@mipmap/ic_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon">
+        tools:replace="android:icon"
+        android:largeHeap="true">
 
         <!--
         El splash lo establezco a portrait para que durante la carga no haya problemas de
@@ -55,7 +57,8 @@
             android:theme="@style/SinActionBar" />
         <activity
             android:name=".vistas.LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".vistas.MainActivity"
             android:label="@string/title_activity_main"
@@ -76,6 +79,7 @@
         <activity
             android:name=".vistas.ProyectoActivity"
             android:label="@string/title_activity_proyecto"
+            android:parentActivityName=".vistas.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".vistas.VideoActivity" />
         <activity android:name=".vistas.ImagenActivity" />
@@ -104,12 +108,21 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="friendlychat.firebase.google.com"
-                    android:pathPrefix="/message"
+                    android:host="smartu-40a26.firebaseio.com"
+                    android:pathPrefix="/chat_rooms"
                     android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity android:name=".vistas.RegistroActivity"></activity>
+        <activity
+            android:name=".vistas.RegistroActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".vistas.SolicitadosActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".vistas.PublicarAvanceActivity"
+            android:label="@string/title_activity_publicar_avance"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

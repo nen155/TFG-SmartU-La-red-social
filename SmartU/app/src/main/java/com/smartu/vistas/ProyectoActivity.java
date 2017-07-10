@@ -83,20 +83,7 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         comentarios.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                //Me deshago de iconos innecesarios
-                comentarios.setVisibility(View.GONE);
-                buenaidea.setVisibility(View.GONE);
-                buenaidea_contador.setVisibility(View.GONE);
-                // que pertenezcan al proyecto en lugar de guardarlos
-                ArrayList<Comentario> comentariosProyecto = null;
-                //Filtro los comentarios por proyecto ID
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-                    comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(Almacen.getComentarios().stream().filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
-                else
-                    comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(StreamSupport.stream(Almacen.getComentarios()).filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
-                transaction.replace(R.id.content_proyecto, FragmentComentariosProyecto.newInstance(comentariosProyecto, proyecto));
-                transaction.commit();
+                comentar();
             }
         });
 
@@ -109,7 +96,27 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_proyecto);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+    private void comentar(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        //Me deshago de iconos innecesarios
+        comentarios.setVisibility(View.GONE);
+        buenaidea.setVisibility(View.GONE);
+        buenaidea_contador.setVisibility(View.GONE);
+        // que pertenezcan al proyecto en lugar de guardarlos
+        ArrayList<Comentario> comentariosProyecto = null;
+        //Filtro los comentarios por proyecto ID
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
+            comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(Almacen.getComentarios().stream().filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
+        else
+            comentariosProyecto = new ArrayList<Comentario>(Arrays.asList(StreamSupport.stream(Almacen.getComentarios()).filter(comentario -> comentario.getIdProyecto() == proyecto.getId()).toArray(Comentario[]::new)));
+        transaction.replace(R.id.content_proyecto, FragmentComentariosProyecto.newInstance(comentariosProyecto, proyecto));
+        transaction.commit();
+    }
     /**
      * Método para dar buena idea a un proyecto
      */
@@ -184,25 +191,81 @@ public class ProyectoActivity extends AppCompatActivity implements FragmentInteg
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
+                    comentarios.setImageResource(R.drawable.comentar);
+                    //Cargo los comentarios en el FragmentComentariosProyecto filtrados
+                    comentarios.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            comentar();
+                        }
+                    });
                     swicthTo = FragmentProyecto.newInstance(proyecto);
                     break;
                 case R.id.navigation_integrantes:
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
+                    comentarios.setImageResource(R.drawable.comentar);
+                    //Cargo los comentarios en el FragmentComentariosProyecto filtrados
+                    comentarios.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            comentar();
+                        }
+                    });
+
                     swicthTo = FragmentIntegrantes.newInstance(integrantes, proyecto.getVacantesProyecto(), proyecto);
                     break;
                 case R.id.navigation_map_proyecto:
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
+                    comentarios.setImageResource(R.drawable.comentar);
+                    //Cargo los comentarios en el FragmentComentariosProyecto filtrados
+                    comentarios.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            comentar();
+                        }
+                    });
                     swicthTo = FragmentMapaProyecto.newInstance(proyecto);
                     break;
                 case R.id.navigation_multimedia:
                     buenaidea.setVisibility(View.VISIBLE);
                     buenaidea_contador.setVisibility(View.VISIBLE);
                     comentarios.setVisibility(View.VISIBLE);
+                    comentarios.setImageResource(R.drawable.comentar);
+                    //Cargo los comentarios en el FragmentComentariosProyecto filtrados
+                    comentarios.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            comentar();
+                        }
+                    });
                     swicthTo = FragmentMultimedia.newInstance(proyecto.getMisArchivos(), proyecto.getId());
+                    break;
+                case R.id.navigation_avances:
+                    buenaidea.setVisibility(View.VISIBLE);
+                    buenaidea_contador.setVisibility(View.VISIBLE);
+                    comentarios.setVisibility(View.VISIBLE);
+                    //Si es propietario o es colaborador puede publicar un avance
+                    if(usuarioSesion!=null) {
+                        boolean colaborador = StreamSupport.stream(proyecto.getIntegrantes()).filter(idPro -> idPro == usuarioSesion.getId()).findAny().isPresent();
+                        if ((usuarioSesion.getId() == proyecto.getIdPropietario() || colaborador)) {
+                            comentarios.setImageResource(R.drawable.publicar_avance);
+                            comentarios.setOnClickListener(
+                                    new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent intent = new Intent(ProyectoActivity.this, PublicarAvanceActivity.class);
+                                            intent.putExtra("idProyecto", proyecto.getId());
+                                            startActivity(intent);
+                                        }
+                                    }
+                            );
+                        }
+                    }
+                    swicthTo = FragmentAvances.newInstance(proyecto.getMisAvances(),proyecto.getId());
                     break;
             }
             if (swicthTo != null) {
